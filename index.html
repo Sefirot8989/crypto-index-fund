@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Index Fund</title>
+<meta name="theme-color" content="#151d1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CryptoFund">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#151d1a;          /* lavagna verde scuro */
+    --board-2:#1a2420;
+    --line:rgba(255,255,255,.10);   /* righe del quaderno */
+    --chalk:#f2efe6;          /* gesso bianco */
+    --chalk-dim:#9aa69f;
+    --chalk-green:#b6e04c;    /* titolo verde come sulla lavagna */
+    --chalk-blue:#8db7f0;     /* etichette blu come sulla lavagna */
+    --chalk-red:#e08a8a;
+    --btc:#f7931a;
+    --eth:#a9b4e0;
+    --sol:#5dd6c0;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 43px, var(--line) 43px 44px),
+      radial-gradient(120% 90% at 50% 0%, var(--board-2), var(--board) 70%);
+    color:var(--chalk);
+    min-height:100vh;
+    padding:28px 18px 60px;
+  }
+  .wrap{max-width:520px;margin:0 auto}
+
+  /* ---------- header ---------- */
+  header{margin-bottom:26px}
+  .title{
+    font-family:'Caveat',cursive;
+    font-weight:700;
+    font-size:clamp(2.4rem,9vw,3.2rem);
+    color:var(--chalk-green);
+    line-height:1;
+    text-shadow:0 0 18px rgba(182,224,76,.25);
+  }
+  .subtitle{color:var(--chalk-dim);font-size:.85rem;margin-top:6px}
+
+  /* ---------- hero ---------- */
+  .hero{
+    display:flex;gap:14px;align-items:stretch;
+    margin-bottom:30px;flex-wrap:wrap;
+  }
+  .hero .box{
+    flex:1;min-width:150px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:rgba(255,255,255,.03);
+    padding:16px 18px;
+    backdrop-filter:blur(2px);
+  }
+  .box .label{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk-blue);margin-bottom:6px}
+  .box .value{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.55rem;font-variant-numeric:tabular-nums}
+  .box .hint{font-size:.72rem;color:var(--chalk-dim);margin-top:4px}
+
+  /* ---------- sezioni ---------- */
+  h2{
+    font-family:'Caveat',cursive;font-weight:600;
+    font-size:1.7rem;color:var(--chalk);
+    margin:34px 0 14px;
+  }
+  .section{display:none}
+  .section.open{display:block;animation:reveal .25s ease}
+  @keyframes reveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+  /* ---------- pulsanti apri/chiudi ---------- */
+  .toggles{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 4px}
+  .tog{
+    flex:1;min-width:140px;
+    padding:14px 10px;
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:rgba(255,255,255,.03);
+    color:var(--chalk);
+    font-family:'Caveat',cursive;font-weight:700;font-size:1.35rem;
+    cursor:pointer;transition:all .15s;
+  }
+  .tog:hover{background:rgba(255,255,255,.06)}
+  .tog.open{border-color:var(--chalk-green);color:var(--chalk-green);background:rgba(182,224,76,.06)}
+  .tog .tog-hint{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:.68rem;color:var(--chalk-dim);margin-top:2px}
+
+  /* ---------- barra composizione ---------- */
+  .stack{
+    display:flex;height:26px;border-radius:8px;overflow:hidden;
+    border:1px solid var(--line);margin-bottom:14px;
+  }
+  .stack div{transition:filter .2s}
+  .stack div:active{filter:brightness(1.3)}
+  .asset-row{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 4px;border-bottom:1px dashed var(--line);
+    font-size:.9rem;
+  }
+  .asset-row:last-child{border-bottom:none}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .asset-name{flex:1}
+  .asset-qty{color:var(--chalk-dim);font-size:.78rem}
+  .asset-val{font-family:'IBM Plex Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums}
+  .asset-pct{font-family:'IBM Plex Mono',monospace;color:var(--chalk-dim);font-size:.78rem;width:52px;text-align:right}
+
+  /* ---------- ricerca ---------- */
+  .search{
+    width:100%;padding:12px 14px;
+    border-radius:10px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);
+    color:var(--chalk);font-family:'Inter',sans-serif;font-size:.95rem;
+    margin-bottom:14px;outline:none;
+  }
+  .search:focus{border-color:var(--chalk-blue)}
+  .search::placeholder{color:var(--chalk-dim)}
+
+  /* ---------- partecipanti ---------- */
+  .p-row{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:4px 12px;align-items:center;
+    padding:11px 6px;
+    border-bottom:1px solid var(--line);
+  }
+  .p-row .name{font-weight:500;font-size:.95rem;color:var(--chalk-blue)}
+  .p-row .quote{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--chalk-dim);text-align:right}
+  .p-row .euro{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.95rem;text-align:right;font-variant-numeric:tabular-nums}
+  .p-row .bar{
+    grid-column:1 / -1;height:3px;border-radius:2px;
+    background:linear-gradient(90deg,var(--chalk-green),rgba(182,224,76,.15));
+  }
+  .none{color:var(--chalk-dim);text-align:center;padding:20px;font-size:.9rem;display:none}
+
+  /* ---------- previsioni ---------- */
+  .anni{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .anno-btn{
+    flex:1;min-width:56px;padding:8px 4px;
+    border:1px solid var(--line);border-radius:8px;
+    background:rgba(255,255,255,.03);
+    color:var(--chalk-dim);
+    font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.85rem;
+    cursor:pointer;transition:all .15s;
+  }
+  .anno-btn.active{color:var(--chalk);border-color:var(--chalk);background:rgba(255,255,255,.07)}
+  .scenari{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .scen-btn{
+    flex:1;min-width:100px;padding:10px 6px;
+    border:1px solid var(--line);border-radius:10px;
+    background:rgba(255,255,255,.03);
+    color:var(--chalk-dim);
+    font-family:'Caveat',cursive;font-weight:600;font-size:1.15rem;
+    cursor:pointer;transition:all .15s;
+  }
+  .scen-btn.active{color:var(--chalk);border-color:currentColor;background:rgba(255,255,255,.07)}
+  .scen-btn[data-scen="bear"].active{color:var(--chalk-red)}
+  .scen-btn[data-scen="base"].active{color:var(--chalk-blue)}
+  .scen-btn[data-scen="bull"].active{color:var(--chalk-green)}
+  .scen-btn[data-scen="enzo"].active{color:#f0d48d}
+  .scen-btn[hidden]{display:none}
+  .scenari[hidden]{display:none}
+  .scen-btn.sub{font-size:1.02rem;padding:8px 6px;border-style:dashed}
+  .scen-btn.sub[data-sub="P"].active{color:var(--chalk-red)}
+  .scen-btn.sub[data-sub="O"].active{color:var(--chalk-green)}
+  .scen-btn.sub[data-sub="TTM"].active{color:#f0d48d;text-shadow:0 0 12px rgba(240,212,141,.35)}
+  .prev-row{
+    display:grid;grid-template-columns:1fr auto auto;gap:2px 12px;
+    align-items:center;padding:10px 4px;
+    border-bottom:1px dashed var(--line);font-size:.9rem;
+  }
+  .prev-row:last-child{border-bottom:none}
+  .prev-target{font-family:'IBM Plex Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+  .prev-delta{font-family:'IBM Plex Mono',monospace;font-size:.78rem;width:64px;text-align:right}
+  .prev-delta.up{color:var(--chalk-green)}
+  .prev-delta.down{color:var(--chalk-red)}
+  .prev-src{grid-column:1 / -1;color:var(--chalk-dim);font-size:.72rem;line-height:1.5}
+  .prev-quota{
+    margin-top:14px;padding:14px 16px;
+    border:1px dashed var(--line);border-radius:var(--radius);
+    background:rgba(255,255,255,.02);
+  }
+  .prev-quota .big{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.35rem;font-variant-numeric:tabular-nums}
+  .prev-note{margin-top:8px;font-size:.75rem;color:var(--chalk-dim)}
+  .nota{
+    margin-top:16px;padding:14px 16px;
+    border-left:3px solid var(--chalk-blue);
+    background:rgba(141,183,240,.05);
+    border-radius:0 10px 10px 0;
+    font-size:.85rem;line-height:1.65;color:var(--chalk);
+  }
+  .nota .nota-label{
+    font-family:'Caveat',cursive;font-weight:700;font-size:1.25rem;
+    display:block;margin-bottom:4px;color:var(--chalk-blue);
+  }
+  .nota.enzo{border-left-color:#f0d48d;background:rgba(240,212,141,.05)}
+  .nota.enzo p{margin:8px 0}
+  .nota.enzo p:first-of-type{margin-top:2px}
+  .enzo-table{width:100%;border-collapse:collapse;margin:10px 0 4px;font-family:'IBM Plex Mono',monospace;font-size:.78rem}
+  .enzo-table th{font-family:'Inter',sans-serif;font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;color:var(--chalk-dim);text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
+  .enzo-table th:first-child{text-align:left}
+  .enzo-table td{padding:7px 4px;text-align:right;border-bottom:1px dashed var(--line);font-variant-numeric:tabular-nums}
+  .enzo-table td.yr{text-align:left;color:var(--chalk-blue);font-weight:500}
+  .enzo-table tr:last-child td{border-bottom:none}
+  .enzo-foot{font-size:.72rem;color:var(--chalk-dim)}
+  .nota.enzo .nota-label{color:#f0d48d}
+  details.nota summary{
+    cursor:pointer;list-style:none;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    margin-bottom:0;
+  }
+  details.nota summary::-webkit-details-marker{display:none}
+  details.nota .freccia{
+    font-family:'Inter',sans-serif;font-size:1rem;color:var(--chalk-dim);
+    transition:transform .2s;flex:none;
+  }
+  details.nota[open] .freccia{transform:rotate(90deg)}
+  details.nota[open] summary{margin-bottom:6px}
+  details.nota summary:hover .freccia{color:var(--chalk)}
+  .acq-intro{font-size:.88rem;line-height:1.7;margin-bottom:16px;color:var(--chalk)}
+  .acq-table{margin-top:4px}
+  .acq-table[hidden]{display:none}
+  .acq-table .mini{font-size:.66rem;margin-top:2px}
+  .acq-table .mini.up{color:var(--chalk-green)}
+  .acq-table .mini.down{color:var(--chalk-red)}
+  .disclaimer{margin-top:12px;font-size:.72rem;color:var(--chalk-dim);line-height:1.6}
+
+  .h-row{display:flex;align-items:center;gap:10px;margin:34px 0 14px}
+  .h-row h2{margin:0}
+  .i-btn{
+    width:22px;height:22px;border-radius:50%;flex:none;
+    border:1px solid var(--chalk-dim);background:transparent;color:var(--chalk-dim);
+    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:.8rem;
+    cursor:pointer;line-height:1;padding:0;transition:all .15s;
+  }
+  .i-btn:hover,.i-btn.open{color:var(--chalk-blue);border-color:var(--chalk-blue)}
+  .i-balloon{
+    border:1px dashed var(--chalk-blue);border-radius:var(--radius);
+    background:rgba(141,183,240,.06);
+    padding:12px 14px;margin:0 0 14px;
+    font-size:.85rem;line-height:1.65;color:var(--chalk);
+    animation:reveal .2s ease;
+  }
+  .i-balloon[hidden]{display:none}
+
+  /* ---------- responsive: più grande il dispositivo, più spazio ---------- */
+  @media (min-width:760px){
+    body{padding:40px 26px 80px}
+    .wrap{max-width:760px}
+    .stack{height:30px}
+    #participants{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;align-items:start}
+    #secSimulatore .box{flex:1 1 46% !important}
+  }
+  @media (min-width:1100px){
+    .wrap{max-width:1000px}
+    .title{font-size:3.4rem}
+    .hero .box .value{font-size:1.8rem}
+    #participants{grid-template-columns:1fr 1fr 1fr}
+    .enzo-table{font-size:.85rem}
+    .prev-row,.asset-row{font-size:.95rem}
+    .tog{font-size:1.5rem}
+  }
+
+  footer{
+    margin-top:40px;text-align:center;
+    color:var(--chalk-dim);font-size:.75rem;line-height:1.6;
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="title">Crypto Index Fund</div>
+    <div class="subtitle" id="updated"></div>
+  </header>
+
+  <div class="hero">
+    <div class="box">
+      <div class="label">Valore fondo</div>
+      <div class="value" id="fundTotal"></div>
+      <div class="hint">somma delle posizioni</div>
+    </div>
+    <div class="box">
+      <div class="label">Valore quota</div>
+      <div class="value" id="quotaValue"></div>
+      <div class="hint" id="quotaCount"></div>
+    </div>
+  </div>
+
+  <h2>Composizione</h2>
+  <div class="stack" id="stack"></div>
+  <div id="assets"></div>
+
+  <div class="toggles">
+    <button class="tog" data-target="secPartecipanti">👥 Partecipanti
+      <span class="tog-hint" id="hintPartecipanti"></span></button>
+    <button class="tog" data-target="secSimulatore">🧮 Simulatore
+      <span class="tog-hint">€ ↔ quote</span></button>
+    <button class="tog" data-target="secAcquisto">💰 E se compro ora?
+      <span class="tog-hint">proietta il tuo acquisto</span></button>
+    <button class="tog" data-target="secPrevisioni">🔮 Previsioni future
+      <span class="tog-hint">2026 → 2030</span></button>
+  </div>
+
+  <button class="tog" id="a2hsBtn" style="width:100%;margin-top:10px;font-size:1.15rem;padding:11px 10px">📱 Salva l'app in Home
+    <span class="tog-hint">si apre a tutto schermo, come una vera app</span></button>
+  <div class="i-balloon" id="a2hsInfo" hidden style="margin-top:10px"></div>
+
+  <div class="section" id="secPartecipanti">
+    <h2>Partecipanti</h2>
+    <input class="search" id="search" type="search" placeholder="Cerca il tuo nome…">
+    <div id="participants"></div>
+    <div class="none" id="noResult">Nessun nome trovato</div>
+  </div>
+
+  <div class="section" id="secSimulatore">
+    <h2>Simulatore</h2>
+    <div class="hero" style="margin-bottom:0">
+      <div class="box" style="flex:1 1 100%">
+        <div class="label">Quanto vuoi investire?</div>
+        <input class="search" id="simEuro" type="number" inputmode="decimal" min="0" placeholder="Importo in €" style="margin:10px 0 6px">
+        <div class="hint" id="simResult">Inserisci un importo per vedere quante quote corrispondono</div>
+      </div>
+      <div class="box" style="flex:1 1 100%">
+        <div class="label">Quante quote hai (o vorresti)?</div>
+        <input class="search" id="simQuote" type="number" inputmode="numeric" min="0" placeholder="Numero di quote" style="margin:10px 0 6px">
+        <div class="hint" id="simResult2">Inserisci le quote per vedere il controvalore in €</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="secAcquisto">
+    <div class="h-row"><h2>E se compro ora?</h2><button class="i-btn" data-info="infoAcq" aria-label="Come funziona questa sezione">i</button></div>
+    <div class="i-balloon" id="infoAcq" hidden>Secondo la visione di Enzo siamo nella fase di accumulo del ciclo: è il momento in cui, se le previsioni si avverano, entrare fa la differenza. Inserisci quanto vorresti investire (in euro o in quote) e guarda quanto <b>potrebbe</b> valere il tuo acquisto anno per anno — nello scenario buono, in quello spaziale, ma anche in quello negativo, perché le crypto possono scendere e nessuno scenario è garantito. Il calcolo è a composizione del fondo e quote costanti: il tuo acquisto cresce (o scende) come il fondo intero. Investi solo ciò che puoi lasciare fermo a lungo.</div>
+    <p class="hint" style="margin:0 0 14px">La quota oggi costa <b id="acqQuotaNow"></b>.</p>
+    <div class="hero" style="margin-bottom:14px">
+      <div class="box" style="flex:1;min-width:140px">
+        <div class="label">Investimento in €</div>
+        <input class="search" id="acqEuro" type="number" inputmode="decimal" min="0" placeholder="es. 100" style="margin:10px 0 0">
+      </div>
+      <div class="box" style="flex:1;min-width:140px">
+        <div class="label">Oppure in quote</div>
+        <input class="search" id="acqQuote" type="number" inputmode="decimal" min="0" placeholder="es. 40" style="margin:10px 0 0">
+      </div>
+    </div>
+    <div class="scenari" id="acqMode">
+      <button class="scen-btn active" data-mode="market">📊 Scenari di mercato</button>
+      <button class="scen-btn" data-mode="enzo">✍️ Visione di Enzo</button>
+    </div>
+    <div class="hint" id="acqHint" style="margin-bottom:10px">Inserisci un importo per vedere la proiezione anno per anno.</div>
+    <table class="enzo-table acq-table" id="acqTable" hidden>
+      <thead><tr id="acqHead"></tr></thead>
+      <tbody id="acqBody"></tbody>
+    </table>
+    <div class="disclaimer">Le previsioni sono opinioni, non promesse.</div>
+
+    <button class="tog" id="pmcToggle" style="width:100%;margin-top:18px">🎯 Proiezione personale col tuo PMC
+      <span class="tog-hint">nome + prezzo medio di carico</span></button>
+    <div id="acqPmc" hidden>
+      <div class="h-row" style="margin:14px 0 10px"><span class="label" style="margin:0">Inserisci nome e PMC attuale</span><button class="i-btn" data-info="infoPmc" aria-label="Cos'è il PMC">i</button></div>
+      <div class="i-balloon" id="infoPmc" hidden>Il <b>PMC</b> (prezzo medio di carico) è quanto hai pagato <b>in media ogni tua quota</b> finora. Inserendolo insieme al tuo nome, il calcolo diventa personale: vedi quanto hai investito davvero, come cambia il tuo PMC comprando oggi a <b id="pmcQuotaNow"></b>, e quanto guadagneresti (o perderesti) anno per anno rispetto ai soldi che hai messo. Come acquisto di oggi si usa l'importo inserito sopra nella sezione — lascialo vuoto per proiettare solo la posizione che hai già. Se non ricordi il tuo PMC, chiedilo a Enzo che tiene il registro. Niente viene salvato: i dati restano solo sul tuo schermo.</div>
+      <div class="hero" style="margin-bottom:10px">
+        <div class="box" style="flex:1;min-width:140px">
+          <div class="label">Il tuo nome</div>
+          <input class="search" id="pmcName" type="text" placeholder="es. Mario O." style="margin:10px 0 0">
+        </div>
+        <div class="box" style="flex:1;min-width:140px">
+          <div class="label">Il tuo PMC attuale (€)</div>
+          <input class="search" id="pmcVal" type="number" inputmode="decimal" min="0" step="0.01" placeholder="es. 2,30" style="margin:10px 0 0">
+        </div>
+      </div>
+      <div class="hint" id="pmcStatus" style="margin-bottom:10px"></div>
+      <div id="pmcSummary"></div>
+      <table class="enzo-table acq-table" id="pmcTable" hidden>
+        <thead><tr id="pmcHead"></tr></thead>
+        <tbody id="pmcBody"></tbody>
+      </table>
+      <div class="disclaimer" id="pmcFoot" hidden>Guadagno/perdita calcolati sul totale investito (quote al tuo PMC + acquisto di oggi).</div>
+    </div>
+  </div>
+
+  <div class="section" id="secPrevisioni">
+    <div class="h-row"><h2>Previsioni future</h2><button class="i-btn" data-info="infoPrev" aria-label="Fonti e metodo di calcolo">i</button></div>
+    <div class="i-balloon" id="infoPrev" hidden></div>
+    <div class="anni" id="anni"></div>
+    <div class="scenari" id="scenari">
+      <button class="scen-btn" data-scen="bear">🐻 Ribassista</button>
+      <button class="scen-btn active" data-scen="base">⚖️ Base</button>
+      <button class="scen-btn" data-scen="bull">🚀 Rialzista</button>
+      <button class="scen-btn" data-scen="enzo">✍️ Enzo</button>
+    </div>
+    <div class="scenari" id="enzoSub" hidden>
+      <button class="scen-btn sub" data-sub="P">😟 Pessimista</button>
+      <button class="scen-btn sub active" data-sub="O">🙂 Ottimista</button>
+      <button class="scen-btn sub" data-sub="TTM">🌕 TO THE MOON!</button>
+    </div>
+    <div id="prevRows"></div>
+    <div class="prev-quota">
+      <div class="label" id="prevLabel">Se lo scenario si realizza</div>
+      <div class="big" id="prevFund"></div>
+      <div class="hint" id="prevQuota"></div>
+    </div>
+    <details class="nota">
+      <summary class="nota-label">Dove siamo nel ciclo di Bitcoin <span class="freccia">▸</span></summary>
+      <span id="cicloText"></span>
+    </details>
+    <details class="nota enzo">
+      <summary class="nota-label">La visione di Enzo <span class="freccia">▸</span></summary>
+      <div id="enzoText"></div>
+    </details>
+    <div class="disclaimer" id="prevDisclaimer"></div>
+  </div>
+
+  <footer>
+    Dati aggiornati manualmente · prezzi da CoinGecko<br>
+    Fondo condiviso tra amici — non è consulenza finanziaria
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   DATI DEL FONDO — aggiorna solo questa sezione
+   ============================================================ */
+const LAST_UPDATE = "17 luglio 2026, ore 17:15";
+
+const ASSETS = [
+  { sym:"BTC", name:"Bitcoin",  qty:0.1,  value:5540.00, color:"var(--btc)" },   // BTC ≈ €55.400
+  { sym:"ETH", name:"Ethereum", qty:1.54, value:2487.10, color:"var(--eth)" },   // ETH ≈ €1.615
+  { sym:"SOL", name:"Solana",   qty:30,   value:1972.50, color:"var(--sol)" },   // SOL ≈ €65,75
+];
+
+const PARTICIPANTS = [
+  ["Ivan S.", 1354],
+  ["Christian F.", 1100],
+  ["Arturo M.", 1000],
+  ["Vincenzo M.", 300],
+  ["Domenico G.", 103],
+  ["Luigi P.", 70],
+  ["Mario O.", 21],
+  ["Mirko A.", 20],
+  ["Alessandro P.", 16],
+  ["Andrea C.", 12],
+  ["Luigi D.", 10],
+  ["Marco P.", 9],
+  ["Matteo C.", 8],
+  ["Francesco I.", 7],
+  ["Stefano E.", 5],
+  ["Isabella C.", 4],
+  ["Luca M.", 2],
+  ["Angelo T.", 2],
+  ["Vincenzo A.", 2],
+  ["Valerio L.", 2],
+  ["Angelo D.", 1],
+  ["Davide P.", 1],
+  ["Marco M.", 1],
+  ["Graziano M.", 1],
+];
+
+/* --- PREVISIONI (prezzi in € per unità, fine anno salvo nota) --
+   Raccolte il 16/7/2026 da fonti pubbliche (cambio ≈ 0,88 €/$).
+   Lo scenario "enzo" esiste solo dove Enzo ha dato target.     */
+const FORECASTS = {
+  updated: "16 luglio 2026",
+  years: {
+    "2026": {
+      bear: {
+        BTC:{ t:44000,  src:"≈$50k — S. Chartered (rischio capitolazione), Farrell/Fundstrat base $60-65k" },
+        ETH:{ t:1300,   src:"≈$1.500 — fascia bassa dei modelli tecnici (Changelly/CoinCodex)" },
+        SOL:{ t:44,     src:"≈$50 — proiezioni ribassiste, alta correlazione con BTC (beta ~2x vs ETH)" },
+      },
+      base: {
+        BTC:{ t:88000,  src:"≈$100k — target S. Chartered fine 2026; Hayes $125k" },
+        ETH:{ t:2100,   src:"≈$2.000-2.400 — CoinCodex ~$2.023, Changelly media dic. ~$2.395" },
+        SOL:{ t:92,     src:"≈$105-123 — DigitalCoinPrice ~$105, CoinCodex ~$123" },
+      },
+      bull: {
+        BTC:{ t:131000, src:"≈$150-170k — Bernstein $150k, JPMorgan $170k, Fundstrat fino a $200-250k" },
+        ETH:{ t:3500,   src:"≈$4.000 — forte ripresa H2 con ritorno dei flussi ETF" },
+        SOL:{ t:265,    src:"≈$300+ — media analisti pre-correzione ~$445, PricePrediction ~$375" },
+      },
+      enzo: { P:48000,  O:80000,  TTM:100000 },
+    },
+    "2027": {
+      bear: {
+        BTC:{ t:40000,  src:"≈$45k — coda della correzione pluriennale se il picco di ott. 2025 era il top" },
+        ETH:{ t:1550,   src:"≈$1.750 — minimo Changelly 2027" },
+        SOL:{ t:62,     src:"≈$70 — pressione prolungata sulle alt" },
+      },
+      base: {
+        BTC:{ t:105000, src:"≈$120k — ripresa graduale post-minimo" },
+        ETH:{ t:2230,   src:"≈$2.535 — media Changelly 2027" },
+        SOL:{ t:150,    src:"≈$156-185 — PricePrediction 2027" },
+      },
+      bull: {
+        BTC:{ t:176000, src:"≈$200k — target Bernstein 2027" },
+        ETH:{ t:4400,   src:"≈$5k — nuovo ciclo espansivo con rotazione sulle alt" },
+        SOL:{ t:350,    src:"≈$400 — scenario di rally del comparto" },
+      },
+      enzo: { P:77000,  O:120000, TTM:150000 },
+    },
+    "2028": {
+      bear: {
+        BTC:{ t:62000,  src:"≈$70k — ciclo debole anche dopo l'halving di aprile 2028" },
+        ETH:{ t:1900,   src:"≈$2.150 — stagnazione, domanda istituzionale assente" },
+        SOL:{ t:80,     src:"≈$90 — laterale" },
+      },
+      base: {
+        BTC:{ t:110000, src:"≈$125k — anno dell'halving, storicamente accumulazione pre-rally" },
+        ETH:{ t:2900,   src:"≈$2.400-3.300 — range Changelly 2028" },
+        SOL:{ t:140,    src:"≈$160 — crescita moderata dell'ecosistema" },
+      },
+      bull: {
+        BTC:{ t:440000, src:"≈$500k — milestone Standard Chartered per il 2028" },
+        ETH:{ t:6100,   src:"≈$7k — tokenizzazione e DeFi istituzionale a regime" },
+        SOL:{ t:440,    src:"≈$500 — target S. Chartered (indicato per fine 2029, anticipato nel caso bull)" },
+      },
+      enzo: { P:144000, O:180000, TTM:350000 },
+    },
+    "2029": {
+      bear: {
+        BTC:{ t:80000,  src:"≈$90k — ripresa lenta post-halving" },
+        ETH:{ t:2200,   src:"≈$2.500" },
+        SOL:{ t:90,     src:"≈$100" },
+      },
+      base: {
+        BTC:{ t:155000, src:"≈$175k — crescita post-halving in linea con i cicli storici (attenuati)" },
+        ETH:{ t:3500,   src:"≈$4k — adozione graduale" },
+        SOL:{ t:260,    src:"≈$300 — verso il target S. Chartered di $500 per fine 2029" },
+      },
+      bull: {
+        BTC:{ t:650000, src:"≈$740k — target Pantera Capital (Dan Morehead) per il 2029" },
+        ETH:{ t:7900,   src:"≈$9k — ciclo espansivo pieno" },
+        SOL:{ t:440,    src:"$500 — target Standard Chartered fine 2029" },
+      },
+      enzo: { P:147000, O:280000, TTM:650000 },
+    },
+    "2030": {
+      bear: {
+        BTC:{ t:90000,  src:"≈$100k — adozione più lenta del previsto" },
+        ETH:{ t:2000,   src:"≈$2.300" },
+        SOL:{ t:110,    src:"≈$125" },
+      },
+      base: {
+        BTC:{ t:195000, src:"≈$220k — media modelli di lungo periodo (Changelly ~$221k al 2031)" },
+        ETH:{ t:2650,   src:"≈$3.020 — modello CoinCodex 2030" },
+        SOL:{ t:285,    src:"≈$325 — modello CoinCodex 2030" },
+      },
+      bull: {
+        BTC:{ t:1100000, src:"≈$1,25M — bull case ARK Invest (Cathie Wood) per il 2030" },
+        ETH:{ t:10500,   src:"≈$12k — scenario di adozione massima" },
+        SOL:{ t:785,     src:"≈$892 — media panel Finder per fine 2030" },
+      },
+      enzo: { P:90000,  O:180000, TTM:450000 },
+    },
+  },
+  ciclo: "Picco del ciclo a ~$126.000 (ottobre 2025), poi correzione oltre il -50%. Il mercato è diviso: se il ciclo quadriennale vale ancora, il picco è alle spalle e le correzioni storiche post-picco sono durate 12-15 mesi (-77/85% nei casi peggiori). La tesi opposta (Cathie Wood, S. Chartered): fase di bottoming in corso, con ripresa nel secondo semestre spinta da tagli dei tassi e ritorno dei flussi ETF. I funding rate negativi da inizio 2026 — la striscia più lunga dal minimo del 2022 — storicamente hanno preceduto i rimbalzi. Prossimo halving: aprile 2028.",
+  fx: 0.88,            // € per $ usato per convertire i target di Enzo
+  ethMult: 1.5,        // ETH: ×1,5 la prestazione di BTC (su e giù)
+  solMultUp: 3.5,      // SOL: ×3,5 la prestazione di BTC in salita
+  solMultDown: 2.5,    //      ×2,5 in discesa
+};
+/* ============================================================ */
+
+const eur = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR"});
+const total = ASSETS.reduce((s,a)=>s+a.value,0);
+const totalQuotas = PARTICIPANTS.reduce((s,p)=>s+p[1],0);
+const quota = total / totalQuotas;
+
+document.getElementById("updated").textContent = "Aggiornato: " + LAST_UPDATE;
+document.getElementById("fundTotal").textContent = eur(total);
+document.getElementById("quotaValue").textContent = eur(quota);
+document.getElementById("quotaCount").textContent = totalQuotas.toLocaleString("it-IT") + " quote in circolazione";
+document.getElementById("hintPartecipanti").textContent = PARTICIPANTS.length + " nella lista";
+
+/* composizione */
+const stack = document.getElementById("stack");
+const assetsBox = document.getElementById("assets");
+ASSETS.forEach(a=>{
+  const pct = a.value/total*100;
+  const seg = document.createElement("div");
+  seg.style.width = pct+"%";
+  seg.style.background = a.color;
+  stack.appendChild(seg);
+
+  assetsBox.insertAdjacentHTML("beforeend", `
+    <div class="asset-row">
+      <span class="dot" style="background:${a.color}"></span>
+      <span class="asset-name">${a.name}
+        <span class="asset-qty">· ${a.qty} ${a.sym}</span>
+      </span>
+      <span class="asset-val">${eur(a.value)}</span>
+      <span class="asset-pct">${pct.toFixed(1)}%</span>
+    </div>`);
+});
+
+/* pulsanti apri/chiudi sezioni */
+const tabs = document.querySelectorAll(".tog[data-target]");
+tabs.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const sec = document.getElementById(btn.dataset.target);
+    const opening = !sec.classList.contains("open");
+    tabs.forEach(b=>{
+      document.getElementById(b.dataset.target).classList.remove("open");
+      b.classList.remove("open");
+    });
+    if(opening){
+      sec.classList.add("open");
+      btn.classList.add("open");
+      sec.scrollIntoView({behavior:"smooth", block:"nearest"});
+    }
+  });
+});
+
+/* palloncini informativi (i) */
+document.querySelectorAll(".i-btn").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    const box = document.getElementById(b.dataset.info);
+    box.hidden = !box.hidden;
+    b.classList.toggle("open", !box.hidden);
+  });
+});
+
+/* partecipanti */
+const list = document.getElementById("participants");
+const maxQ = Math.max(...PARTICIPANTS.map(p=>p[1]));
+PARTICIPANTS.forEach(([name,q])=>{
+  list.insertAdjacentHTML("beforeend", `
+    <div class="p-row" data-name="${name.toLowerCase()}">
+      <span class="name">${name}</span>
+      <span class="quote">${q.toLocaleString("it-IT")} ${q===1?"quota":"quote"}</span>
+      <span class="euro">${eur(q*quota)}</span>
+      <span class="bar" style="width:${Math.max(2, q/maxQ*100)}%"></span>
+    </div>`);
+});
+
+/* ricerca */
+const search = document.getElementById("search");
+const noResult = document.getElementById("noResult");
+search.addEventListener("input", ()=>{
+  const t = search.value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll(".p-row").forEach(r=>{
+    const show = r.dataset.name.includes(t);
+    r.style.display = show ? "" : "none";
+    if(show) visible++;
+  });
+  noResult.style.display = visible ? "none" : "block";
+});
+
+/* simulatore */
+const simEuro = document.getElementById("simEuro");
+const simQuote = document.getElementById("simQuote");
+const simResult = document.getElementById("simResult");
+const simResult2 = document.getElementById("simResult2");
+
+simEuro.addEventListener("input", ()=>{
+  const v = parseFloat(simEuro.value);
+  if(!v || v<=0){ simResult.textContent = "Inserisci un importo per vedere quante quote corrispondono"; return; }
+  const q = v / quota;
+  simResult.innerHTML = `Con <b>${eur(v)}</b> ottieni circa <b>${q.toLocaleString("it-IT",{maximumFractionDigits:1})} quote</b> (al valore attuale di ${eur(quota)}/quota)`;
+});
+
+simQuote.addEventListener("input", ()=>{
+  const q = parseFloat(simQuote.value);
+  if(!q || q<=0){ simResult2.textContent = "Inserisci le quote per vedere il controvalore in €"; return; }
+  simResult2.innerHTML = `<b>${q.toLocaleString("it-IT")} ${q===1?"quota vale":"quote valgono"}</b> circa <b>${eur(q*quota)}</b> oggi`;
+});
+
+/* e se compro ora? */
+const acqEuro  = document.getElementById("acqEuro");
+const acqQuote = document.getElementById("acqQuote");
+const acqHint  = document.getElementById("acqHint");
+const acqTable = document.getElementById("acqTable");
+let acqMode = "market";
+const MARKET_COLS = [["bear","🐻 Ribassista"],["base","⚖️ Base"],["bull","🚀 Rialzista"]];
+const ENZO_COLS   = [["P","😟 Pessimista"],["O","🙂 Ottimista"],["TTM","🌕 To the moon"]];
+
+document.getElementById("acqQuotaNow").textContent = eur(quota);
+
+/* valore dell'intero fondo in un dato anno/scenario */
+function fundTargetValue(year, mode, key){
+  const yd = FORECASTS.years[year];
+  if(mode === "market"){
+    const s = yd[key];
+    return ASSETS.reduce((sum,a)=>sum + s[a.sym].t*a.qty, 0);
+  }
+  const usd = yd.enzo[key];
+  const btcNow = ASSETS[0].value/ASSETS[0].qty;
+  const ethNow = ASSETS[1].value/ASSETS[1].qty;
+  const solNow = ASSETS[2].value/ASSETS[2].qty;
+  const btcT = usd*FORECASTS.fx;
+  const d = btcT/btcNow - 1;
+  const dE = d*FORECASTS.ethMult;
+  const dS = d*(d>=0 ? FORECASTS.solMultUp : FORECASTS.solMultDown);
+  return btcT*ASSETS[0].qty + ethNow*(1+dE)*ASSETS[1].qty + solNow*(1+dS)*ASSETS[2].qty;
+}
+
+function renderAcq(){
+  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
+  document.querySelectorAll("#acqMode .scen-btn").forEach(b=>
+    b.classList.toggle("active", b.dataset.mode===acqMode));
+  document.getElementById("acqHead").innerHTML =
+    "<th>Anno</th>" + cols.map(c=>"<th>"+c[1]+"</th>").join("");
+
+  const v = parseFloat(acqEuro.value);
+  if(!v || v<=0){
+    acqTable.hidden = true;
+    acqHint.textContent = "Inserisci un importo per vedere la proiezione anno per anno.";
+    if(typeof renderPmc==="function") renderPmc();
+    return;
+  }
+  const q = v/quota;
+  acqHint.innerHTML = "Oggi con <b>"+eur(v)+"</b> compri circa <b>"+q.toLocaleString("it-IT",{maximumFractionDigits:1})+" quote</b>. Ecco quanto varrebbero a fine anno:";
+  const body = Object.keys(FORECASTS.years).map(y=>{
+    const cells = cols.map(([k])=>{
+      const mult = fundTargetValue(y, acqMode, k)/total;
+      const cls = mult>=1 ? "up" : "down";
+      return "<td>"+eur(v*mult)+'<div class="mini '+cls+'">×'+mult.toLocaleString("it-IT",{maximumFractionDigits:1})+"</div></td>";
+    }).join("");
+    return '<tr><td class="yr">'+y+"</td>"+cells+"</tr>";
+  }).join("");
+  document.getElementById("acqBody").innerHTML = body;
+  acqTable.hidden = false;
+  if(typeof renderPmc==="function") renderPmc();
+}
+
+acqEuro.addEventListener("input", ()=>{
+  const v = parseFloat(acqEuro.value);
+  acqQuote.value = (v>0) ? (v/quota).toFixed(1) : "";
+  renderAcq();
+});
+acqQuote.addEventListener("input", ()=>{
+  const q = parseFloat(acqQuote.value);
+  acqEuro.value = (q>0) ? (q*quota).toFixed(2) : "";
+  renderAcq();
+});
+document.querySelectorAll("#acqMode .scen-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{ acqMode = btn.dataset.mode; renderAcq(); });
+});
+
+/* proiezione personale col PMC */
+const pmcName = document.getElementById("pmcName");
+const pmcVal = document.getElementById("pmcVal");
+const pmcStatus = document.getElementById("pmcStatus");
+const pmcSummary = document.getElementById("pmcSummary");
+const pmcTable = document.getElementById("pmcTable");
+const pmcFoot = document.getElementById("pmcFoot");
+const acqPmc = document.getElementById("acqPmc");
+const pmcToggle = document.getElementById("pmcToggle");
+
+document.getElementById("pmcQuotaNow").textContent = eur(quota) + "/quota";
+
+pmcToggle.addEventListener("click", ()=>{
+  const opening = acqPmc.hidden;
+  acqPmc.hidden = !opening;
+  pmcToggle.classList.toggle("open", opening);
+  if(opening){ renderPmc(); acqPmc.scrollIntoView({behavior:"smooth", block:"nearest"}); }
+});
+
+function findParticipant(txt){
+  const t = (txt||"").trim().toLowerCase();
+  if(!t) return { status:"empty" };
+  const exact = PARTICIPANTS.find(p=>p[0].toLowerCase()===t);
+  if(exact) return { status:"ok", p:exact };
+  const matches = PARTICIPANTS.filter(p=>p[0].toLowerCase().includes(t));
+  if(matches.length===1) return { status:"ok", p:matches[0] };
+  if(matches.length>1) return { status:"multi", names:matches.map(p=>p[0]) };
+  return { status:"none" };
+}
+
+function renderPmc(){
+  if(acqPmc.hidden) return;
+  pmcSummary.innerHTML = "";
+  pmcTable.hidden = true;
+  pmcFoot.hidden = true;
+
+  const found = findParticipant(pmcName.value);
+  if(found.status==="empty"){ pmcStatus.textContent = "Scrivi il tuo nome come compare nella lista partecipanti."; return; }
+  if(found.status==="none"){ pmcStatus.textContent = "Nome non trovato nella lista partecipanti. Controlla come è scritto (es. \"Mario O.\")."; return; }
+  if(found.status==="multi"){ pmcStatus.textContent = "Ci sono più nomi simili: " + found.names.join(" / ") + " — specifica meglio."; return; }
+
+  const [nome, qOwned] = found.p;
+  const pmc = parseFloat(pmcVal.value);
+  if(!pmc || pmc<=0){
+    pmcStatus.innerHTML = "Trovato: <b>"+nome+"</b> — "+qOwned.toLocaleString("it-IT")+" quote. Ora inserisci il tuo PMC.";
+    return;
+  }
+  pmcStatus.innerHTML = "Trovato: <b>"+nome+"</b> — "+qOwned.toLocaleString("it-IT")+" quote al PMC di "+eur(pmc)+".";
+
+  const v = parseFloat(acqEuro.value) || 0;
+  const qNew = v/quota;
+  const qTot = qOwned + qNew;
+  const invTot = qOwned*pmc + v;
+  const pmcNew = invTot/qTot;
+  const valNow = qTot*quota;
+  const plNow = valNow/invTot - 1;
+  const f1 = n => n.toLocaleString("it-IT",{maximumFractionDigits:1});
+
+  let pmcLine;
+  if(v<=0){
+    pmcLine = "Nessun acquisto di oggi inserito: proiezione della sola posizione attuale.";
+  }else{
+    const diff = pmcNew - pmc;
+    const dir = Math.abs(diff)<0.005 ? "resta praticamente invariato"
+      : diff<0 ? '<span style="color:var(--chalk-green)">scende</span> di '+eur(-diff)
+      : '<span style="color:var(--chalk-red)">sale</span> di '+eur(diff);
+    pmcLine = "Comprando oggi altre <b>"+f1(qNew)+" quote</b> per <b>"+eur(v)+"</b>, il tuo PMC "+dir+": nuovo PMC <b>"+eur(pmcNew)+"</b>.";
+  }
+
+  pmcSummary.innerHTML = `
+    <div class="prev-quota" style="margin:0 0 12px">
+      <div class="label">La tua posizione</div>
+      <div style="font-size:.88rem;line-height:1.7">
+        Investito finora: <b>${eur(qOwned*pmc)}</b> (${qOwned.toLocaleString("it-IT")} quote × ${eur(pmc)})<br>
+        ${pmcLine}<br>
+        Posizione totale: <b>${f1(qTot)} quote</b>, investimento complessivo <b>${eur(invTot)}</b><br>
+        Valore di oggi: <b>${eur(valNow)}</b> <span class="${plNow>=0?"prev-delta up":"prev-delta down"}" style="width:auto">${pct(plNow*100)}</span>
+      </div>
+    </div>`;
+
+  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
+  document.getElementById("pmcHead").innerHTML =
+    "<th>Anno</th>" + cols.map(c=>"<th>"+c[1]+"</th>").join("");
+  document.getElementById("pmcBody").innerHTML = Object.keys(FORECASTS.years).map(y=>{
+    const cells = cols.map(([k])=>{
+      const mult = fundTargetValue(y, acqMode, k)/total;
+      const valF = qTot*quota*mult;
+      const pl = valF/invTot - 1;
+      const cls = pl>=0 ? "up" : "down";
+      return "<td>"+eur(valF)+'<div class="mini '+cls+'">'+pct(pl*100)+"</div></td>";
+    }).join("");
+    return '<tr><td class="yr">'+y+"</td>"+cells+"</tr>";
+  }).join("");
+  pmcTable.hidden = false;
+  pmcFoot.hidden = false;
+}
+
+pmcName.addEventListener("input", renderPmc);
+pmcVal.addEventListener("input", renderPmc);
+renderAcq();
+
+/* previsioni */
+const YEARS = Object.keys(FORECASTS.years);
+let curYear = YEARS[0];
+let curScen = "base";
+const anniBox = document.getElementById("anni");
+const prevRows = document.getElementById("prevRows");
+const prevFund = document.getElementById("prevFund");
+const prevQuota = document.getElementById("prevQuota");
+const prevLabel = document.getElementById("prevLabel");
+const pct = n => (n>=0?"+":"") + n.toLocaleString("it-IT",{maximumFractionDigits:0}) + "%";
+const SCEN_NAMES = { bear:"scenario ribassista", base:"scenario base", bull:"scenario rialzista", enzo:"visione di Enzo" };
+const SUB_NAMES = { P:"Pessimista", O:"Ottimista", TTM:"TO THE MOON!" };
+let curSub = "O";
+
+YEARS.forEach(y=>{
+  const b = document.createElement("button");
+  b.className = "anno-btn" + (y===curYear ? " active" : "");
+  b.textContent = y;
+  b.addEventListener("click", ()=>{
+    curYear = y;
+    document.querySelectorAll(".anno-btn").forEach(x=>x.classList.toggle("active", x.textContent===y));
+    renderPrev();
+  });
+  anniBox.appendChild(b);
+});
+
+document.querySelectorAll("#scenari .scen-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{ curScen = btn.dataset.scen; renderPrev(); });
+});
+document.querySelectorAll("#enzoSub .scen-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{ curSub = btn.dataset.sub; renderPrev(); });
+});
+
+/* costruisce i target della visione di Enzo: ETH e SOL derivati dalla prestazione di BTC */
+function enzoTargets(usd){
+  const btcNow = ASSETS[0].value/ASSETS[0].qty;
+  const ethNow = ASSETS[1].value/ASSETS[1].qty;
+  const solNow = ASSETS[2].value/ASSETS[2].qty;
+  const btcT = usd*FORECASTS.fx;
+  const d = btcT/btcNow - 1;
+  const dEth = d*FORECASTS.ethMult;
+  const dSol = d*(d>=0 ? FORECASTS.solMultUp : FORECASTS.solMultDown);
+  const lbl = "$" + usd.toLocaleString("it-IT");
+  return {
+    BTC:{ t:btcT,            src:lbl+" — target di Enzo ("+SUB_NAMES[curSub]+")" },
+    ETH:{ t:ethNow*(1+dEth), src:"derivato: ×1,5 la prestazione di BTC → "+pct(dEth*100) },
+    SOL:{ t:solNow*(1+dSol), src:"derivato: ×"+(d>=0?"3,5 in salita":"2,5 in discesa")+" rispetto a BTC → "+pct(dSol*100) },
+  };
+}
+
+function renderPrev(){
+  const yearData = FORECASTS.years[curYear];
+  document.querySelectorAll("#scenari .scen-btn").forEach(b=>{
+    b.hidden = !yearData[b.dataset.scen];
+    b.classList.toggle("active", b.dataset.scen===curScen);
+  });
+  const isEnzo = curScen==="enzo";
+  document.getElementById("enzoSub").hidden = !isEnzo;
+  document.querySelectorAll("#enzoSub .scen-btn").forEach(b=>
+    b.classList.toggle("active", b.dataset.sub===curSub));
+
+  const scen = isEnzo ? enzoTargets(yearData.enzo[curSub]) : yearData[curScen];
+  prevRows.innerHTML = "";
+  let fundTargetVal = 0;
+  ASSETS.forEach(a=>{
+    const f = scen[a.sym];
+    const priceNow = a.value / a.qty;
+    const delta = (f.t/priceNow - 1) * 100;
+    fundTargetVal += f.t * a.qty;
+    prevRows.insertAdjacentHTML("beforeend", `
+      <div class="prev-row">
+        <span class="asset-name"><span class="dot" style="background:${a.color};display:inline-block;margin-right:8px"></span>${a.name}</span>
+        <span class="prev-target">${eur(f.t)}</span>
+        <span class="prev-delta ${delta>=0?"up":"down"}">${pct(delta)}</span>
+        <span class="prev-src">${f.src}</span>
+      </div>`);
+  });
+  const quotaTarget = fundTargetVal / totalQuotas;
+  const fundDelta = (fundTargetVal/total - 1) * 100;
+  prevLabel.textContent = "Se si realizza (" + SCEN_NAMES[curScen] + (isEnzo ? " — " + SUB_NAMES[curSub] : "") + ", fine " + curYear + ")";
+  prevFund.textContent = eur(fundTargetVal) + "  (" + pct(fundDelta) + ")";
+  prevQuota.textContent = "valore quota: " + eur(quotaTarget) + " — oggi " + eur(quota);
+}
+renderPrev();
+
+/* salva in home (PWA) */
+(function(){
+  const btn = document.getElementById("a2hsBtn");
+  const info = document.getElementById("a2hsInfo");
+  const standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone;
+  if(standalone){ btn.style.display = "none"; return; }   // già installata
+
+  function makeIcon(size){
+    const c = document.createElement("canvas"); c.width = c.height = size;
+    const x = c.getContext("2d");
+    x.fillStyle = "#151d1a"; x.fillRect(0,0,size,size);
+    x.strokeStyle = "rgba(255,255,255,.12)"; x.lineWidth = Math.max(1, size/96);
+    for(let y=size*0.22; y<size; y+=size*0.2){ x.beginPath(); x.moveTo(0,y); x.lineTo(size,y); x.stroke(); }
+    x.fillStyle = "#b6e04c";
+    x.font = "700 " + (size*0.34) + "px system-ui, sans-serif";
+    x.textAlign = "center"; x.textBaseline = "middle";
+    x.fillText("CIF", size/2, size/2);
+    return c.toDataURL("image/png");
+  }
+  try{
+    const manifest = {
+      name: "Crypto Index Fund",
+      short_name: "CryptoFund",
+      start_url: location.href.split("#")[0],
+      display: "standalone",
+      background_color: "#151d1a",
+      theme_color: "#151d1a",
+      icons: [
+        { src: makeIcon(192), sizes: "192x192", type: "image/png" },
+        { src: makeIcon(512), sizes: "512x512", type: "image/png" },
+      ],
+    };
+    const link = document.createElement("link");
+    link.rel = "manifest";
+    link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type:"application/json"}));
+    document.head.appendChild(link);
+  }catch(e){}
+
+  let deferred = null;
+  window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); deferred = e; });
+  window.addEventListener("appinstalled", ()=>{ btn.style.display = "none"; info.hidden = true; });
+
+  btn.addEventListener("click", async ()=>{
+    if(deferred){                                   // installazione con un tocco (Android/Chrome, pagina online)
+      deferred.prompt();
+      const r = await deferred.userChoice;
+      if(r.outcome === "accepted") btn.style.display = "none";
+      deferred = null;
+      return;
+    }
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isFile = location.protocol === "file:";
+    let t;
+    if(isFile){
+      t = "Da file scaricato il telefono non permette l'installazione: serve la versione online. Quando avremo il link fisso (GitHub), aprendolo questo pulsante installerà l'app con un solo tocco.";
+    }else if(isIOS){
+      t = "Su iPhone/iPad: tocca il pulsante Condividi (quadrato con freccia ⬆️ in basso) e poi \"Aggiungi alla schermata Home\". Troverai l'icona dell'app e si aprirà a tutto schermo.";
+    }else{
+      t = "Apri il menu del browser (⋮ in alto a destra) e scegli \"Aggiungi a schermata Home\" oppure \"Installa app\".";
+    }
+    info.textContent = t;
+    info.hidden = !info.hidden;
+  });
+})();
+
+document.getElementById("cicloText").textContent = FORECASTS.ciclo;
+function buildEnzoBox(){
+  const f = n => n.toLocaleString("it-IT");
+  const rows = Object.keys(FORECASTS.years).map(y=>{
+    const e = FORECASTS.years[y].enzo;
+    return `<tr><td class="yr">${y}${y==="2030" ? " *" : ""}</td><td>${f(e.P)}</td><td>${f(e.O)}</td><td>${f(e.TTM)}</td></tr>`;
+  }).join("");
+  return `
+    <p>Mi aspetto che Bitcoin continui a seguire il suo ciclo storico: salita graduale nei prossimi anni fino al <b>massimo nel 2029</b>, poi il <b>2030 come anno ribassista</b> — con prezzi che a quel punto potrebbero andare dai 90.000 $ del caso peggiore ai 450.000 $ se il ciclo finisce in euforia.</p>
+    <p>Per ogni anno indico tre possibili prezzi di <b>Bitcoin a fine anno, in dollari</b>:</p>
+    <table class="enzo-table">
+      <tr><th>Anno</th><th>😟 Pessimista</th><th>🙂 Ottimista</th><th>🌕 To the moon</th></tr>
+      ${rows}
+    </table>
+    <p class="enzo-foot">* il 2030 è l'anno ribassista del ciclo. Prezzi in dollari.</p>
+    <p><b>😟 Pessimista</b> è lo scenario prudente, <b>🙂 Ottimista</b> quello favorevole, <b>🌕 To the moon</b> quello di euforia del mercato.</p>
+    <p><b>E per Ethereum e Solana?</b> Non hanno prezzi fissati: si muovono insieme a Bitcoin, ma con oscillazioni più ampie.</p>
+    <p><b>Ethereum</b> si muove 1,5 volte più di Bitcoin, in entrambe le direzioni. Esempio: se Bitcoin guadagna il 20%, Ethereum guadagna il 30%; se Bitcoin perde il 10%, Ethereum perde il 15%.</p>
+    <p><b>Solana</b> è più estrema: 3,5 volte in salita e 2,5 volte in discesa. Esempio: con Bitcoin a +20% Solana fa +70%; con Bitcoin a −10% Solana fa −25%.</p>
+    <p class="enzo-foot">I prezzi di Ethereum e Solana che compaiono negli scenari qui sopra sono calcolati automaticamente con questa regola. (Visione aggiornata il 16/7/2026)</p>`;
+}
+document.getElementById("enzoText").innerHTML = buildEnzoBox();
+document.getElementById("infoPrev").textContent =
+  "Previsioni raccolte il " + FORECASTS.updated + " da fonti pubbliche (Standard Chartered, Bernstein, JPMorgan, Fundstrat, Pantera, ARK, CoinCodex e altri) più la visione personale di Enzo. Sono opinioni, spesso in disaccordo tra loro e storicamente poco affidabili — più l'orizzonte è lontano, più sono da prendere con le pinze. Il calcolo di fondo e quota è a composizione invariata (0,1 BTC · 1,54 ETH · 30 SOL) e quote costanti.";
+document.getElementById("prevDisclaimer").textContent =
+  "Le previsioni sono opinioni, non consigli d'investimento.";
+</script>
+</body>
+</html>
