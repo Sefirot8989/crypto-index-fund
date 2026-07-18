@@ -259,7 +259,6 @@
     .wrap{max-width:760px}
     .stack{height:30px}
     #participants{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;align-items:start}
-    #secSimulatore .box{flex:1 1 46% !important}
   }
   @media (min-width:1100px){
     .wrap{max-width:1000px}
@@ -332,8 +331,6 @@
   <div class="toggles">
     <button class="tog" data-target="secPartecipanti">👥 Partecipanti
       <span class="tog-hint" id="hintPartecipanti"></span></button>
-    <button class="tog" data-target="secSimulatore">🧮 Simulatore
-      <span class="tog-hint">€ ↔ quote</span></button>
     <button class="tog" data-target="secAcquisto">💰 E se compro ora?
       <span class="tog-hint">proietta il tuo acquisto</span></button>
     <button class="tog" data-target="secPrevisioni">🔮 Previsioni future
@@ -351,22 +348,6 @@
     <input class="search" id="search" type="search" placeholder="Cerca il tuo nome…">
     <div id="participants"></div>
     <div class="none" id="noResult">Nessun nome trovato</div>
-  </div>
-
-  <div class="section" id="secSimulatore">
-    <h2>Simulatore</h2>
-    <div class="hero" style="margin-bottom:0">
-      <div class="box" style="flex:1 1 100%">
-        <div class="label">Quanto vuoi investire?</div>
-        <input class="search" id="simEuro" type="number" inputmode="decimal" min="0" placeholder="Importo in €" style="margin:10px 0 6px">
-        <div class="hint" id="simResult">Inserisci un importo per vedere quante quote corrispondono</div>
-      </div>
-      <div class="box" style="flex:1 1 100%">
-        <div class="label">Quante quote hai (o vorresti)?</div>
-        <input class="search" id="simQuote" type="number" inputmode="numeric" min="0" placeholder="Numero di quote" style="margin:10px 0 6px">
-        <div class="hint" id="simResult2">Inserisci le quote per vedere il controvalore in €</div>
-      </div>
-    </div>
   </div>
 
   <div class="section" id="secAcquisto">
@@ -474,6 +455,7 @@
 
   <details class="nota" style="margin-top:26px">
     <summary class="nota-label">🆕 Novità <span class="freccia">▸</span></summary>
+    <b>18 luglio 2026</b> · La sezione Simulatore è confluita in "E se compro ora?" (stesso calcolo € ↔ quote, più le proiezioni)<br><br>
     <b>17 luglio 2026</b><br>
     · La dashboard è online con link fisso e si può installare in Home come una vera app 📱<br>
     · Prezzi ora <b>live</b>: si aggiornano da soli a ogni apertura, con la variazione delle ultime 24 ore<br>
@@ -727,25 +709,6 @@ search.addEventListener("input", ()=>{
     if(show) visible++;
   });
   noResult.style.display = visible ? "none" : "block";
-});
-
-/* simulatore */
-const simEuro = document.getElementById("simEuro");
-const simQuote = document.getElementById("simQuote");
-const simResult = document.getElementById("simResult");
-const simResult2 = document.getElementById("simResult2");
-
-simEuro.addEventListener("input", ()=>{
-  const v = parseFloat(simEuro.value);
-  if(!v || v<=0){ simResult.textContent = "Inserisci un importo per vedere quante quote corrispondono"; return; }
-  const q = v / quota;
-  simResult.innerHTML = `Con <b>${eur(v)}</b> ottieni circa <b>${q.toLocaleString("it-IT",{maximumFractionDigits:1})} quote</b> (al valore attuale di ${eur(quota)}/quota)`;
-});
-
-simQuote.addEventListener("input", ()=>{
-  const q = parseFloat(simQuote.value);
-  if(!q || q<=0){ simResult2.textContent = "Inserisci le quote per vedere il controvalore in €"; return; }
-  simResult2.innerHTML = `<b>${q.toLocaleString("it-IT")} ${q===1?"quota vale":"quote valgono"}</b> circa <b>${eur(q*quota)}</b> oggi`;
 });
 
 /* e se compro ora? */
