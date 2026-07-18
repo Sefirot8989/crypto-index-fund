@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Crypto Index Fund</title>
 <meta name="theme-color" content="#151d1a">
 <meta name="mobile-web-app-capable" content="yes">
@@ -28,7 +28,7 @@
     --radius:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%}
+  html{-webkit-text-size-adjust:100%;background:#151d1a}
   body{
     font-family:'Inter',system-ui,sans-serif;
     background:
@@ -273,6 +273,25 @@
     margin-top:40px;text-align:center;
     color:var(--chalk-dim);font-size:.75rem;line-height:1.6;
   }
+  /* fear & greed */
+  .fng{margin:6px 0 2px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.02)}
+  .fng .label{margin-bottom:8px}
+  .fng-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#e08a8a,#f0d48d,#b6e04c);position:relative;margin:6px 0 8px}
+  .fng-dot{position:absolute;top:-4px;width:4px;height:16px;background:var(--chalk);border-radius:2px;box-shadow:0 0 6px rgba(0,0,0,.6)}
+  .fng-val{font-family:'IBM Plex Mono',monospace;font-size:.85rem}
+  /* countdown halving */
+  .halving{margin:14px 0 2px;padding:14px;border:1px dashed var(--line);border-radius:var(--radius);color:var(--chalk)}
+  .halving .label{margin-bottom:10px}
+  .cd{display:flex;gap:8px}
+  .cd .unit{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 4px;text-align:center;background:rgba(255,255,255,.03)}
+  .cd .num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(1.5rem,7.5vw,2.3rem);color:var(--chalk-green);font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(182,224,76,.2)}
+  .cd .lab{font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk-dim);margin-top:4px}
+  .halving .foot{font-size:.8rem;color:var(--chalk-dim);margin-top:10px;line-height:1.6}
+  /* privacy */
+  .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .privacy-btn{flex:none;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:var(--chalk);font-size:1.1rem;padding:8px 11px;cursor:pointer;margin-top:6px}
+  .privacy-btn.on{border-color:var(--chalk-green)}
+  body.privacy .value,body.privacy .euro,body.privacy .asset-val,body.privacy .big,body.privacy .prev-target{filter:blur(7px)}
   @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -280,15 +299,20 @@
 <div class="wrap">
 
   <header>
-    <div class="title">Crypto Index Fund</div>
-    <div class="subtitle" id="updated"></div>
+    <div class="head-row">
+      <div>
+        <div class="title">Crypto Index Fund</div>
+        <div class="subtitle" id="updated"></div>
+      </div>
+      <button class="privacy-btn" id="privacyBtn" aria-label="Modalità privacy" title="Nascondi nomi e cifre">🙈</button>
+    </div>
   </header>
 
   <div class="hero">
     <div class="box">
       <div class="label">Valore fondo</div>
       <div class="value" id="fundTotal"></div>
-      <div class="hint">somma delle posizioni</div>
+      <div class="hint">somma delle posizioni <b id="fundDelta"></b></div>
     </div>
     <div class="box">
       <div class="label">Valore quota</div>
@@ -301,6 +325,8 @@
   <div class="stack" id="stack"></div>
   <div id="assets"></div>
 
+
+
   <div class="toggles">
     <button class="tog" data-target="secPartecipanti">👥 Partecipanti
       <span class="tog-hint" id="hintPartecipanti"></span></button>
@@ -310,6 +336,8 @@
       <span class="tog-hint">proietta il tuo acquisto</span></button>
     <button class="tog" data-target="secPrevisioni">🔮 Previsioni future
       <span class="tog-hint">2026 → 2030</span></button>
+    <button class="tog" data-target="secIndicatori">📊 Indicatori
+      <span class="tog-hint">umore del mercato · halving</span></button>
   </div>
 
   <button class="tog" id="a2hsBtn" style="width:100%;margin-top:10px;font-size:1.15rem;padding:11px 10px">📱 Salva l'app in Home
@@ -421,8 +449,39 @@
     <div class="disclaimer" id="prevDisclaimer"></div>
   </div>
 
+  <div class="section" id="secIndicatori">
+    <h2>Indicatori di mercato</h2>
+    <div class="fng" id="fngBox">
+      <div class="label">Umore del mercato (Fear &amp; Greed)</div>
+      <div class="fng-bar"><div class="fng-dot" id="fngDot" style="left:calc(50% - 2px)"></div></div>
+      <div class="fng-val" id="fngVal">Caricamento…</div>
+      <div class="hint" style="margin-top:6px">0 = paura estrema (spesso occasioni) · 100 = avidità estrema (spesso euforia). Aggiornato ogni giorno.</div>
+    </div>
+    <div class="halving">
+      <div class="label">⛏️ Prossimo halving di Bitcoin — aprile 2028</div>
+      <div class="cd">
+        <div class="unit"><div class="num" id="cdD">—</div><div class="lab">giorni</div></div>
+        <div class="unit"><div class="num" id="cdH">—</div><div class="lab">ore</div></div>
+        <div class="unit"><div class="num" id="cdM">—</div><div class="lab">min</div></div>
+        <div class="unit"><div class="num" id="cdS">—</div><div class="lab">sec</div></div>
+      </div>
+      <div class="foot">L'halving dimezza le nuove emissioni di Bitcoin: storicamente ha segnato l'inizio della fase di accumulo del ciclo.</div>
+    </div>
+    <div class="disclaimer">Altri indicatori in arrivo — questa sezione crescerà.</div>
+  </div>
+
+  <details class="nota" style="margin-top:26px">
+    <summary class="nota-label">🆕 Novità <span class="freccia">▸</span></summary>
+    <b>17 luglio 2026</b><br>
+    · La dashboard è online con link fisso e si può installare in Home come una vera app 📱<br>
+    · Prezzi ora <b>live</b>: si aggiornano da soli a ogni apertura, con la variazione delle ultime 24 ore<br>
+    · Nuovo indicatore dell'umore del mercato (Paura/Avidità)<br>
+    · Conto alla rovescia per l'halving di Bitcoin (aprile 2028)<br>
+    · Modalità privacy 🙈: nasconde nomi e cifre per screenshot sicuri
+  </details>
+
   <footer>
-    Dati aggiornati manualmente · prezzi da CoinGecko<br>
+    Prezzi live da CoinGecko · dati del fondo aggiornati da Enzo<br>
     Fondo condiviso tra amici — non è consulenza finanziaria
   </footer>
 </div>
@@ -572,36 +631,47 @@ const FORECASTS = {
 /* ============================================================ */
 
 const eur = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR"});
-const total = ASSETS.reduce((s,a)=>s+a.value,0);
+let total = ASSETS.reduce((s,a)=>s+a.value,0);
 const totalQuotas = PARTICIPANTS.reduce((s,p)=>s+p[1],0);
-const quota = total / totalQuotas;
+let quota = total / totalQuotas;
 
 document.getElementById("updated").textContent = "Aggiornato: " + LAST_UPDATE;
-document.getElementById("fundTotal").textContent = eur(total);
-document.getElementById("quotaValue").textContent = eur(quota);
 document.getElementById("quotaCount").textContent = totalQuotas.toLocaleString("it-IT") + " quote in circolazione";
 document.getElementById("hintPartecipanti").textContent = PARTICIPANTS.length + " nella lista";
+
+function renderHero(){
+  document.getElementById("fundTotal").textContent = eur(total);
+  document.getElementById("quotaValue").textContent = eur(quota);
+}
+renderHero();
 
 /* composizione */
 const stack = document.getElementById("stack");
 const assetsBox = document.getElementById("assets");
-ASSETS.forEach(a=>{
-  const pct = a.value/total*100;
-  const seg = document.createElement("div");
-  seg.style.width = pct+"%";
-  seg.style.background = a.color;
-  stack.appendChild(seg);
-
-  assetsBox.insertAdjacentHTML("beforeend", `
-    <div class="asset-row">
-      <span class="dot" style="background:${a.color}"></span>
-      <span class="asset-name">${a.name}
-        <span class="asset-qty">· ${a.qty} ${a.sym}</span>
-      </span>
-      <span class="asset-val">${eur(a.value)}</span>
-      <span class="asset-pct">${pct.toFixed(1)}%</span>
-    </div>`);
-});
+function renderComposizione(){
+  stack.innerHTML = "";
+  assetsBox.innerHTML = "";
+  ASSETS.forEach(a=>{
+    const pct = a.value/total*100;
+    const seg = document.createElement("div");
+    seg.style.width = pct+"%";
+    seg.style.background = a.color;
+    stack.appendChild(seg);
+    const ch = (typeof a.ch24==="number")
+      ? ' <span class="'+(a.ch24>=0?'prev-delta up':'prev-delta down')+'" style="width:auto">'+(a.ch24>=0?"+":"")+a.ch24.toLocaleString("it-IT",{maximumFractionDigits:1})+'%</span>'
+      : "";
+    assetsBox.insertAdjacentHTML("beforeend", `
+      <div class="asset-row">
+        <span class="dot" style="background:${a.color}"></span>
+        <span class="asset-name">${a.name}
+          <span class="asset-qty">· ${a.qty} ${a.sym}${ch}</span>
+        </span>
+        <span class="asset-val">${eur(a.value)}</span>
+        <span class="asset-pct">${pct.toFixed(1)}%</span>
+      </div>`);
+  });
+}
+renderComposizione();
 
 /* pulsanti apri/chiudi sezioni */
 const tabs = document.querySelectorAll(".tog[data-target]");
@@ -635,7 +705,7 @@ const list = document.getElementById("participants");
 const maxQ = Math.max(...PARTICIPANTS.map(p=>p[1]));
 PARTICIPANTS.forEach(([name,q])=>{
   list.insertAdjacentHTML("beforeend", `
-    <div class="p-row" data-name="${name.toLowerCase()}">
+    <div class="p-row" data-name="${name.toLowerCase()}" data-q="${q}">
       <span class="name">${name}</span>
       <span class="quote">${q.toLocaleString("it-IT")} ${q===1?"quota":"quote"}</span>
       <span class="euro">${eur(q*quota)}</span>
@@ -997,6 +1067,108 @@ renderPrev();
     info.textContent = t;
     info.hidden = !info.hidden;
   });
+})();
+
+/* ---- countdown halving ---- */
+(function(){
+  const T = new Date("2028-04-15T00:00:00").getTime();
+  const el = {d:document.getElementById("cdD"), h:document.getElementById("cdH"), m:document.getElementById("cdM"), s:document.getElementById("cdS")};
+  const pad = n => String(n).padStart(2,"0");
+  function tick(){
+    let ms = Math.max(0, T - Date.now());
+    const d = Math.floor(ms/86400000); ms -= d*86400000;
+    const h = Math.floor(ms/3600000);  ms -= h*3600000;
+    const m = Math.floor(ms/60000);    ms -= m*60000;
+    const s = Math.floor(ms/1000);
+    el.d.textContent = d.toLocaleString("it-IT");
+    el.h.textContent = pad(h);
+    el.m.textContent = pad(m);
+    el.s.textContent = pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ---- modalità privacy ---- */
+(function(){
+  const btn = document.getElementById("privacyBtn");
+  const initials = n => n.split(/\s+/).map(w=>w[0].toUpperCase()+".").join("");
+  function apply(on){
+    document.body.classList.toggle("privacy", on);
+    btn.classList.toggle("on", on);
+    btn.textContent = on ? "👁" : "🙈";
+    btn.title = on ? "Mostra nomi e cifre" : "Nascondi nomi e cifre";
+    document.querySelectorAll(".p-row").forEach(r=>{
+      const el = r.querySelector(".name");
+      if(!el) return;
+      if(!el.dataset.full) el.dataset.full = el.textContent;
+      el.textContent = on ? initials(el.dataset.full) : el.dataset.full;
+    });
+    try{ localStorage.setItem("cif-privacy", on ? "1" : "0"); }catch(e){}
+  }
+  let saved = false;
+  try{ saved = localStorage.getItem("cif-privacy")==="1"; }catch(e){}
+  if(saved) apply(true);
+  btn.addEventListener("click", ()=> apply(!document.body.classList.contains("privacy")));
+})();
+
+/* ---- prezzi live + fear&greed ---- */
+(async function(){
+  const sig = ms => (typeof AbortSignal!=="undefined" && AbortSignal.timeout) ? AbortSignal.timeout(ms) : undefined;
+
+  /* fear & greed */
+  fetch("https://api.alternative.me/fng/", {signal:sig(6000)})
+    .then(r=>r.json())
+    .then(j=>{
+      const d = j && j.data && j.data[0];
+      if(!d) return;
+      const v = Math.min(100, Math.max(0, parseInt(d.value,10)));
+      const IT = {"Extreme Fear":"Paura estrema","Fear":"Paura","Neutral":"Neutrale","Greed":"Avidità","Extreme Greed":"Avidità estrema"};
+      document.getElementById("fngDot").style.left = "calc("+v+"% - 2px)";
+      document.getElementById("fngVal").textContent = v + "/100 — " + (IT[d.value_classification] || d.value_classification);
+    }).catch(()=>{ document.getElementById("fngVal").textContent = "Non disponibile ora — apri dal link online per i dati live"; });
+
+  /* prezzi live CoinGecko */
+  try{
+    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=eur&include_24hr_change=true", {signal:sig(6000)});
+    if(!r.ok) return;
+    const j = await r.json();
+    const map = { BTC:j.bitcoin, ETH:j.ethereum, SOL:j.solana };
+    if(!map.BTC || !map.BTC.eur) return;
+    let yest = 0;
+    ASSETS.forEach(a=>{
+      const m = map[a.sym];
+      if(m && m.eur){
+        a.value = m.eur * a.qty;
+        if(typeof m.eur_24h_change==="number"){
+          a.ch24 = m.eur_24h_change;
+          yest += a.value/(1+m.eur_24h_change/100);
+        } else { yest += a.value; }
+      } else { yest += a.value; }
+    });
+    total = ASSETS.reduce((s,a)=>s+a.value,0);
+    quota = total / totalQuotas;
+
+    renderHero();
+    renderComposizione();
+    document.querySelectorAll(".p-row").forEach(row=>{
+      const q = parseFloat((row.dataset.q||"0"));
+      const el = row.querySelector(".euro");
+      if(el && q) el.textContent = eur(q*quota);
+    });
+    document.getElementById("acqQuotaNow").textContent = eur(quota);
+    document.getElementById("pmcQuotaNow").textContent = eur(quota) + "/quota";
+    if(yest>0){
+      const d = (total/yest - 1)*100;
+      const el = document.getElementById("fundDelta");
+      el.textContent = "· oggi " + (d>=0?"+":"") + d.toLocaleString("it-IT",{maximumFractionDigits:1}) + "%";
+      el.style.color = d>=0 ? "var(--chalk-green)" : "var(--chalk-red)";
+    }
+    const hh = new Date().toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
+    document.getElementById("updated").textContent = "🟢 Prezzi live (CoinGecko) · ore " + hh;
+    renderAcq();
+    renderPrev();
+  }catch(e){ /* offline o API giù: restano i valori manuali */ }
 })();
 
 document.getElementById("cicloText").textContent = FORECASTS.ciclo;
