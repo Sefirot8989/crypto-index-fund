@@ -375,6 +375,7 @@
       <thead><tr id="acqHead"></tr></thead>
       <tbody id="acqBody"></tbody>
     </table>
+    <div class="prev-quota" id="acqDetail" hidden style="margin-top:12px"></div>
     <div class="disclaimer">Le previsioni sono opinioni, non promesse.</div>
 
     <button class="tog" id="pmcToggle" style="width:100%;margin-top:18px">🎯 Proiezione personale col tuo PMC
@@ -457,7 +458,10 @@
 
   <details class="nota" style="margin-top:26px">
     <summary class="nota-label">🆕 Novità <span class="freccia">▸</span></summary>
-    <b>18 luglio 2026</b> · La sezione Simulatore è confluita in "E se compro ora?" (stesso calcolo € ↔ quote, più le proiezioni)<br><br>
+    <b>18 luglio 2026</b><br>
+    · Registrato nuovo ingresso: +202 quote (Domenico G.) e acquistati <b>+2 SOL</b> e <b>+0,07 ETH</b> — ora il fondo ha 0,1 BTC · 1,61 ETH · 32 SOL e 4.253 quote<br>
+    · In "E se compro ora?" ora puoi <b>toccare una previsione</b> per vedere i prezzi previsti dei singoli asset, confrontati coi prezzi del giorno dell'acquisto<br>
+    · La sezione Simulatore è confluita in "E se compro ora?" (stesso calcolo € ↔ quote, più le proiezioni)<br><br>
     <b>17 luglio 2026</b><br>
     · La dashboard è online con link fisso e si può installare in Home come una vera app 📱<br>
     · Prezzi ora <b>live</b>: si aggiornano da soli a ogni apertura, con la variazione delle ultime 24 ore<br>
@@ -476,12 +480,12 @@
 /* ============================================================
    DATI DEL FONDO — aggiorna solo questa sezione
    ============================================================ */
-const LAST_UPDATE = "17 luglio 2026, ore 17:15";
+const LAST_UPDATE = "18 luglio 2026";
 
 const ASSETS = [
   { sym:"BTC", name:"Bitcoin",  qty:0.1,  value:5540.00, color:"var(--btc)" },   // BTC ≈ €55.400
-  { sym:"ETH", name:"Ethereum", qty:1.54, value:2487.10, color:"var(--eth)" },   // ETH ≈ €1.615
-  { sym:"SOL", name:"Solana",   qty:30,   value:1972.50, color:"var(--sol)" },   // SOL ≈ €65,75
+  { sym:"ETH", name:"Ethereum", qty:1.61, value:2600.15, color:"var(--eth)" },   // ETH ≈ €1.615
+  { sym:"SOL", name:"Solana",   qty:32,   value:2104.00, color:"var(--sol)" },   // SOL ≈ €65,75
 ];
 
 const PARTICIPANTS = [
@@ -489,7 +493,7 @@ const PARTICIPANTS = [
   ["Christian F.", 1100],
   ["Arturo M.", 1000],
   ["Vincenzo M.", 300],
-  ["Domenico G.", 103],
+  ["Domenico G.", 305],
   ["Luigi P.", 70],
   ["Mario O.", 21],
   ["Mirko A.", 20],
@@ -756,24 +760,68 @@ function renderAcq(){
   const v = parseFloat(acqEuro.value);
   if(!v || v<=0){
     acqTable.hidden = true;
+    acqDetail.hidden = true;
     acqHint.textContent = "Inserisci un importo per vedere la proiezione anno per anno.";
     if(typeof renderPmc==="function") renderPmc();
     return;
   }
   const q = v/quota;
-  acqHint.innerHTML = "Oggi con <b>"+eur(v)+"</b> compri circa <b>"+q.toLocaleString("it-IT",{maximumFractionDigits:1})+" quote</b>. Ecco quanto varrebbero a fine anno:";
+  acqHint.innerHTML = "Oggi con <b>"+eur(v)+"</b> compri circa <b>"+q.toLocaleString("it-IT",{maximumFractionDigits:1})+" quote</b>. Ecco quanto varrebbero a fine anno — <b>tocca un valore</b> per i prezzi previsti dei singoli asset:";
   const body = Object.keys(FORECASTS.years).map(y=>{
     const cells = cols.map(([k])=>{
       const mult = fundTargetValue(y, acqMode, k)/total;
       const cls = mult>=1 ? "up" : "down";
-      return "<td>"+eur(v*mult)+'<div class="mini '+cls+'">×'+mult.toLocaleString("it-IT",{maximumFractionDigits:1})+"</div></td>";
+      return '<td data-y="'+y+'" data-k="'+k+'" style="cursor:pointer">'+eur(v*mult)+'<div class="mini '+cls+'">×'+mult.toLocaleString("it-IT",{maximumFractionDigits:1})+"</div></td>";
     }).join("");
     return '<tr><td class="yr">'+y+"</td>"+cells+"</tr>";
   }).join("");
   document.getElementById("acqBody").innerHTML = body;
   acqTable.hidden = false;
+  acqDetail.hidden = true;
   if(typeof renderPmc==="function") renderPmc();
 }
+
+const acqDetail = document.getElementById("acqDetail");
+
+function assetTarget(sym, y, mode, k){
+  const i = ASSETS.findIndex(a=>a.sym===sym);
+  const now = ASSETS[i].value/ASSETS[i].qty;
+  if(mode==="market") return FORECASTS.years[y][k][sym].t;
+  const usd = FORECASTS.years[y].enzo[k];
+  const btcNow = ASSETS[0].value/ASSETS[0].qty;
+  const d = usd*FORECASTS.fx/btcNow - 1;
+  if(sym==="BTC") return usd*FORECASTS.fx;
+  if(sym==="ETH") return now*(1 + d*FORECASTS.ethMult);
+  return now*(1 + d*(d>=0 ? FORECASTS.solMultUp : FORECASTS.solMultDown));
+}
+
+function showAcqDetail(y, k){
+  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
+  const scenName = (cols.find(c=>c[0]===k)||["",""])[1];
+  const v = parseFloat(acqEuro.value) || 0;
+  const rows = ASSETS.map(a=>{
+    const now = a.value/a.qty;
+    const t = assetTarget(a.sym, y, acqMode, k);
+    const d = (t/now - 1)*100;
+    return '<tr><td class="yr">'+a.name+'</td><td>'+eur(now)+'</td><td>'+eur(t)+'</td>'+
+      '<td><span class="'+(d>=0?"prev-delta up":"prev-delta down")+'" style="width:auto">'+pct(d)+'</span></td></tr>';
+  }).join("");
+  const multEnd = fundTargetValue(y, acqMode, k)/total;
+  acqDetail.innerHTML =
+    '<div class="label">Dettaglio — '+scenName+', fine '+y+'</div>'+
+    '<table class="enzo-table" style="margin-top:8px">'+
+    '<tr><th>Asset</th><th>All\'acquisto (oggi)</th><th>Fine '+y+'</th><th>Δ</th></tr>'+rows+'</table>'+
+    '<div class="prev-note" style="margin-top:10px">'+
+    (v>0 ? 'Il tuo acquisto di oggi ('+eur(v)+' ai prezzi qui sopra) diventerebbe <b>'+eur(v*multEnd)+'</b>. ' : '')+
+    'I prezzi "all\'acquisto" sono quelli di oggi: torna qui in futuro per confrontarli con i prezzi del momento.</div>';
+  acqDetail.hidden = false;
+  acqDetail.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+document.getElementById("acqBody").addEventListener("click", (e)=>{
+  const td = e.target.closest("td[data-y]");
+  if(td) showAcqDetail(td.dataset.y, td.dataset.k);
+});
 
 acqEuro.addEventListener("input", ()=>{
   const v = parseFloat(acqEuro.value);
@@ -1154,7 +1202,7 @@ function buildEnzoBox(){
 }
 document.getElementById("enzoText").innerHTML = buildEnzoBox();
 document.getElementById("infoPrev").textContent =
-  "Previsioni raccolte il " + FORECASTS.updated + " da fonti pubbliche (Standard Chartered, Bernstein, JPMorgan, Fundstrat, Pantera, ARK, CoinCodex e altri) più la visione personale di Enzo. Sono opinioni, spesso in disaccordo tra loro e storicamente poco affidabili — più l'orizzonte è lontano, più sono da prendere con le pinze. Il calcolo di fondo e quota è a composizione invariata (0,1 BTC · 1,54 ETH · 30 SOL) e quote costanti.";
+  "Previsioni raccolte il " + FORECASTS.updated + " da fonti pubbliche (Standard Chartered, Bernstein, JPMorgan, Fundstrat, Pantera, ARK, CoinCodex e altri) più la visione personale di Enzo. Sono opinioni, spesso in disaccordo tra loro e storicamente poco affidabili — più l'orizzonte è lontano, più sono da prendere con le pinze. Il calcolo di fondo e quota è a composizione invariata (0,1 BTC · 1,61 ETH · 32 SOL) e quote costanti.";
 document.getElementById("prevDisclaimer").textContent =
   "Le previsioni sono opinioni, non consigli d'investimento.";
 </script>
