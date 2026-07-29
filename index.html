@@ -114,6 +114,8 @@
   .asset-qty{color:var(--chalk-dim);font-size:.78rem}
   .asset-val{font-family:'IBM Plex Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums}
   .asset-pct{font-family:'IBM Plex Mono',monospace;color:var(--chalk-dim);font-size:.78rem;width:52px;text-align:right}
+  .asset-price{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--chalk);margin-top:3px}
+  .asset-price .cur{color:var(--chalk-blue)}
 
   /* ---------- ricerca ---------- */
   .search{
@@ -644,11 +646,15 @@ function renderComposizione(){
     const ch = (typeof a.ch24==="number")
       ? ' <span class="'+(a.ch24>=0?'prev-delta up':'prev-delta down')+'" style="width:auto">'+(a.ch24>=0?"+":"")+a.ch24.toLocaleString("it-IT",{maximumFractionDigits:1})+'%</span>'
       : "";
+    const unit = a.value / a.qty;
+    const usd = (typeof a.usd==="number") ? a.usd : unit/0.88;
+    const fmt$ = n => "$" + n.toLocaleString("it-IT",{maximumFractionDigits: n>=1000?0:2});
     assetsBox.insertAdjacentHTML("beforeend", `
       <div class="asset-row">
         <span class="dot" style="background:${a.color}"></span>
         <span class="asset-name">${a.name}
           <span class="asset-qty">· ${a.qty} ${a.sym}${ch}</span>
+          <div class="asset-price">1 ${a.sym} = <span class="cur">${fmt$(usd)}</span> · ${eur(unit)}</div>
         </span>
         <span class="asset-val">${eur(a.value)}</span>
         <span class="asset-pct">${pct.toFixed(1)}%</span>
@@ -1083,7 +1089,7 @@ renderPrev();
 
   /* prezzi live CoinGecko */
   try{
-    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=eur&include_24hr_change=true", {signal:sig(6000)});
+    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=eur,usd&include_24hr_change=true", {signal:sig(6000)});
     if(!r.ok) return;
     const j = await r.json();
     const map = { BTC:j.bitcoin, ETH:j.ethereum, SOL:j.solana };
@@ -1093,6 +1099,7 @@ renderPrev();
       const m = map[a.sym];
       if(m && m.eur){
         a.value = m.eur * a.qty;
+        if(typeof m.usd==="number") a.usd = m.usd;
         if(typeof m.eur_24h_change==="number"){
           a.ch24 = m.eur_24h_change;
           yest += a.value/(1+m.eur_24h_change/100);
