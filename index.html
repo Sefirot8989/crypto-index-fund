@@ -458,6 +458,8 @@
 
   <details class="nota" style="margin-top:26px">
     <summary class="nota-label">🆕 Novità <span class="freccia">▸</span></summary>
+    <b>29 luglio 2026</b><br>
+    · Nuove quote: +413 (Christian F.) e acquistati <b>+8 SOL</b> e <b>+0,08 ETH</b> — ora il fondo ha 0,1 BTC · 1,69 ETH · 40 SOL e 4.666 quote<br><br>
     <b>18 luglio 2026</b><br>
     · Registrato nuovo ingresso: +202 quote (Domenico G.) e acquistati <b>+2 SOL</b> e <b>+0,07 ETH</b> — ora il fondo ha 0,1 BTC · 1,61 ETH · 32 SOL e 4.253 quote<br>
     · In "E se compro ora?" ora puoi <b>toccare una previsione</b> per vedere i prezzi previsti dei singoli asset, confrontati coi prezzi del giorno dell'acquisto<br>
@@ -480,17 +482,17 @@
 /* ============================================================
    DATI DEL FONDO — aggiorna solo questa sezione
    ============================================================ */
-const LAST_UPDATE = "18 luglio 2026";
+const LAST_UPDATE = "29 luglio 2026";
 
 const ASSETS = [
   { sym:"BTC", name:"Bitcoin",  qty:0.1,  value:5540.00, color:"var(--btc)" },   // BTC ≈ €55.400
-  { sym:"ETH", name:"Ethereum", qty:1.61, value:2600.15, color:"var(--eth)" },   // ETH ≈ €1.615
-  { sym:"SOL", name:"Solana",   qty:32,   value:2104.00, color:"var(--sol)" },   // SOL ≈ €65,75
+  { sym:"ETH", name:"Ethereum", qty:1.69, value:2729.35, color:"var(--eth)" },   // ETH ≈ €1.615
+  { sym:"SOL", name:"Solana",   qty:40,   value:2630.00, color:"var(--sol)" },   // SOL ≈ €65,75
 ];
 
 const PARTICIPANTS = [
   ["Ivan S.", 1354],
-  ["Christian F.", 1100],
+  ["Christian F.", 1513],
   ["Arturo M.", 1000],
   ["Vincenzo M.", 300],
   ["Domenico G.", 305],
@@ -1202,7 +1204,7 @@ function buildEnzoBox(){
 }
 document.getElementById("enzoText").innerHTML = buildEnzoBox();
 document.getElementById("infoPrev").textContent =
-  "Previsioni raccolte il " + FORECASTS.updated + " da fonti pubbliche (Standard Chartered, Bernstein, JPMorgan, Fundstrat, Pantera, ARK, CoinCodex e altri) più la visione personale di Enzo. Sono opinioni, spesso in disaccordo tra loro e storicamente poco affidabili — più l'orizzonte è lontano, più sono da prendere con le pinze. Il calcolo di fondo e quota è a composizione invariata (0,1 BTC · 1,61 ETH · 32 SOL) e quote costanti.";
+  "Previsioni raccolte il " + FORECASTS.updated + " da fonti pubbliche (Standard Chartered, Bernstein, JPMorgan, Fundstrat, Pantera, ARK, CoinCodex e altri) più la visione personale di Enzo. Sono opinioni, spesso in disaccordo tra loro e storicamente poco affidabili — più l'orizzonte è lontano, più sono da prendere con le pinze. Il calcolo di fondo e quota è a composizione invariata (0,1 BTC · 1,69 ETH · 40 SOL) e quote costanti.";
 document.getElementById("prevDisclaimer").textContent =
   "Le previsioni sono opinioni, non consigli d'investimento.";
 </script>
