@@ -137,6 +137,11 @@
     border-bottom:1px solid var(--line);
   }
   .p-row .name{font-weight:500;font-size:.95rem;color:var(--chalk-blue)}
+  /* Il posto in classifica. Scritto in chiaro perche' l'ordine non debba
+     essere dedotto dalla disposizione: si vede e si verifica. */
+  .p-row .pos{display:inline-block;min-width:1.9em;color:var(--chalk-dim);
+    font-family:'IBM Plex Mono',monospace;font-size:.8rem;
+    font-variant-numeric:tabular-nums}
   .p-row .quote{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--chalk-dim);text-align:right}
   .p-row .euro{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.95rem;text-align:right;font-variant-numeric:tabular-nums}
   .p-row .bar{
@@ -260,13 +265,15 @@
     body{padding:40px 26px 80px}
     .wrap{max-width:760px}
     .stack{height:30px}
-    #participants{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;align-items:start}
+    /* Niente colonne affiancate sulla classifica: una griglia CSS si riempie
+       riga per riga, e chi legge una classifica in due colonne la legge come
+       un giornale, scendendo lungo la prima. I due modi non coincidono, e la
+       lista sembra disordinata pur essendo ordinata. Una colonna sola. */
   }
   @media (min-width:1100px){
     .wrap{max-width:1000px}
     .title{font-size:3.4rem}
     .hero .box .value{font-size:1.8rem}
-    #participants{grid-template-columns:1fr 1fr 1fr}
     .enzo-table{font-size:.85rem}
     .prev-row,.asset-row{font-size:.95rem}
     .tog{font-size:1.5rem}
@@ -713,10 +720,10 @@ const maxQ = Math.max(...PARTICIPANTS.map(p=>p[1]));
 const PARTECIPANTI_ORDINATI = PARTICIPANTS.slice()
   .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],"it"));
 
-PARTECIPANTI_ORDINATI.forEach(([name,q])=>{
+PARTECIPANTI_ORDINATI.forEach(([name,q],i)=>{
   list.insertAdjacentHTML("beforeend", `
     <div class="p-row" data-name="${name.toLowerCase()}" data-q="${q}">
-      <span class="name">${name}</span>
+      <span class="name"><span class="pos">${i+1}</span>${name}</span>
       <span class="quote">${q.toLocaleString("it-IT")} ${q===1?"quota":"quote"}</span>
       <span class="euro">${eur(q*quota)}</span>
       <span class="bar" style="width:${Math.max(2, q/maxQ*100)}%"></span>
