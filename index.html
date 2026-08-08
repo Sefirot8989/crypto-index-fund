@@ -699,7 +699,21 @@ document.querySelectorAll(".i-btn").forEach(b=>{
 /* partecipanti */
 const list = document.getElementById("participants");
 const maxQ = Math.max(...PARTICIPANTS.map(p=>p[1]));
-PARTICIPANTS.forEach(([name,q])=>{
+
+/* Ordinati per quote, dalla piu' grande alla piu' piccola.
+   L'ordinamento si fa qui e non riscrivendo l'elenco piu' sopra: i nuovi
+   partecipanti si aggiungono in fondo, com'e' naturale, e la lista resta
+   comunque in ordine senza che nessuno debba ricordarsene.
+   A parita' di quote decide il nome: senza questa seconda regola l'ordine
+   fra chi ha le stesse quote potrebbe cambiare da un browser all'altro, e
+   la stessa pagina si vedrebbe diversa due volte di fila.
+   `slice()` fa una copia: l'elenco originale non viene toccato, e chi lo
+   usa altrove (la ricerca del PMC, il totale delle quote) continua a
+   vederlo com'era. */
+const PARTECIPANTI_ORDINATI = PARTICIPANTS.slice()
+  .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],"it"));
+
+PARTECIPANTI_ORDINATI.forEach(([name,q])=>{
   list.insertAdjacentHTML("beforeend", `
     <div class="p-row" data-name="${name.toLowerCase()}" data-q="${q}">
       <span class="name">${name}</span>
