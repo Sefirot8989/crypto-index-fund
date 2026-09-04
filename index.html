@@ -137,11 +137,6 @@
     border-bottom:1px solid var(--line);
   }
   .p-row .name{font-weight:500;font-size:.95rem;color:var(--chalk-blue)}
-  /* Il posto in classifica. Scritto in chiaro perche' l'ordine non debba
-     essere dedotto dalla disposizione: si vede e si verifica. */
-  .p-row .pos{display:inline-block;min-width:1.9em;color:var(--chalk-dim);
-    font-family:'IBM Plex Mono',monospace;font-size:.8rem;
-    font-variant-numeric:tabular-nums}
   .p-row .quote{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--chalk-dim);text-align:right}
   .p-row .euro{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.95rem;text-align:right;font-variant-numeric:tabular-nums}
   .p-row .bar{
@@ -265,15 +260,13 @@
     body{padding:40px 26px 80px}
     .wrap{max-width:760px}
     .stack{height:30px}
-    /* Niente colonne affiancate sulla classifica: una griglia CSS si riempie
-       riga per riga, e chi legge una classifica in due colonne la legge come
-       un giornale, scendendo lungo la prima. I due modi non coincidono, e la
-       lista sembra disordinata pur essendo ordinata. Una colonna sola. */
+    #participants{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;align-items:start}
   }
   @media (min-width:1100px){
     .wrap{max-width:1000px}
     .title{font-size:3.4rem}
     .hero .box .value{font-size:1.8rem}
+    #participants{grid-template-columns:1fr 1fr 1fr}
     .enzo-table{font-size:.85rem}
     .prev-row,.asset-row{font-size:.95rem}
     .tog{font-size:1.5rem}
@@ -465,8 +458,11 @@
 
   <details class="nota" style="margin-top:26px">
     <summary class="nota-label">🆕 Novità <span class="freccia">▸</span></summary>
+    <b>4 settembre 2026</b><br>
+    · Nuovo partecipante: <b>Francesco P.</b> con 150 quote (trasferite da Ivan S.)<br>
+    · Commissioni di gestione: +140 quote a Vincenzo M., pari al 3% per il semestre marzo-agosto 2026 — totale quote in circolazione: 4.806<br><br>
     <b>29 luglio 2026</b><br>
-    · Nuove quote: +413 (Christian F.) e acquistati <b>+8 SOL</b> e <b>+0,08 ETH</b> — ora il fondo ha 0,1 BTC · 1,69 ETH · 40 SOL e 4.666 quote<br><br>
+    · Nuove quote: +413 (Christian F.) e acquistati <b>+8 SOL</b> e <b>+0,08 ETH</b> — ora il fondo ha 0,1 BTC · 1,69 ETH · 40 SOL<br><br>
     <b>18 luglio 2026</b><br>
     · Registrato nuovo ingresso: +202 quote (Domenico G.) e acquistati <b>+2 SOL</b> e <b>+0,07 ETH</b> — ora il fondo ha 0,1 BTC · 1,61 ETH · 32 SOL e 4.253 quote<br>
     · In "E se compro ora?" ora puoi <b>toccare una previsione</b> per vedere i prezzi previsti dei singoli asset, confrontati coi prezzi del giorno dell'acquisto<br>
@@ -489,7 +485,7 @@
 /* ============================================================
    DATI DEL FONDO — aggiorna solo questa sezione
    ============================================================ */
-const LAST_UPDATE = "29 luglio 2026";
+const LAST_UPDATE = "4 settembre 2026";
 
 const ASSETS = [
   { sym:"BTC", name:"Bitcoin",  qty:0.1,  value:5540.00, color:"var(--btc)" },   // BTC ≈ €55.400
@@ -498,11 +494,12 @@ const ASSETS = [
 ];
 
 const PARTICIPANTS = [
-  ["Ivan S.", 1354],
   ["Christian F.", 1513],
+  ["Ivan S.", 1204],
   ["Arturo M.", 1000],
-  ["Vincenzo M.", 300],
+  ["Vincenzo M.", 440],
   ["Domenico G.", 305],
+  ["Francesco P.", 150],
   ["Luigi P.", 70],
   ["Mario O.", 21],
   ["Mirko A.", 20],
@@ -706,24 +703,10 @@ document.querySelectorAll(".i-btn").forEach(b=>{
 /* partecipanti */
 const list = document.getElementById("participants");
 const maxQ = Math.max(...PARTICIPANTS.map(p=>p[1]));
-
-/* Ordinati per quote, dalla piu' grande alla piu' piccola.
-   L'ordinamento si fa qui e non riscrivendo l'elenco piu' sopra: i nuovi
-   partecipanti si aggiungono in fondo, com'e' naturale, e la lista resta
-   comunque in ordine senza che nessuno debba ricordarsene.
-   A parita' di quote decide il nome: senza questa seconda regola l'ordine
-   fra chi ha le stesse quote potrebbe cambiare da un browser all'altro, e
-   la stessa pagina si vedrebbe diversa due volte di fila.
-   `slice()` fa una copia: l'elenco originale non viene toccato, e chi lo
-   usa altrove (la ricerca del PMC, il totale delle quote) continua a
-   vederlo com'era. */
-const PARTECIPANTI_ORDINATI = PARTICIPANTS.slice()
-  .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],"it"));
-
-PARTECIPANTI_ORDINATI.forEach(([name,q],i)=>{
+PARTICIPANTS.forEach(([name,q])=>{
   list.insertAdjacentHTML("beforeend", `
     <div class="p-row" data-name="${name.toLowerCase()}" data-q="${q}">
-      <span class="name"><span class="pos">${i+1}</span>${name}</span>
+      <span class="name">${name}</span>
       <span class="quote">${q.toLocaleString("it-IT")} ${q===1?"quota":"quote"}</span>
       <span class="euro">${eur(q*quota)}</span>
       <span class="bar" style="width:${Math.max(2, q/maxQ*100)}%"></span>
