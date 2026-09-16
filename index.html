@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Crypto Index Fund</title>
-<meta name="theme-color" content="#151d1a">
+<meta name="theme-color" content="#0b0e14">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,438 +14,458 @@
 <link rel="icon" type="image/png" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --board:#151d1a;          /* lavagna verde scuro */
-    --board-2:#1a2420;
-    --line:rgba(255,255,255,.10);   /* righe del quaderno */
-    --chalk:#f2efe6;          /* gesso bianco */
-    --chalk-dim:#9aa69f;
-    --chalk-green:#b6e04c;    /* titolo verde come sulla lavagna */
-    --chalk-blue:#8db7f0;     /* etichette blu come sulla lavagna */
-    --chalk-red:#e08a8a;
-    --btc:#f7931a;
-    --eth:#a9b4e0;
-    --sol:#5dd6c0;
-    --doge:#e3c567;
-    --radius:14px;
+    --bg:#0b0e14;
+    --card:#11151d;
+    --card-2:#161b25;
+    --line:#222936;
+    --text:#e8ecf3;
+    --muted:#8a93a6;
+    --dim:#5d6678;
+    --accent:#3ddc97;       /* verde neon */
+    --accent-2:#2f8fe0;     /* blu (serie "fondo" nei grafici) */
+    --up:#3ddc97;
+    --down:#ff5c7a;
+    --btc:#d0760c;
+    --eth:#7078ea;
+    --sol:#12a191;
+    --doge:#b08f1c;
+    --r:18px;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%;background:#151d1a}
+  html{-webkit-text-size-adjust:100%;background:var(--bg)}
   body{
-    font-family:'Inter',system-ui,sans-serif;
-    background:
-      repeating-linear-gradient(to bottom, transparent 0 43px, var(--line) 43px 44px),
-      radial-gradient(120% 90% at 50% 0%, var(--board-2), var(--board) 70%);
-    color:var(--chalk);
-    min-height:100vh;
-    padding:calc(28px + env(safe-area-inset-top, 0px)) calc(18px + env(safe-area-inset-right, 0px)) calc(60px + env(safe-area-inset-bottom, 0px)) calc(18px + env(safe-area-inset-left, 0px));
+    font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+    background-image:radial-gradient(80% 50% at 50% -10%,rgba(61,220,151,.10),transparent 70%);
+    background-repeat:no-repeat;
+    padding:calc(18px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) calc(96px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px));
   }
-  .wrap{max-width:520px;margin:0 auto}
+  .wrap{max-width:560px;margin:0 auto}
+  button,input,select{font:inherit;color:inherit}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .up{color:var(--up)} .down{color:var(--down)}
 
-  /* ---------- header ---------- */
-  header{margin-bottom:26px}
-  .title{
-    font-family:'Caveat',cursive;
-    font-weight:700;
-    font-size:clamp(2.4rem,9vw,3.2rem);
-    color:var(--chalk-green);
-    line-height:1;
-    text-shadow:0 0 18px rgba(182,224,76,.25);
-  }
-  .subtitle{color:var(--chalk-dim);font-size:.85rem;margin-top:6px}
+  /* header */
+  header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:800;font-size:.8rem;color:#06110c;letter-spacing:.02em}
+  .brand h1{font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+  .live{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px}
+  .live i{width:7px;height:7px;border-radius:50%;background:var(--dim);display:inline-block}
+  .live.on i{background:var(--accent);box-shadow:0 0 0 0 rgba(61,220,151,.6);animation:pulse 2s infinite}
+  .live.part i{background:#e8c547}
+  @keyframes pulse{70%{box-shadow:0 0 0 7px rgba(61,220,151,0)}100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}}
+  .icon-btn{min-width:44px;min-height:44px;border-radius:14px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:1.05rem}
+  .icon-btn.on{border-color:var(--accent)}
 
-  /* ---------- hero ---------- */
-  .hero{
-    display:flex;gap:14px;align-items:stretch;
-    margin-bottom:30px;flex-wrap:wrap;
-  }
-  .hero .box{
-    flex:1;min-width:150px;
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    background:rgba(255,255,255,.03);
-    padding:16px 18px;
-    backdrop-filter:blur(2px);
-  }
-  .box .label{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk-blue);margin-bottom:6px}
-  .box .value{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.55rem;font-variant-numeric:tabular-nums}
-  .box .hint{font-size:.72rem;color:var(--chalk-dim);margin-top:4px}
+  /* card */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+  .card h2{font-size:.95rem;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card h2 small{font-weight:400;color:var(--muted);font-size:.75rem}
+  .label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .hint{font-size:.78rem;color:var(--muted);line-height:1.5}
+  .page-title{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin:4px 0 14px}
 
-  /* ---------- sezioni ---------- */
-  h2{
-    font-family:'Caveat',cursive;font-weight:600;
-    font-size:1.7rem;color:var(--chalk);
-    margin:34px 0 14px;
-  }
-  .section{display:none}
-  .section.open{display:block;animation:reveal .25s ease}
-  @keyframes reveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  /* hero */
+  .hero-val{font-family:var(--mono);font-weight:700;font-size:clamp(2.1rem,10vw,2.8rem);letter-spacing:-.03em;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:.8rem;font-weight:600;padding:4px 9px;border-radius:999px;background:var(--card-2)}
+  .chip.up{background:rgba(61,220,151,.12)} .chip.down{background:rgba(255,92,122,.12)}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .kpi{background:var(--card-2);border-radius:14px;padding:12px}
+  .kpi .v{font-family:var(--mono);font-weight:600;font-size:1.15rem;margin-top:4px}
 
-  /* ---------- pulsanti apri/chiudi ---------- */
-  .toggles{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 4px}
-  .tog{
-    flex:1;min-width:140px;
-    padding:14px 10px;
-    border:1px solid var(--line);border-radius:var(--radius);
-    background:rgba(255,255,255,.03);
-    color:var(--chalk);
-    font-family:'Caveat',cursive;font-weight:700;font-size:1.35rem;
-    cursor:pointer;transition:all .15s;
-  }
-  .tog:hover{background:rgba(255,255,255,.06)}
-  .tog.open{border-color:var(--chalk-green);color:var(--chalk-green);background:rgba(182,224,76,.06)}
-  .tog .tog-hint{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:.68rem;color:var(--chalk-dim);margin-top:2px}
+  /* composizione */
+  .stack{display:flex;gap:2px;height:12px;border-radius:6px;overflow:hidden;margin:4px 0 12px}
+  .stack div{height:100%}
+  .asset{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+  .asset:first-of-type{border-top:none}
+  .coin{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:.62rem;font-weight:800;color:#fff}
+  .asset .n{font-weight:600;font-size:.92rem}
+  .asset .s{font-size:.74rem;color:var(--muted);font-family:var(--mono);margin-top:2px}
+  .asset .r{text-align:right}
+  .asset .r .v{font-family:var(--mono);font-weight:600;font-size:.92rem}
+  .asset .r .p{font-family:var(--mono);font-size:.74rem;margin-top:2px}
 
-  /* ---------- barra composizione ---------- */
-  .stack{
-    display:flex;height:26px;border-radius:8px;overflow:hidden;
-    border:1px solid var(--line);margin-bottom:14px;
-  }
-  .stack div{transition:filter .2s}
-  .stack div:active{filter:brightness(1.3)}
-  .asset-row{
-    display:flex;align-items:center;gap:10px;
-    padding:10px 4px;border-bottom:1px dashed var(--line);
-    font-size:.9rem;
-  }
-  .asset-row:last-child{border-bottom:none}
-  .dot{width:10px;height:10px;border-radius:50%;flex:none}
-  .asset-name{flex:1}
-  .asset-qty{color:var(--chalk-dim);font-size:.78rem}
-  .asset-val{font-family:'IBM Plex Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums}
-  .asset-pct{font-family:'IBM Plex Mono',monospace;color:var(--chalk-dim);font-size:.78rem;width:52px;text-align:right}
-  .asset-price{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--chalk);margin-top:3px}
-  .asset-price .cur{color:var(--chalk-blue)}
+  /* form */
+  .field{display:block;margin-bottom:10px}
+  .field span{display:block;font-size:.72rem;color:var(--muted);margin-bottom:5px}
+  .in{width:100%;min-height:46px;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);outline:none;font-size:.95rem}
+  .in:focus{border-color:var(--accent-2)}
+  .in::placeholder{color:var(--dim)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btn{min-height:46px;padding:11px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);cursor:pointer;font-weight:600;font-size:.9rem;width:100%}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#06110c}
+  .btn.ghost{background:transparent}
+  .btn:active{transform:scale(.98)}
 
-  /* ---------- ricerca ---------- */
-  .search{
-    width:100%;padding:12px 14px;min-height:44px;   /* v1_04: tocco >= 44px */
-    border-radius:10px;border:1px solid var(--line);
-    background:rgba(255,255,255,.04);
-    color:var(--chalk);font-family:'Inter',sans-serif;font-size:.95rem;
-    margin-bottom:14px;outline:none;
-  }
-  .search:focus{border-color:var(--chalk-blue)}
-  .search::placeholder{color:var(--chalk-dim)}
+  /* segmented */
+  .seg{display:flex;gap:4px;background:var(--card-2);border-radius:12px;padding:4px;margin-bottom:12px}
+  .seg button{flex:1;white-space:nowrap;padding:0 4px;min-height:38px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:600;font-size:.8rem;cursor:pointer}
+  .seg button.active{background:var(--line);color:var(--text)}
+  .seg[hidden]{display:none}
 
-  /* ---------- partecipanti ---------- */
-  .p-row{
-    display:grid;
-    grid-template-columns:1fr auto auto;
-    gap:4px 12px;align-items:center;
-    padding:11px 6px;
-    border-bottom:1px solid var(--line);
-  }
-  .p-row .name{font-weight:500;font-size:.95rem;color:var(--chalk-blue)}
-  .p-row .quote{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--chalk-dim);text-align:right}
-  .p-row .euro{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.95rem;text-align:right;font-variant-numeric:tabular-nums}
-  .p-row .bar{
-    grid-column:1 / -1;height:3px;border-radius:2px;
-    background:linear-gradient(90deg,var(--chalk-green),rgba(182,224,76,.15));
-  }
-  .none{color:var(--chalk-dim);text-align:center;padding:20px;font-size:.9rem;display:none}
+  /* tabelle */
+  table.t{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.8rem}
+  .t th{font-family:'Inter',sans-serif;font-weight:600;font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
+  .t th:first-child,.t td:first-child{text-align:left}
+  .t td{white-space:nowrap;padding:9px 4px;text-align:right;border-bottom:1px solid var(--line)}
+  .t tr:last-child td{border-bottom:none}
+  .t td.yr{color:var(--muted);font-weight:600}
+  .t .mini{font-size:.66rem;margin-top:2px}
+  .t td[data-y]{cursor:pointer}
+  .t td[data-y]:active{background:var(--card-2)}
+  [hidden]{display:none!important}
 
-  /* ---------- previsioni ---------- */
-  .anni{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-  .anno-btn{
-    flex:1;min-width:56px;padding:8px 4px;min-height:44px;   /* v1_04: tocco >= 44px */
-    border:1px solid var(--line);border-radius:8px;
-    background:rgba(255,255,255,.03);
-    color:var(--chalk-dim);
-    font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.85rem;
-    cursor:pointer;transition:all .15s;
-  }
-  .anno-btn.active{color:var(--chalk);border-color:var(--chalk);background:rgba(255,255,255,.07)}
-  .scenari{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-  .scen-btn{
-    flex:1;min-width:100px;padding:10px 6px;
-    border:1px solid var(--line);border-radius:10px;
-    background:rgba(255,255,255,.03);
-    color:var(--chalk-dim);
-    font-family:'Caveat',cursive;font-weight:600;font-size:1.15rem;
-    cursor:pointer;transition:all .15s;
-  }
-  .scen-btn.active{color:var(--chalk);border-color:currentColor;background:rgba(255,255,255,.07)}
-  .scen-btn[data-scen="bear"].active{color:var(--chalk-red)}
-  .scen-btn[data-scen="base"].active{color:var(--chalk-blue)}
-  .scen-btn[data-scen="bull"].active{color:var(--chalk-green)}
-  .scen-btn[data-scen="enzo"].active{color:#f0d48d}
-  .scen-btn[hidden]{display:none}
-  .scenari[hidden]{display:none}
-  .scen-btn.sub{font-size:1.02rem;padding:8px 6px;min-height:44px;border-style:dashed}   /* v1_04 */
-  .scen-btn.sub[data-sub="P"].active{color:var(--chalk-red)}
-  .scen-btn.sub[data-sub="O"].active{color:var(--chalk-green)}
-  .scen-btn.sub[data-sub="TTM"].active{color:#f0d48d;text-shadow:0 0 12px rgba(240,212,141,.35)}
-  .prev-row{
-    display:grid;grid-template-columns:1fr auto auto;gap:2px 12px;
-    align-items:center;padding:10px 4px;
-    border-bottom:1px dashed var(--line);font-size:.9rem;
-  }
-  .prev-row:last-child{border-bottom:none}
-  .prev-target{font-family:'IBM Plex Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
-  .prev-delta{font-family:'IBM Plex Mono',monospace;font-size:.78rem;width:64px;text-align:right}
-  .prev-delta.up{color:var(--chalk-green)}
-  .prev-delta.down{color:var(--chalk-red)}
-  .prev-quota{
-    margin-top:14px;padding:14px 16px;
-    border:1px dashed var(--line);border-radius:var(--radius);
-    background:rgba(255,255,255,.02);
-  }
-  .prev-quota .big{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.35rem;font-variant-numeric:tabular-nums}
-  .prev-note{margin-top:8px;font-size:.75rem;color:var(--chalk-dim)}
-  .enzo-table{width:100%;border-collapse:collapse;margin:10px 0 4px;font-family:'IBM Plex Mono',monospace;font-size:.78rem}
-  .enzo-table th{font-family:'Inter',sans-serif;font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;color:var(--chalk-dim);text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
-  .enzo-table th:first-child{text-align:left}
-  .enzo-table td{padding:7px 4px;text-align:right;border-bottom:1px dashed var(--line);font-variant-numeric:tabular-nums}
-  .enzo-table td.yr{text-align:left;color:var(--chalk-blue);font-weight:500}
-  .enzo-table tr:last-child td{border-bottom:none}
-  .enzo-foot{font-size:.72rem;color:var(--chalk-dim)}
-  .acq-intro{font-size:.88rem;line-height:1.7;margin-bottom:16px;color:var(--chalk)}
-  .acq-table{margin-top:4px}
-  .acq-table[hidden]{display:none}
-  .acq-table .mini{font-size:.66rem;margin-top:2px}
-  .acq-table .mini.up{color:var(--chalk-green)}
-  .acq-table .mini.down{color:var(--chalk-red)}
-  .disclaimer{margin-top:12px;font-size:.72rem;color:var(--chalk-dim);line-height:1.6}
+  /* soci */
+  .p-row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+  .p-row:first-child{border-top:none}
+  .p-row .rk{font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+  .p-row .name{font-weight:500;font-size:.92rem}
+  .p-row .quote{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:2px}
+  .p-row .euro{font-family:var(--mono);font-weight:600;font-size:.9rem;text-align:right}
+  .p-row .sh{font-family:var(--mono);font-size:.7rem;color:var(--muted);text-align:right;margin-top:2px}
+  .p-row .bar{grid-column:2 / -1;height:3px;border-radius:2px;background:var(--card-2);overflow:hidden}
+  .p-row .bar b{display:block;height:100%;background:var(--accent-2);border-radius:2px}
+  .p-row.me .name{color:var(--accent)}
+  .none{color:var(--muted);text-align:center;padding:18px;font-size:.9rem}
 
-  .h-row{display:flex;align-items:center;gap:10px;margin:34px 0 14px}
-  .h-row h2{margin:0}
-  /* v1_04: il cerchietto resta 22px ma l'area toccabile diventa 44x44 */
-  .i-btn{position:relative}
-  .i-btn::after{content:"";position:absolute;top:50%;left:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
-  .i-btn{
-    width:22px;height:22px;border-radius:50%;flex:none;
-    border:1px solid var(--chalk-dim);background:transparent;color:var(--chalk-dim);
-    font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:.8rem;
-    cursor:pointer;line-height:1;padding:0;transition:all .15s;
-  }
-  .i-btn:hover,.i-btn.open{color:var(--chalk-blue);border-color:var(--chalk-blue)}
-  .i-balloon{
-    border:1px dashed var(--chalk-blue);border-radius:var(--radius);
-    background:rgba(141,183,240,.06);
-    padding:12px 14px;margin:0 0 14px;
-    font-size:.85rem;line-height:1.65;color:var(--chalk);
-    animation:reveal .2s ease;
-  }
-  .i-balloon[hidden]{display:none}
+  /* previsioni */
+  .years{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto}
+  .years button{flex:1;min-width:58px;min-height:40px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted);font-family:var(--mono);font-weight:600;font-size:.82rem;cursor:pointer}
+  .years button.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .prev-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:.9rem}
+  .prev-row:first-child{border-top:none}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .prev-row .tg{font-family:var(--mono);font-weight:600;text-align:right}
+  .prev-row .dl{font-family:var(--mono);font-size:.76rem;min-width:52px;text-align:right}
+  .result{background:var(--card-2);border-radius:14px;padding:14px;margin-top:12px}
+  .result .big{font-family:var(--mono);font-weight:700;font-size:1.35rem;margin:4px 0}
 
-  /* ---------- responsive: più grande il dispositivo, più spazio ---------- */
-  @media (min-width:760px){
-    body{padding:40px 26px 80px}
-    .wrap{max-width:760px}
-    .stack{height:30px}
-    #participants{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;align-items:start}
-  }
-  @media (min-width:1100px){
-    .wrap{max-width:1000px}
-    .title{font-size:3.4rem}
-    .hero .box .value{font-size:1.8rem}
-    #participants{grid-template-columns:1fr 1fr 1fr}
-    .enzo-table{font-size:.85rem}
-    .prev-row,.asset-row{font-size:.95rem}
-    .tog{font-size:1.5rem}
-  }
+  /* grafico */
+  .chart-wrap{position:relative;height:220px;margin:4px -4px 0;touch-action:pan-y}
+  .chart-wrap canvas{width:100%;height:100%;display:block}
+  .tip{position:absolute;top:0;pointer-events:none;background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:7px 9px;font-size:.72rem;line-height:1.5;white-space:nowrap;transform:translateX(-50%)}
+  .tip b{font-family:var(--mono)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.76rem;color:var(--muted);margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+  .bench{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-  footer{
-    margin-top:40px;text-align:center;
-    color:var(--chalk-dim);font-size:.75rem;line-height:1.6;
-  }
-  /* fear & greed */
-  .fng{margin:6px 0 2px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.02)}
-  .fng .label{margin-bottom:8px}
-  .fng-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#e08a8a,#f0d48d,#b6e04c);position:relative;margin:6px 0 8px}
-  .fng-dot{position:absolute;top:-4px;width:4px;height:16px;background:var(--chalk);border-radius:2px;box-shadow:0 0 6px rgba(0,0,0,.6)}
-  .fng-val{font-family:'IBM Plex Mono',monospace;font-size:.85rem}
-  /* countdown halving */
-  .halving{margin:14px 0 2px;padding:14px;border:1px dashed var(--line);border-radius:var(--radius);color:var(--chalk)}
-  .halving .label{margin-bottom:10px}
-  .cd{display:flex;gap:8px}
-  .cd .unit{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 4px;text-align:center;background:rgba(255,255,255,.03)}
-  .cd .num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(1.5rem,7.5vw,2.3rem);color:var(--chalk-green);font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(182,224,76,.2)}
-  .cd .lab{font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk-dim);margin-top:4px}
-  .halving .foot{font-size:.8rem;color:var(--chalk-dim);margin-top:10px;line-height:1.6}
+  /* indicatori */
+  .fng-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#ff5c7a,#e8c547,#3ddc97);position:relative;margin:10px 0}
+  .fng-dot{position:absolute;top:-4px;width:4px;height:16px;background:var(--text);border-radius:2px;box-shadow:0 0 0 3px var(--card)}
+  .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  .cd div{background:var(--card-2);border-radius:12px;padding:10px 4px;text-align:center}
+  .cd b{display:block;font-family:var(--mono);font-size:clamp(1.2rem,6vw,1.7rem);color:var(--accent)}
+  .cd small{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+  /* movimenti */
+  .tl{position:relative;padding-left:18px}
+  .tl:before{content:"";position:absolute;left:4px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .tl-item{position:relative;padding:0 0 16px}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-item:before{content:"";position:absolute;left:-18px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--card);border:2px solid var(--accent)}
+  .tl-item .d{font-size:.72rem;color:var(--muted);font-family:var(--mono)}
+  .tl-item ul{list-style:none;margin-top:4px}
+  .tl-item li{font-size:.86rem;line-height:1.55}
+
+  /* menu altro */
+  .menu button{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 4px;border:0;border-top:1px solid var(--line);background:transparent;cursor:pointer;text-align:left}
+  .menu button:first-child{border-top:0}
+  .menu .ic{width:36px;height:36px;border-radius:11px;background:var(--card-2);display:grid;place-items:center;font-size:1.05rem;flex:none}
+  .menu .tx{flex:1}
+  .menu .tx b{display:block;font-size:.92rem;font-weight:600}
+  .menu .tx small{font-size:.74rem;color:var(--muted)}
+  .menu .ar{color:var(--dim)}
+  .back{border:0;background:transparent;color:var(--accent);font-weight:600;cursor:pointer;min-height:40px;padding:0;margin-bottom:4px}
+  #shareCanvas{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin:4px 0 12px}
+
+  /* sezioni + tab bar */
+  .page{display:none;animation:rise .22s ease}
+  .page.open{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(11,14,20,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px calc(8px + env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px))}
+  nav.tabs .in-nav{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+  nav.tabs button{border:0;background:transparent;color:var(--dim);cursor:pointer;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.66rem;font-weight:600}
+  nav.tabs button svg{width:22px;height:22px}
+  nav.tabs button.active{color:var(--accent)}
+
+  footer{text-align:center;color:var(--dim);font-size:.72rem;line-height:1.6;margin-top:22px}
+
   /* privacy */
-  .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-  .privacy-btn{flex:none;min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);color:var(--chalk);font-size:1.1rem;padding:8px 11px;cursor:pointer;margin-top:6px}   /* v1_04: tocco >= 44px */
-  .privacy-btn.on{border-color:var(--chalk-green)}
-  /* v1_04: il pulsante promette "nascondi nomi e cifre" ma il numero di quote di
-     ogni persona restava leggibile (e col valore quota pubblico si risale all'euro). */
-  body.privacy .value,body.privacy .euro,body.privacy .asset-val,body.privacy .big,body.privacy .prev-target,
-  body.privacy .p-row .quote,body.privacy #pmcSummary,body.privacy #pmcStatus{filter:blur(7px)}
-  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+  body.privacy .pv{filter:blur(8px)}
+
+  @media (min-width:900px){
+    .wrap,nav.tabs .in-nav{max-width:760px}
+    #participants{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+    .chart-wrap{height:300px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
-    <div class="head-row">
+    <div class="brand">
+      <div class="logo">CIF</div>
       <div>
-        <div class="title">Crypto Index Fund</div>
-        <div class="subtitle" id="updated"></div>
+        <h1>Crypto Index Fund</h1>
+        <div class="live" id="live"><i></i><span id="updated"></span></div>
       </div>
-      <button class="privacy-btn" id="privacyBtn" aria-label="Modalità privacy" title="Nascondi nomi e cifre">🙈</button>
     </div>
+    <button class="icon-btn" id="privacyBtn" aria-label="Nascondi nomi e cifre" title="Nascondi nomi e cifre">🙈</button>
   </header>
 
-  <div class="hero">
-    <div class="box">
-      <div class="label">Valore fondo</div>
-      <div class="value" id="fundTotal"></div>
-      <div class="hint">somma delle posizioni <b id="fundDelta"></b></div>
-    </div>
-    <div class="box">
-      <div class="label">Valore quota</div>
-      <div class="value" id="quotaValue"></div>
-      <div class="hint" id="quotaCount"></div>
-    </div>
-  </div>
-
-  <h2>Composizione</h2>
-  <div class="stack" id="stack"></div>
-  <div id="assets"></div>
-
-
-
-  <div class="toggles">
-    <button class="tog" data-target="secPartecipanti">👥 Partecipanti
-      <span class="tog-hint" id="hintPartecipanti"></span></button>
-    <button class="tog" data-target="secAcquisto">💰 E se compro ora?
-      <span class="tog-hint">proietta il tuo acquisto</span></button>
-    <button class="tog" data-target="secPrevisioni">🔮 Previsioni future
-      <span class="tog-hint">2026 → 2030</span></button>
-    <button class="tog" data-target="secIndicatori">📊 Indicatori
-      <span class="tog-hint">umore del mercato · halving</span></button>
-  </div>
-
-  <button class="tog" id="a2hsBtn" style="width:100%;margin-top:10px;font-size:1.15rem;padding:11px 10px">📱 Salva l'app in Home
-    <span class="tog-hint">si apre a tutto schermo, come una vera app</span></button>
-  <div class="i-balloon" id="a2hsInfo" hidden style="margin-top:10px"></div>
-
-  <div class="section" id="secPartecipanti">
-    <h2>Partecipanti</h2>
-    <input class="search" id="search" type="search" aria-label="Cerca un partecipante per nome" placeholder="Cerca il tuo nome…">
-    <div id="participants"></div>
-    <div class="none" id="noResult">Nessun nome trovato</div>
-  </div>
-
-  <div class="section" id="secAcquisto">
-    <div class="h-row"><h2>E se compro ora?</h2></div>
-    <p class="hint" style="margin:0 0 14px">La quota oggi costa <b id="acqQuotaNow"></b>.</p>
-    <div class="hero" style="margin-bottom:14px">
-      <div class="box" style="flex:1;min-width:140px">
-        <div class="label">Investimento in €</div>
-        <!-- v1_04: type=text + inputmode=decimal — con type=number la virgola italiana veniva scartata ("2,30" diventava 230) -->
-        <input class="search" id="acqEuro" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="es. 100" style="margin:10px 0 0">
-      </div>
-      <div class="box" style="flex:1;min-width:140px">
-        <div class="label">Oppure in quote</div>
-        <input class="search" id="acqQuote" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="es. 40" style="margin:10px 0 0">
+  <!-- ================= HOME ================= -->
+  <section class="page open" id="pgHome">
+    <div class="card">
+      <div class="label">Valore del fondo</div>
+      <div class="hero-val pv" id="fundTotal"></div>
+      <span class="chip" id="fundDelta">—</span>
+      <div class="kpis">
+        <div class="kpi"><div class="label">Valore quota</div><div class="v pv" id="quotaValue"></div></div>
+        <div class="kpi"><div class="label">Quote totali</div><div class="v pv" id="quotaCount"></div></div>
       </div>
     </div>
-    <div class="scenari" id="acqMode">
-      <button class="scen-btn active" data-mode="market">📊 Scenari di mercato</button>
-      <button class="scen-btn" data-mode="enzo">✍️ Visione di Enzo</button>
-    </div>
-    <div class="hint" id="acqHint" style="margin-bottom:10px">Inserisci un importo per vedere la proiezione anno per anno.</div>
-    <table class="enzo-table acq-table" id="acqTable" hidden>
-      <thead><tr id="acqHead"></tr></thead>
-      <tbody id="acqBody"></tbody>
-    </table>
-    <div class="prev-quota" id="acqDetail" hidden style="margin-top:12px"></div>
-    <!-- v1_04: riga aggiuntiva, non sostituisce nulla -->
-    <div class="disclaimer" id="acqNet" hidden></div>
 
-    <button class="tog" id="pmcToggle" style="width:100%;margin-top:18px">🎯 Proiezione personale col tuo PMC
-      <span class="tog-hint">nome + prezzo medio di carico</span></button>
-    <div id="acqPmc" hidden>
-      <div class="h-row" style="margin:14px 0 10px"><span class="label" style="margin:0">Inserisci nome e PMC attuale</span></div>
-      <div class="hero" style="margin-bottom:10px">
-        <div class="box" style="flex:1;min-width:140px">
-          <div class="label">Il tuo nome</div>
-          <input class="search" id="pmcName" type="text" placeholder="es. Mario O." style="margin:10px 0 0">
+    <div class="card" id="meCard">
+      <h2>Il mio conto <small id="meEdit" hidden><button class="back" id="meChange" style="margin:0;min-height:auto">cambia</button></small></h2>
+      <div id="meSetup">
+        <p class="hint" style="margin-bottom:10px">Scrivi il tuo nome come nella lista soci: da ora vedrai subito la tua posizione. Resta salvato solo su questo telefono.</p>
+        <div class="row2">
+          <label class="field"><span>Nome</span><input class="in" id="meName" placeholder="es. Mario O." autocomplete="off"></label>
+          <label class="field"><span>PMC (facoltativo)</span><input class="in" id="mePmc" inputmode="decimal" placeholder="es. 2,30" autocomplete="off"></label>
         </div>
-        <div class="box" style="flex:1;min-width:140px">
-          <div class="label">Il tuo PMC attuale (€)</div>
-          <!-- v1_04: type=text + inputmode=decimal — con type=number "2,30" veniva letto come 230 -->
-          <input class="search" id="pmcVal" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="es. 2,30" style="margin:10px 0 0">
+        <div class="hint" id="meMsg" style="margin-bottom:10px"></div>
+        <button class="btn primary" id="meSave">Salva</button>
+      </div>
+      <div id="meView" hidden>
+        <div class="label" id="meLabel"></div>
+        <div class="hero-val pv" id="meValue" style="font-size:clamp(1.7rem,8vw,2.2rem)"></div>
+        <span class="chip" id="meDelta">—</span>
+        <div class="kpis">
+          <div class="kpi"><div class="label">Le mie quote</div><div class="v pv" id="meQuote"></div></div>
+          <div class="kpi"><div class="label">Quota del fondo</div><div class="v pv" id="meShare"></div></div>
+          <div class="kpi" id="mePlBox" hidden><div class="label">Guadagno sul PMC</div><div class="v pv" id="mePl"></div></div>
+          <div class="kpi" id="meInvBox" hidden><div class="label">Investito</div><div class="v pv" id="meInv"></div></div>
         </div>
       </div>
-      <div class="hint" id="pmcStatus" style="margin-bottom:10px"></div>
-      <div id="pmcSummary"></div>
-      <table class="enzo-table acq-table" id="pmcTable" hidden>
-        <thead><tr id="pmcHead"></tr></thead>
-        <tbody id="pmcBody"></tbody>
-      </table>
-      <div class="disclaimer" id="pmcFoot" hidden><span id="pmcFootNet"></span></div>
-    </div>
-  </div>
-
-  <div class="section" id="secPrevisioni">
-    <div class="h-row"><h2>Previsioni future</h2></div>
-    <div class="anni" id="anni"></div>
-    <div class="scenari" id="scenari">
-      <button class="scen-btn" data-scen="bear">🐻 Ribassista</button>
-      <button class="scen-btn active" data-scen="base">⚖️ Base</button>
-      <button class="scen-btn" data-scen="bull">🚀 Rialzista</button>
-      <button class="scen-btn" data-scen="enzo">✍️ Enzo</button>
-    </div>
-    <div class="scenari" id="enzoSub" hidden>
-      <button class="scen-btn sub" data-sub="P">😟 Pessimista</button>
-      <button class="scen-btn sub active" data-sub="O">🙂 Ottimista</button>
-      <button class="scen-btn sub" data-sub="TTM">🌕 TO THE MOON!</button>
-    </div>
-    <div id="prevRows"></div>
-    <div class="prev-quota">
-      <div class="label" id="prevLabel">Se lo scenario si realizza</div>
-      <div class="big" id="prevFund"></div>
-      <div class="hint" id="prevQuota"></div>
-      <!-- v1_04: riga aggiuntiva, non sostituisce nulla -->
-      <div class="hint" id="prevQuotaNet" hidden style="margin-top:6px"></div>
     </div>
 
-  </div>
-
-  <div class="section" id="secIndicatori">
-    <h2>Indicatori di mercato</h2>
-    <div class="fng" id="fngBox">
-      <div class="label">Umore del mercato (Fear &amp; Greed)</div>
-      <div class="fng-bar"><div class="fng-dot" id="fngDot" style="left:calc(50% - 2px)"></div></div>
-      <div class="fng-val" id="fngVal">Caricamento…</div>
-      <div class="hint" style="margin-top:6px">0 = paura estrema (spesso occasioni) · 100 = avidità estrema (spesso euforia). Aggiornato ogni giorno.</div>
+    <div class="card">
+      <h2>Composizione <small>prezzi e variazione 24h</small></h2>
+      <div class="stack" id="stack"></div>
+      <div id="assets"></div>
     </div>
-    <div class="halving">
-      <div class="label">⛏️ Prossimo halving di Bitcoin — aprile 2028</div>
-      <div class="cd">
-        <div class="unit"><div class="num" id="cdD">—</div><div class="lab">giorni</div></div>
-        <div class="unit"><div class="num" id="cdH">—</div><div class="lab">ore</div></div>
-        <div class="unit"><div class="num" id="cdM">—</div><div class="lab">min</div></div>
-        <div class="unit"><div class="num" id="cdS">—</div><div class="lab">sec</div></div>
+  </section>
+
+  <!-- ================= GRAFICO ================= -->
+  <section class="page" id="pgChart">
+    <div class="page-title">Andamento</div>
+    <div class="card">
+      <div class="seg" id="chartMode">
+        <button class="active" data-m="quota">Valore quota</button>
+        <button data-m="bench">Fondo vs solo BTC</button>
       </div>
-      <div class="foot">L'halving dimezza le nuove emissioni di Bitcoin: storicamente ha segnato l'inizio della fase di accumulo del ciclo.</div>
+      <div class="seg" id="chartRange">
+        <button data-d="7">7G</button>
+        <button class="active" data-d="30">1M</button>
+        <button data-d="90">3M</button>
+        <button data-d="365">1A</button>
+      </div>
+      <div class="label" id="chartTitle"></div>
+      <div class="hero-val" id="chartHead" style="font-size:1.6rem"></div>
+      <div class="chart-wrap" id="chartWrap"><canvas id="chart"></canvas><div class="tip" id="tip" hidden></div></div>
+      <div class="legend" id="legend"></div>
+      <p class="hint" id="chartMsg" style="margin-top:10px">Caricamento dati…</p>
     </div>
-  </div>
+    <div class="card">
+      <h2>Fondo vs solo Bitcoin <small id="benchRange"></small></h2>
+      <div class="bench">
+        <div class="kpi"><div class="label">Il fondo</div><div class="v" id="bFund">—</div></div>
+        <div class="kpi"><div class="label">Solo BTC</div><div class="v" id="bBtc">—</div></div>
+      </div>
+      <p class="hint" id="bText" style="margin-top:10px"></p>
+    </div>
+    <p class="hint">Andamento calcolato con la composizione di oggi (quantità attuali ÷ quote attuali) sui prezzi storici di CoinGecko: mostra come si è mosso il paniere del fondo.</p>
+  </section>
+
+  <!-- ================= SOCI ================= -->
+  <section class="page" id="pgSoci">
+    <div class="page-title">Soci <small class="hint" id="hintSoci"></small></div>
+    <input class="in" id="search" type="search" placeholder="Cerca un nome…" aria-label="Cerca un socio" style="margin-bottom:12px">
+    <div class="card"><div id="participants"></div><div class="none" id="noResult" hidden>Nessun nome trovato</div></div>
+  </section>
+
+  <!-- ================= FUTURO ================= -->
+  <section class="page" id="pgFuturo">
+    <div class="page-title">Futuro</div>
+    <div class="seg" id="futSeg">
+      <button class="active" data-f="acq">E se compro ora?</button>
+      <button data-f="prev">Previsioni</button>
+    </div>
+
+    <div id="futAcq">
+      <div class="card">
+        <p class="hint" style="margin-bottom:12px">La quota oggi costa <b class="num" id="acqQuotaNow"></b>. Inserisci un importo e guarda quanto potrebbe valere a fine anno.</p>
+        <div class="row2">
+          <label class="field"><span>Investimento in €</span><input class="in" id="acqEuro" inputmode="decimal" placeholder="es. 100" autocomplete="off" enterkeyhint="done"></label>
+          <label class="field"><span>Oppure in quote</span><input class="in" id="acqQuote" inputmode="decimal" placeholder="es. 40" autocomplete="off" enterkeyhint="done"></label>
+        </div>
+        <div class="seg" id="acqMode">
+          <button class="active" data-mode="market">Scenari di mercato</button>
+          <button data-mode="enzo">Visione di Enzo</button>
+        </div>
+        <div class="hint" id="acqHint">Inserisci un importo per vedere la proiezione.</div>
+        <table class="t" id="acqTable" hidden style="margin-top:8px"><thead><tr id="acqHead"></tr></thead><tbody id="acqBody"></tbody></table>
+        <div class="result" id="acqDetail" hidden></div>
+        <div class="hint" id="acqNet" hidden style="margin-top:8px"></div>
+      </div>
+
+      <div class="card">
+        <h2>Proiezione col mio PMC</h2>
+        <div class="row2">
+          <label class="field"><span>Nome</span><input class="in" id="pmcName" placeholder="es. Mario O." autocomplete="off"></label>
+          <label class="field"><span>PMC attuale (€)</span><input class="in" id="pmcVal" inputmode="decimal" placeholder="es. 2,30" autocomplete="off" enterkeyhint="done"></label>
+        </div>
+        <div class="hint" id="pmcStatus"></div>
+        <div id="pmcSummary"></div>
+        <table class="t" id="pmcTable" hidden style="margin-top:8px"><thead><tr id="pmcHead"></tr></thead><tbody id="pmcBody"></tbody></table>
+        <div class="hint" id="pmcFootNet" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div id="futPrev" hidden>
+      <div class="card">
+        <div class="years" id="anni"></div>
+        <div class="seg" id="scenari">
+          <button data-scen="bear">🐻 Ribasso</button>
+          <button class="active" data-scen="base">⚖️ Base</button>
+          <button data-scen="bull">🚀 Rialzo</button>
+          <button data-scen="enzo">✍️ Enzo</button>
+        </div>
+        <div class="seg" id="enzoSub" hidden>
+          <button data-sub="P">😟 Pessimista</button>
+          <button class="active" data-sub="O">🙂 Ottimista</button>
+          <button data-sub="TTM">🌕 Moon</button>
+        </div>
+        <div id="prevRows"></div>
+        <div class="result">
+          <div class="label" id="prevLabel"></div>
+          <div class="big pv" id="prevFund"></div>
+          <div class="hint" id="prevQuota"></div>
+          <div class="hint" id="prevQuotaNet" hidden style="margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Le previsioni sono opinioni, non promesse né consigli d'investimento.</p>
+  </section>
+
+  <!-- ================= ALTRO ================= -->
+  <section class="page" id="pgAltro">
+    <div id="altroMenu">
+      <div class="page-title">Altro</div>
+      <div class="card menu">
+        <button data-sub="subInd"><span class="ic">📊</span><span class="tx"><b>Indicatori</b><small>Paura/Avidità · countdown halving</small></span><span class="ar">›</span></button>
+        <button data-sub="subMov"><span class="ic">🧾</span><span class="tx"><b>Storico movimenti</b><small>quote e acquisti del fondo</small></span><span class="ar">›</span></button>
+        <button data-sub="subReq"><span class="ic">💬</span><span class="tx"><b>Compra o vendi quote</b><small>richiesta a Enzo via WhatsApp</small></span><span class="ar">›</span></button>
+        <button data-sub="subCard"><span class="ic">🖼️</span><span class="tx"><b>Card da condividere</b><small>immagine riepilogo per il gruppo</small></span><span class="ar">›</span></button>
+        <button id="a2hsBtn"><span class="ic">📱</span><span class="tx"><b>Salva l'app in Home</b><small>si apre a tutto schermo</small></span><span class="ar">›</span></button>
+      </div>
+      <div class="card hint" id="a2hsInfo" hidden></div>
+    </div>
+
+    <div class="sub" id="subInd" hidden>
+      <button class="back">‹ Altro</button>
+      <div class="page-title">Indicatori</div>
+      <div class="card">
+        <div class="label">Umore del mercato (Fear &amp; Greed)</div>
+        <div class="fng-bar"><div class="fng-dot" id="fngDot" style="left:calc(50% - 2px)"></div></div>
+        <div class="num" id="fngVal">Caricamento…</div>
+        <p class="hint" style="margin-top:6px">0 = paura estrema · 100 = avidità estrema. Aggiornato ogni giorno.</p>
+      </div>
+      <div class="card">
+        <div class="label">⛏️ Prossimo halving di Bitcoin — aprile 2028</div>
+        <div class="cd">
+          <div><b id="cdD">—</b><small>giorni</small></div>
+          <div><b id="cdH">—</b><small>ore</small></div>
+          <div><b id="cdM">—</b><small>min</small></div>
+          <div><b id="cdS">—</b><small>sec</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub" id="subMov" hidden>
+      <button class="back">‹ Altro</button>
+      <div class="page-title">Storico movimenti</div>
+      <div class="card"><div class="tl" id="timeline"></div></div>
+    </div>
+
+    <div class="sub" id="subReq" hidden>
+      <button class="back">‹ Altro</button>
+      <div class="page-title">Compra o vendi quote</div>
+      <div class="card">
+        <div class="seg" id="reqType">
+          <button class="active" data-t="compra">Voglio comprare</button>
+          <button data-t="vendi">Voglio vendere</button>
+        </div>
+        <label class="field"><span>Il tuo nome</span><input class="in" id="reqName" placeholder="es. Mario O." autocomplete="off"></label>
+        <div class="row2">
+          <label class="field"><span>Importo in €</span><input class="in" id="reqEuro" inputmode="decimal" placeholder="es. 200" autocomplete="off"></label>
+          <label class="field"><span>Oppure quote</span><input class="in" id="reqQuote" inputmode="decimal" placeholder="es. 70" autocomplete="off"></label>
+        </div>
+        <div class="hint" id="reqHint" style="margin-bottom:12px"></div>
+        <button class="btn primary" id="reqSend">Invia richiesta su WhatsApp</button>
+        <p class="hint" style="margin-top:10px">Si apre WhatsApp con il messaggio già scritto: scegli Enzo e invia. L'operazione la esegue Enzo al valore quota del momento.</p>
+      </div>
+    </div>
+
+    <div class="sub" id="subCard" hidden>
+      <button class="back">‹ Altro</button>
+      <div class="page-title">Card da condividere</div>
+      <div class="card">
+        <canvas id="shareCanvas" width="1080" height="1350"></canvas>
+        <div class="row2">
+          <button class="btn primary" id="cardShare">Condividi</button>
+          <button class="btn" id="cardSave">Scarica</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <footer>
     Prezzi live da CoinGecko · dati del fondo aggiornati da Enzo<br>
     Fondo condiviso tra amici — non è consulenza finanziaria<br>
-    <span style="opacity:.6">versione 1.0.5 · 16 settembre 2026</span>
+    <span style="opacity:.7">versione 2.0 · 16 settembre 2026</span>
   </footer>
 </div>
+
+<nav class="tabs" aria-label="Sezioni">
+  <div class="in-nav">
+    <button class="active" data-page="pgHome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+    <button data-page="pgChart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Grafico</button>
+    <button data-page="pgSoci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.7 3 2.5 3.5 5.2"/></svg>Soci</button>
+    <button data-page="pgFuturo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Futuro</button>
+    <button data-page="pgAltro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Altro</button>
+  </div>
+</nav>
 
 <script>
 /* ============================================================
    DATI DEL FONDO — aggiorna solo questa sezione
    ============================================================ */
 const LAST_UPDATE = "16 settembre 2026";
+const ENZO_WA = "";   // numero WhatsApp di Enzo con prefisso, es. "393331234567" — vuoto = si sceglie il contatto
 
 const ASSETS = [
-  { sym:"BTC",  name:"Bitcoin",  qty:0.1,   value:6776.00, color:"var(--btc)",  cg:"bitcoin"  },   // BTC ≈ €67.760
-  { sym:"ETH",  name:"Ethereum", qty:1.89,  value:3987.00, color:"var(--eth)",  cg:"ethereum" },   // ETH ≈ €2.110
-  { sym:"SOL",  name:"Solana",   qty:50,    value:4276.00, color:"var(--sol)",  cg:"solana"   },   // SOL ≈ €85,5
-  { sym:"DOGE", name:"Dogecoin", qty:10000, value:703.00,  color:"var(--doge)", cg:"dogecoin" },   // DOGE ≈ €0,0703
+  { sym:"BTC",  name:"Bitcoin",  qty:0.1,   value:6776.00, color:"#d0760c", cg:"bitcoin"  },   // BTC ≈ €67.760
+  { sym:"ETH",  name:"Ethereum", qty:1.89,  value:3987.00, color:"#7078ea", cg:"ethereum" },   // ETH ≈ €2.110
+  { sym:"SOL",  name:"Solana",   qty:50,    value:4276.00, color:"#12a191", cg:"solana"   },   // SOL ≈ €85,5
+  { sym:"DOGE", name:"Dogecoin", qty:10000, value:703.00,  color:"#b08f1c", cg:"dogecoin" },   // DOGE ≈ €0,0703
 ];
 
 const PARTICIPANTS = [
@@ -476,137 +496,93 @@ const PARTICIPANTS = [
   ["Graziano M.", 1],
 ];
 
-/* --- PREVISIONI (prezzi in € per unità, fine anno salvo nota) --
-   Raccolte il 16/7/2026 da fonti pubbliche (cambio ≈ 0,88 €/$).
-   Lo scenario "enzo" esiste solo dove Enzo ha dato target.     */
+/* storico movimenti: il più recente in alto */
+const MOVIMENTI = [
+  { data:"16 settembre 2026", righe:[
+    "Vincenzo M. compra <b>560 quote</b> (440 → 1.000)",
+    "Christian F. compra <b>359 quote</b> (1.513 → 1.872)",
+    "Il fondo acquista <b>+0,2 ETH</b>, <b>+10 SOL</b> e <b>+10.000 DOGE</b> (nuovo asset)",
+    "Quote totali: 4.806 → <b>5.725</b>" ]},
+  { data:"4 settembre 2026", righe:[
+    "Nuovo socio: <b>Francesco P.</b> con 150 quote cedute da Ivan S.",
+    "Commissione di gestione: <b>+140 quote</b> a Vincenzo M. (3%, semestre mar-ago 2026)",
+    "Quote totali: 4.666 → <b>4.806</b>" ]},
+  { data:"29 luglio 2026", righe:[
+    "Christian F. compra <b>413 quote</b> (1.100 → 1.513)",
+    "Il fondo acquista <b>+8 SOL</b> e <b>+0,08 ETH</b>",
+    "Quote totali: 4.253 → <b>4.666</b>" ]},
+  { data:"18 luglio 2026", righe:[
+    "Domenico G. compra <b>202 quote</b> (103 → 305)",
+    "Il fondo acquista <b>+2 SOL</b> e <b>+0,07 ETH</b>",
+    "Quote totali: 4.051 → <b>4.253</b>" ]},
+  { data:"15 luglio 2026", righe:[
+    "Partenza del registro: 0,1 BTC · 1,54 ETH · 30 SOL · <b>4.051 quote</b>" ]},
+];
+
+/* --- PREVISIONI (prezzi in € per unità, fine anno) — cambio ≈ 0,88 €/$ --- */
 const FORECASTS = {
-  updated: "16 luglio 2026",
   years: {
     "2026": {
-      bear: {
-        BTC:{ t:44000,  src:"≈$50k — S. Chartered (rischio capitolazione), Farrell/Fundstrat base $60-65k" },
-        ETH:{ t:1300,   src:"≈$1.500 — fascia bassa dei modelli tecnici (Changelly/CoinCodex)" },
-        SOL:{ t:44,     src:"≈$50 — proiezioni ribassiste, alta correlazione con BTC (beta ~2x vs ETH)" },
-        DOGE:{ t:0.053, src:"≈$0,06" },
-      },
-      base: {
-        BTC:{ t:88000,  src:"≈$100k — target S. Chartered fine 2026; Hayes $125k" },
-        ETH:{ t:2100,   src:"≈$2.000-2.400 — CoinCodex ~$2.023, Changelly media dic. ~$2.395" },
-        SOL:{ t:92,     src:"≈$105-123 — DigitalCoinPrice ~$105, CoinCodex ~$123" },
-        DOGE:{ t:0.075, src:"≈$0,085 — media Changelly 2026" },
-      },
-      bull: {
-        BTC:{ t:131000, src:"≈$150-170k — Bernstein $150k, JPMorgan $170k, Fundstrat fino a $200-250k" },
-        ETH:{ t:3500,   src:"≈$4.000 — forte ripresa H2 con ritorno dei flussi ETF" },
-        SOL:{ t:265,    src:"≈$300+ — media analisti pre-correzione ~$445, PricePrediction ~$375" },
-        DOGE:{ t:0.13, src:"≈$0,15" },
-      },
+      bear: { BTC:{t:44000},  ETH:{t:1300},  SOL:{t:44},  DOGE:{t:0.053} },   // BTC ≈$50k · DOGE ≈$0,06
+      base: { BTC:{t:88000},  ETH:{t:2100},  SOL:{t:92},  DOGE:{t:0.075} },   // BTC ≈$100k · DOGE ≈$0,085 (Changelly)
+      bull: { BTC:{t:131000}, ETH:{t:3500},  SOL:{t:265}, DOGE:{t:0.13}  },   // BTC ≈$150-170k · DOGE ≈$0,15
       enzo: { P:48000,  O:80000,  TTM:100000 },
     },
     "2027": {
-      bear: {
-        BTC:{ t:40000,  src:"≈$45k — coda della correzione pluriennale se il picco di ott. 2025 era il top" },
-        ETH:{ t:1550,   src:"≈$1.750 — minimo Changelly 2027" },
-        SOL:{ t:62,     src:"≈$70 — pressione prolungata sulle alt" },
-        DOGE:{ t:0.057, src:"≈$0,065" },
-      },
-      base: {
-        BTC:{ t:105000, src:"≈$120k — ripresa graduale post-minimo" },
-        ETH:{ t:2230,   src:"≈$2.535 — media Changelly 2027" },
-        SOL:{ t:150,    src:"≈$156-185 — PricePrediction 2027" },
-        DOGE:{ t:0.092, src:"≈$0,105 — media Changelly 2027" },
-      },
-      bull: {
-        BTC:{ t:176000, src:"≈$200k — target Bernstein 2027" },
-        ETH:{ t:4400,   src:"≈$5k — nuovo ciclo espansivo con rotazione sulle alt" },
-        SOL:{ t:350,    src:"≈$400 — scenario di rally del comparto" },
-        DOGE:{ t:0.22, src:"≈$0,25" },
-      },
+      bear: { BTC:{t:40000},  ETH:{t:1550},  SOL:{t:62},  DOGE:{t:0.057} },
+      base: { BTC:{t:105000}, ETH:{t:2230},  SOL:{t:150}, DOGE:{t:0.092} },
+      bull: { BTC:{t:176000}, ETH:{t:4400},  SOL:{t:350}, DOGE:{t:0.22}  },
       enzo: { P:77000,  O:120000, TTM:150000 },
     },
     "2028": {
-      bear: {
-        BTC:{ t:62000,  src:"≈$70k — ciclo debole anche dopo l'halving di aprile 2028" },
-        ETH:{ t:1900,   src:"≈$2.150 — stagnazione, domanda istituzionale assente" },
-        SOL:{ t:80,     src:"≈$90 — laterale" },
-        DOGE:{ t:0.062, src:"≈$0,07" },
-      },
-      base: {
-        BTC:{ t:110000, src:"≈$125k — anno dell'halving, storicamente accumulazione pre-rally" },
-        ETH:{ t:2900,   src:"≈$2.400-3.300 — range Changelly 2028" },
-        SOL:{ t:140,    src:"≈$160 — crescita moderata dell'ecosistema" },
-        DOGE:{ t:0.114, src:"≈$0,13 — media Changelly 2028" },
-      },
-      bull: {
-        BTC:{ t:440000, src:"≈$500k — milestone Standard Chartered per il 2028" },
-        ETH:{ t:6100,   src:"≈$7k — tokenizzazione e DeFi istituzionale a regime" },
-        SOL:{ t:440,    src:"≈$500 — target S. Chartered (indicato per fine 2029, anticipato nel caso bull)" },
-        DOGE:{ t:0.35, src:"≈$0,40" },
-      },
+      bear: { BTC:{t:62000},  ETH:{t:1900},  SOL:{t:80},  DOGE:{t:0.062} },
+      base: { BTC:{t:110000}, ETH:{t:2900},  SOL:{t:140}, DOGE:{t:0.114} },
+      bull: { BTC:{t:440000}, ETH:{t:6100},  SOL:{t:440}, DOGE:{t:0.35}  },
       enzo: { P:144000, O:180000, TTM:350000 },
     },
     "2029": {
-      bear: {
-        BTC:{ t:80000,  src:"≈$90k — ripresa lenta post-halving" },
-        ETH:{ t:2200,   src:"≈$2.500" },
-        SOL:{ t:90,     src:"≈$100" },
-        DOGE:{ t:0.070, src:"≈$0,08" },
-      },
-      base: {
-        BTC:{ t:155000, src:"≈$175k — crescita post-halving in linea con i cicli storici (attenuati)" },
-        ETH:{ t:3500,   src:"≈$4k — adozione graduale" },
-        SOL:{ t:260,    src:"≈$300 — verso il target S. Chartered di $500 per fine 2029" },
-        DOGE:{ t:0.14, src:"≈$0,16 — media Changelly 2029" },
-      },
-      bull: {
-        BTC:{ t:650000, src:"≈$740k — target Pantera Capital (Dan Morehead) per il 2029" },
-        ETH:{ t:7900,   src:"≈$9k — ciclo espansivo pieno" },
-        SOL:{ t:440,    src:"$500 — target Standard Chartered fine 2029" },
-        DOGE:{ t:0.62, src:"≈$0,70 — vicino al massimo storico 2021" },
-      },
+      bear: { BTC:{t:80000},  ETH:{t:2200},  SOL:{t:90},  DOGE:{t:0.070} },
+      base: { BTC:{t:155000}, ETH:{t:3500},  SOL:{t:260}, DOGE:{t:0.14}  },
+      bull: { BTC:{t:650000}, ETH:{t:7900},  SOL:{t:440}, DOGE:{t:0.62}  },
       enzo: { P:147000, O:280000, TTM:650000 },
     },
     "2030": {
-      bear: {
-        BTC:{ t:90000,  src:"≈$100k — adozione più lenta del previsto" },
-        ETH:{ t:2000,   src:"≈$2.300" },
-        SOL:{ t:110,    src:"≈$125" },
-        DOGE:{ t:0.062, src:"≈$0,07" },
-      },
-      base: {
-        BTC:{ t:195000, src:"≈$220k — media modelli di lungo periodo (Changelly ~$221k al 2031)" },
-        ETH:{ t:2650,   src:"≈$3.020 — modello CoinCodex 2030" },
-        SOL:{ t:285,    src:"≈$325 — modello CoinCodex 2030" },
-        DOGE:{ t:0.108, src:"≈$0,123 — media Changelly 2030" },
-      },
-      bull: {
-        BTC:{ t:1100000, src:"≈$1,25M — bull case ARK Invest (Cathie Wood) per il 2030" },
-        ETH:{ t:10500,   src:"≈$12k — scenario di adozione massima" },
-        SOL:{ t:785,     src:"≈$892 — media panel Finder per fine 2030" },
-        DOGE:{ t:0.88, src:"≈$1" },
-      },
+      bear: { BTC:{t:90000},   ETH:{t:2000},  SOL:{t:110}, DOGE:{t:0.062} },
+      base: { BTC:{t:195000},  ETH:{t:2650},  SOL:{t:285}, DOGE:{t:0.108} },
+      bull: { BTC:{t:1100000}, ETH:{t:10500}, SOL:{t:785}, DOGE:{t:0.88}  },
       enzo: { P:90000,  O:180000, TTM:450000 },
     },
   },
   fx: 0.88,            // € per $ usato per convertire i target di Enzo
   ethMult: 1.5,        // ETH: ×1,5 la prestazione di BTC (su e giù)
-  solMultUp: 3.5,      // SOL: ×3,5 la prestazione di BTC in salita
+  solMultUp: 3.5,      // SOL: ×3,5 in salita
   solMultDown: 2.5,    //      ×2,5 in discesa
-  dogeMultUp: 4,       // DOGE: ×4 la prestazione di BTC in salita
+  dogeMultUp: 4,       // DOGE: ×4 in salita
   dogeMultDown: 3,     //       ×3 in discesa
   floor: -0.95,        // nessun asset derivato scende oltre il -95%
 };
-/* moltiplicatore rispetto a BTC per la visione di Enzo */
+
+/* --- COMMISSIONE DI GESTIONE (PROPOSTA, spenta) — 3% a semestre in nuove quote.
+   Mettendo true compaiono le righe "al netto della commissione". */
+const MOSTRA_NETTO_COMMISSIONE = false;
+const COMM_SEMESTRALE = 0.03;
+/* ============================================================ */
+
+function semestriA(anno, oggi){
+  const now = oggi || new Date();
+  const mesi = (Number(anno)-now.getFullYear())*12 + (11-now.getMonth());
+  return Math.max(0, Math.floor(mesi/6));
+}
+function fattoreNetto(anno){ return 1/Math.pow(1+COMM_SEMESTRALE, semestriA(anno)); }
+
 function betaEnzo(sym, d){
   const F = FORECASTS;
-  if(sym==="BTC") return 1;
   if(sym==="ETH") return F.ethMult;
   if(sym==="SOL") return d>=0 ? F.solMultUp : F.solMultDown;
   if(sym==="DOGE") return d>=0 ? F.dogeMultUp : F.dogeMultDown;
   return 1;
 }
 function priceNowOf(sym){ const a = ASSETS.find(x=>x.sym===sym); return a.value/a.qty; }
-/* prezzo target (€) di un asset nella visione di Enzo, dato il target BTC in $ */
 function enzoAssetPrice(sym, usd){
   const btcT = usd*FORECASTS.fx;
   if(sym==="BTC") return btcT;
@@ -614,623 +590,641 @@ function enzoAssetPrice(sym, usd){
   return priceNowOf(sym)*(1 + Math.max(FORECASTS.floor, d*betaEnzo(sym,d)));
 }
 
-/* --- COMMISSIONE DI GESTIONE (v1_04 — PROPOSTA, da approvare) -----------
-   Ogni semestre vengono emesse nuove quote pari al 3% del circolante a favore
-   di chi gestisce il fondo (vedi "Novità" del 4 settembre 2026). Le proiezioni
-   qui sotto sono a quote costanti, quindi NON tengono conto di questa diluizione:
-   il valore per quota indicato è più alto di quello che il socio riceverà.
-   Mettendo MOSTRA_NETTO_COMMISSIONE a false sparisce ogni riga aggiunta e la
-   pagina torna esattamente com'era. I numeri già presenti non sono stati toccati. */
-const MOSTRA_NETTO_COMMISSIONE = false;   // v1_04: SPENTO — Enzo decide se accenderlo (metti true)
-const COMM_SEMESTRALE = 0.03;              // 3% a semestre = ~6% l'anno
-/* semestri di commissione tra oggi e il 31 dicembre dell'anno indicato */
-function semestriA(anno, oggi){
-  const now = oggi || new Date();
-  const fine = new Date(Number(anno), 11, 31);
-  const mesi = (fine.getFullYear()-now.getFullYear())*12 + (fine.getMonth()-now.getMonth());
-  return Math.max(0, Math.floor(mesi/6));
-}
-/* fattore da applicare a un valore PER QUOTA proiettato a fine <anno> */
-function fattoreNetto(anno, oggi){
-  return 1/Math.pow(1+COMM_SEMESTRALE, semestriA(anno, oggi));
-}
-/* ============================================================ */
-
+/* ---------- utilità ---------- */
+const $ = id => document.getElementById(id);
 const eur = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR"});
-/* prezzo unitario: più decimali per gli asset sotto 1 € (es. DOGE) */
-const eurP = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits: n<1?4:2, maximumFractionDigits: n<1?4:2});
-
-/* v1_04: lettura di un numero scritto all'italiana (virgola decimale).
-   Con <input type="number"> la virgola veniva scartata tasto per tasto:
-   "2,30" diventava 230 (PMC sbagliato di 100 volte, senza alcun avviso). */
+const eurP = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits:n<1?4:2,maximumFractionDigits:n<1?4:2});
+const eur0 = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+function pct(n,d){ return (n>=0?"+":"") + n.toLocaleString("it-IT",{maximumFractionDigits:d==null?0:d, minimumFractionDigits:d==null?0:d}) + "%"; }
+const f1 = n => n.toLocaleString("it-IT",{maximumFractionDigits:1});
+const cls = n => n>=0 ? "up" : "down";
 function numIt(s){
   if(typeof s === "number") return s;
-  let t = String(s==null ? "" : s).trim().replace(/[\s  ]/g,"").replace(/[€%]/g,"");
+  let t = String(s==null ? "" : s).trim().replace(/[\s€%]/g,"");
   if(!t) return NaN;
-  if(t.includes(",") && t.includes(".")) t = t.replace(/\./g,"");   // 1.234,56 → punto = migliaia
+  if(t.includes(",") && t.includes(".")) t = t.replace(/\./g,"");
   t = t.replace(",", ".");
   if(!/^[+-]?(\d+(\.\d*)?|\.\d+)$/.test(t)) return NaN;
   return parseFloat(t);
 }
-/* v1_04: scrittura all'italiana, senza separatore delle migliaia (così resta rileggibile) */
 const numItOut = (n,d) => (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toFixed(d).replace(".",",");
-
-let total = ASSETS.reduce((s,a)=>s+a.value,0);
-const totalQuotas = PARTICIPANTS.reduce((s,p)=>s+p[1],0) || 1;   // v1_04: mai divisione per zero
-let quota = total / totalQuotas;
-
-document.getElementById("updated").textContent = "Aggiornato: " + LAST_UPDATE;
-document.getElementById("quotaCount").textContent = totalQuotas.toLocaleString("it-IT") + " quote in circolazione";
-document.getElementById("hintPartecipanti").textContent = PARTICIPANTS.length + " nella lista";
-
-function renderHero(){
-  document.getElementById("fundTotal").textContent = eur(total);
-  document.getElementById("quotaValue").textContent = eur(quota);
-}
-renderHero();
-
-/* composizione */
-const stack = document.getElementById("stack");
-const assetsBox = document.getElementById("assets");
-function renderComposizione(){
-  stack.innerHTML = "";
-  assetsBox.innerHTML = "";
-  ASSETS.forEach(a=>{
-    const pct = total ? a.value/total*100 : 0;                           // v1_04: total 0 → niente NaN%
-    const seg = document.createElement("div");
-    seg.style.width = pct+"%";
-    seg.style.background = a.color;
-    stack.appendChild(seg);
-    const ch = (typeof a.ch24==="number")
-      ? ' <span class="'+(a.ch24>=0?'prev-delta up':'prev-delta down')+'" style="width:auto">'+(a.ch24>=0?"+":"")+a.ch24.toLocaleString("it-IT",{maximumFractionDigits:1})+'%</span>'
-      : "";
-    const unit = a.qty ? a.value / a.qty : 0;                            // v1_04: qty 0 → niente Infinity
-    const usd = (typeof a.usd==="number") ? a.usd : unit/FORECASTS.fx;   // v1_04: un solo cambio €/$
-    const fmt$ = n => "$" + n.toLocaleString("it-IT",{maximumFractionDigits: n>=1000?0:(n<1?4:2)});
-    assetsBox.insertAdjacentHTML("beforeend", `
-      <div class="asset-row">
-        <span class="dot" style="background:${a.color}"></span>
-        <span class="asset-name">${a.name}
-          <span class="asset-qty">· ${a.qty.toLocaleString("it-IT")} ${a.sym}${ch}</span>
-          <div class="asset-price">1 ${a.sym} = <span class="cur">${fmt$(usd)}</span> · ${eurP(unit)}</div>
-        </span>
-        <span class="asset-val">${eur(a.value)}</span>
-        <span class="asset-pct">${pct.toFixed(1)}%</span>
-      </div>`);
-  });
-}
-renderComposizione();
-
-/* pulsanti apri/chiudi sezioni */
-const tabs = document.querySelectorAll(".tog[data-target]");
-tabs.forEach(btn=>{
-  btn.setAttribute("aria-controls", btn.dataset.target);   // v1_04
-  btn.setAttribute("aria-expanded", "false");
-  btn.addEventListener("click", ()=>{
-    const sec = document.getElementById(btn.dataset.target);
-    const opening = !sec.classList.contains("open");
-    tabs.forEach(b=>{
-      document.getElementById(b.dataset.target).classList.remove("open");
-      b.classList.remove("open");
-      b.setAttribute("aria-expanded","false");          // v1_04
-    });
-    if(opening){
-      sec.classList.add("open");
-      btn.classList.add("open");
-      btn.setAttribute("aria-expanded","true");         // v1_04
-      sec.scrollIntoView({behavior:"smooth", block:"nearest"});
-    }
-  });
-});
-
-/* palloncini informativi (i) */
-document.querySelectorAll(".i-btn").forEach(b=>{
-  b.addEventListener("click", ()=>{
-    const box = document.getElementById(b.dataset.info);
-    box.hidden = !box.hidden;
-    b.classList.toggle("open", !box.hidden);
-  });
-});
-
-/* partecipanti */
-const list = document.getElementById("participants");
-const maxQ = Math.max(...PARTICIPANTS.map(p=>p[1]));
-PARTICIPANTS.forEach(([name,q])=>{
-  list.insertAdjacentHTML("beforeend", `
-    <div class="p-row" data-name="${name.toLowerCase()}" data-q="${q}">
-      <span class="name">${name}</span>
-      <span class="quote">${q.toLocaleString("it-IT")} ${q===1?"quota":"quote"}</span>
-      <span class="euro">${eur(q*quota)}</span>
-      <span class="bar" style="width:${Math.max(2, q/maxQ*100)}%"></span>
-    </div>`);
-});
-
-/* ricerca */
-const search = document.getElementById("search");
-const noResult = document.getElementById("noResult");
-search.addEventListener("input", ()=>{
-  const t = search.value.trim().toLowerCase();
-  let visible = 0;
-  document.querySelectorAll(".p-row").forEach(r=>{
-    const show = r.dataset.name.includes(t);
-    r.style.display = show ? "" : "none";
-    if(show) visible++;
-  });
-  noResult.style.display = visible ? "none" : "block";
-});
-
-/* e se compro ora? */
-const acqEuro  = document.getElementById("acqEuro");
-const acqQuote = document.getElementById("acqQuote");
-const acqHint  = document.getElementById("acqHint");
-const acqTable = document.getElementById("acqTable");
-let acqMode = "market";
-const MARKET_COLS = [["bear","🐻 Ribassista"],["base","⚖️ Base"],["bull","🚀 Rialzista"]];
-const ENZO_COLS   = [["P","😟 Pessimista"],["O","🙂 Ottimista"],["TTM","🌕 To the moon"]];
-
-document.getElementById("acqQuotaNow").textContent = eur(quota);
-
-/* valore dell'intero fondo in un dato anno/scenario */
-function fundTargetValue(year, mode, key){
-  const yd = FORECASTS.years[year];
-  if(mode === "market"){
-    const s = yd[key];
-    return ASSETS.reduce((sum,a)=>sum + s[a.sym].t*a.qty, 0);
-  }
-  const usd = yd.enzo[key];
-  return ASSETS.reduce((sum,a)=>sum + enzoAssetPrice(a.sym, usd)*a.qty, 0);
-}
-
-function renderAcq(){
-  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
-  document.querySelectorAll("#acqMode .scen-btn").forEach(b=>
-    b.classList.toggle("active", b.dataset.mode===acqMode));
-  document.getElementById("acqHead").innerHTML =
-    "<th>Anno</th>" + cols.map(c=>"<th>"+c[1]+"</th>").join("");
-
-  const v = numIt(acqEuro.value);                    // v1_04
-  if(!(v>0)){
-    acqTable.hidden = true;
-    acqDetail.hidden = true;
-    document.getElementById("acqNet").hidden = true;                    // v1_04
-    acqHint.textContent = "Inserisci un importo per vedere la proiezione anno per anno.";
-    if(typeof renderPmc==="function") renderPmc();
-    return;
-  }
-  const q = v/quota;
-  acqHint.innerHTML = "Oggi con <b>"+eur(v)+"</b> compri circa <b>"+q.toLocaleString("it-IT",{maximumFractionDigits:1})+" quote</b>. Ecco quanto varrebbero a fine anno — <b>tocca un valore</b> per i prezzi previsti dei singoli asset:";
-  const body = Object.keys(FORECASTS.years).map(y=>{
-    const cells = cols.map(([k])=>{
-      const mult = fundTargetValue(y, acqMode, k)/total;
-      const cls = mult>=1 ? "up" : "down";
-      return '<td data-y="'+y+'" data-k="'+k+'" style="cursor:pointer">'+eur(v*mult)+'<div class="mini '+cls+'">×'+mult.toLocaleString("it-IT",{maximumFractionDigits:1})+"</div></td>";
-    }).join("");
-    return '<tr><td class="yr">'+y+"</td>"+cells+"</tr>";
-  }).join("");
-  document.getElementById("acqBody").innerHTML = body;
-  /* v1_04 (PROPOSTA): nota sul netto commissione — i valori in tabella restano quelli di prima */
-  const acqNet = document.getElementById("acqNet");
-  if(MOSTRA_NETTO_COMMISSIONE){
-    const anni = Object.keys(FORECASTS.years).filter(y=>semestriA(y)>0);
-    acqNet.hidden = anni.length === 0;
-    acqNet.innerHTML = "Al lordo della <b>commissione di gestione</b> (3% a semestre in nuove quote, ~6% l'anno): " +
-      "al netto i valori qui sopra vanno moltiplicati per " +
-      anni.map(y=>y+" ×"+numItOut(fattoreNetto(y),2)).join(" · ") + ".";
-  } else { acqNet.hidden = true; }
-  acqTable.hidden = false;
-  acqDetail.hidden = true;
-  if(typeof renderPmc==="function") renderPmc();
-}
-
-const acqDetail = document.getElementById("acqDetail");
-
-function assetTarget(sym, y, mode, k){
-  if(mode==="market") return FORECASTS.years[y][k][sym].t;
-  return enzoAssetPrice(sym, FORECASTS.years[y].enzo[k]);
-}
-
-function showAcqDetail(y, k){
-  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
-  const scenName = (cols.find(c=>c[0]===k)||["",""])[1];
-  const v = numIt(acqEuro.value) || 0;               // v1_04
-  const rows = ASSETS.map(a=>{
-    const now = a.value/a.qty;
-    const t = assetTarget(a.sym, y, acqMode, k);
-    const d = (t/now - 1)*100;
-    return '<tr><td class="yr">'+a.name+'</td><td>'+eurP(now)+'</td><td>'+eurP(t)+'</td>'+
-      '<td><span class="'+(d>=0?"prev-delta up":"prev-delta down")+'" style="width:auto">'+pct(d)+'</span></td></tr>';
-  }).join("");
-  const multEnd = fundTargetValue(y, acqMode, k)/total;
-  acqDetail.innerHTML =
-    '<div class="label">Dettaglio — '+scenName+', fine '+y+'</div>'+
-    '<table class="enzo-table" style="margin-top:8px">'+
-    '<tr><th>Asset</th><th>All\'acquisto (oggi)</th><th>Fine '+y+'</th><th>Δ</th></tr>'+rows+'</table>'+
-    '<div class="prev-note" style="margin-top:10px">'+
-    (v>0 ? 'Il tuo acquisto di oggi ('+eur(v)+' ai prezzi qui sopra) diventerebbe <b>'+eur(v*multEnd)+'</b>. ' : '')+
-    'I prezzi "all\'acquisto" sono quelli di oggi: torna qui in futuro per confrontarli con i prezzi del momento.</div>';
-  acqDetail.hidden = false;
-  acqDetail.scrollIntoView({behavior:"smooth", block:"nearest"});
-}
-
-document.getElementById("acqBody").addEventListener("click", (e)=>{
-  const td = e.target.closest("td[data-y]");
-  if(td) showAcqDetail(td.dataset.y, td.dataset.k);
-});
-
-acqEuro.addEventListener("input", ()=>{
-  const v = numIt(acqEuro.value);                    // v1_04
-  acqQuote.value = (v>0) ? numItOut(v/quota,1) : "";
-  renderAcq();
-});
-acqQuote.addEventListener("input", ()=>{
-  const q = numIt(acqQuote.value);                   // v1_04
-  acqEuro.value = (q>0) ? numItOut(q*quota,2) : "";
-  renderAcq();
-});
-document.querySelectorAll("#acqMode .scen-btn").forEach(btn=>{
-  btn.addEventListener("click", ()=>{ acqMode = btn.dataset.mode; renderAcq(); });
-});
-
-/* proiezione personale col PMC */
-const pmcName = document.getElementById("pmcName");
-const pmcVal = document.getElementById("pmcVal");
-const pmcStatus = document.getElementById("pmcStatus");
-const pmcSummary = document.getElementById("pmcSummary");
-const pmcTable = document.getElementById("pmcTable");
-const pmcFoot = document.getElementById("pmcFoot");
-const acqPmc = document.getElementById("acqPmc");
-const pmcToggle = document.getElementById("pmcToggle");
-
-
-pmcToggle.addEventListener("click", ()=>{
-  const opening = acqPmc.hidden;
-  acqPmc.hidden = !opening;
-  pmcToggle.classList.toggle("open", opening);
-  if(opening){ renderPmc(); acqPmc.scrollIntoView({behavior:"smooth", block:"nearest"}); }
-});
-
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} },
+};
 function findParticipant(txt){
   const t = (txt||"").trim().toLowerCase();
   if(!t) return { status:"empty" };
   const exact = PARTICIPANTS.find(p=>p[0].toLowerCase()===t);
   if(exact) return { status:"ok", p:exact };
-  const matches = PARTICIPANTS.filter(p=>p[0].toLowerCase().includes(t));
-  if(matches.length===1) return { status:"ok", p:matches[0] };
-  if(matches.length>1) return { status:"multi", names:matches.map(p=>p[0]) };
+  const m = PARTICIPANTS.filter(p=>p[0].toLowerCase().includes(t));
+  if(m.length===1) return { status:"ok", p:m[0] };
+  if(m.length>1) return { status:"multi", names:m.map(p=>p[0]) };
   return { status:"none" };
 }
 
-function renderPmc(){
-  if(acqPmc.hidden) return;
-  pmcSummary.innerHTML = "";
-  pmcTable.hidden = true;
-  pmcFoot.hidden = true;
+/* ---------- stato ---------- */
+let total = ASSETS.reduce((s,a)=>s+a.value,0);
+const totalQuotas = PARTICIPANTS.reduce((s,p)=>s+p[1],0) || 1;
+let quota = total / totalQuotas;
+let dayChange = null;   // variazione 24h del fondo in %
 
-  const found = findParticipant(pmcName.value);
-  if(found.status==="empty"){ pmcStatus.textContent = "Scrivi il tuo nome come compare nella lista partecipanti."; return; }
-  if(found.status==="none"){ pmcStatus.textContent = "Nome non trovato nella lista partecipanti. Controlla come è scritto (es. \"Mario O.\")."; return; }
-  if(found.status==="multi"){ pmcStatus.textContent = "Ci sono più nomi simili: " + found.names.join(" / ") + " — specifica meglio."; return; }
+$("updated").textContent = "Dati al " + LAST_UPDATE;
+$("quotaCount").textContent = totalQuotas.toLocaleString("it-IT");
+$("hintSoci").textContent = "· " + PARTICIPANTS.length;
 
-  const [nome, qOwned] = found.p;
-  const pmc = numIt(pmcVal.value);                   // v1_04
-  if(!(pmc>0)){
-    pmcStatus.innerHTML = "Trovato: <b>"+nome+"</b> — "+qOwned.toLocaleString("it-IT")+" quote. Ora inserisci il tuo PMC.";
-    return;
-  }
-  pmcStatus.innerHTML = "Trovato: <b>"+nome+"</b> — "+qOwned.toLocaleString("it-IT")+" quote al PMC di "+eur(pmc)+".";
+/* ---------- navigazione ---------- */
+const navBtns = document.querySelectorAll("nav.tabs button");
+function openPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("open", p.id===id));
+  navBtns.forEach(b=>b.classList.toggle("active", b.dataset.page===id));
+  window.scrollTo({top:0});
+  if(id==="pgChart") loadChart();
+  if(id==="pgAltro") showSub(null);
+}
+navBtns.forEach(b=>b.addEventListener("click", ()=>openPage(b.dataset.page)));
 
-  const v = numIt(acqEuro.value) || 0;               // v1_04
-  const qNew = v/quota;
-  const qTot = qOwned + qNew;
-  const invTot = qOwned*pmc + v;
-  const pmcNew = invTot/qTot;
-  const valNow = qTot*quota;
-  const plNow = valNow/invTot - 1;
-  const f1 = n => n.toLocaleString("it-IT",{maximumFractionDigits:1});
+function showSub(id){
+  $("altroMenu").hidden = !!id;
+  document.querySelectorAll(".sub").forEach(s=>s.hidden = s.id!==id);
+  if(id==="subCard") (document.fonts ? document.fonts.ready : Promise.resolve()).then(drawCard);
+  window.scrollTo({top:0});
+}
+document.querySelectorAll("#altroMenu [data-sub]").forEach(b=>b.addEventListener("click", ()=>showSub(b.dataset.sub)));
+document.querySelectorAll(".sub .back").forEach(b=>b.addEventListener("click", ()=>showSub(null)));
 
-  let pmcLine;
-  if(v<=0){
-    pmcLine = "Nessun acquisto di oggi inserito: proiezione della sola posizione attuale.";
-  }else{
-    const diff = pmcNew - pmc;
-    const dir = Math.abs(diff)<0.005 ? "resta praticamente invariato"
-      : diff<0 ? '<span style="color:var(--chalk-green)">scende</span> di '+eur(-diff)
-      : '<span style="color:var(--chalk-red)">sale</span> di '+eur(diff);
-    pmcLine = "Comprando oggi altre <b>"+f1(qNew)+" quote</b> per <b>"+eur(v)+"</b>, il tuo PMC "+dir+": nuovo PMC <b>"+eur(pmcNew)+"</b>.";
-  }
-
-  pmcSummary.innerHTML = `
-    <div class="prev-quota" style="margin:0 0 12px">
-      <div class="label">La tua posizione</div>
-      <div style="font-size:.88rem;line-height:1.7">
-        Investito finora: <b>${eur(qOwned*pmc)}</b> (${qOwned.toLocaleString("it-IT")} quote × ${eur(pmc)})<br>
-        ${pmcLine}<br>
-        Posizione totale: <b>${f1(qTot)} quote</b>, investimento complessivo <b>${eur(invTot)}</b><br>
-        Valore di oggi: <b>${eur(valNow)}</b> <span class="${plNow>=0?"prev-delta up":"prev-delta down"}" style="width:auto">${pct(plNow*100)}</span>
-      </div>
-    </div>`;
-
-  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
-  document.getElementById("pmcHead").innerHTML =
-    "<th>Anno</th>" + cols.map(c=>"<th>"+c[1]+"</th>").join("");
-  document.getElementById("pmcBody").innerHTML = Object.keys(FORECASTS.years).map(y=>{
-    const cells = cols.map(([k])=>{
-      const mult = fundTargetValue(y, acqMode, k)/total;
-      const valF = qTot*quota*mult;
-      const pl = valF/invTot - 1;
-      const cls = pl>=0 ? "up" : "down";
-      return "<td>"+eur(valF)+'<div class="mini '+cls+'">'+pct(pl*100)+"</div></td>";
-    }).join("");
-    return '<tr><td class="yr">'+y+"</td>"+cells+"</tr>";
-  }).join("");
-  pmcTable.hidden = false;
-  pmcFoot.hidden = false;
-  /* v1_04 (PROPOSTA) */
-  document.getElementById("pmcFootNet").textContent = MOSTRA_NETTO_COMMISSIONE
-    ? "Anche qui i valori sono a quote costanti: non tengono conto della commissione di gestione (3% a semestre in nuove quote)."
-    : "";
+function segInit(id, key, cb){
+  const box = $(id);
+  box.querySelectorAll("button").forEach(b=>b.addEventListener("click", ()=>{
+    box.querySelectorAll("button").forEach(x=>x.classList.toggle("active", x===b));
+    cb(b.dataset[key]);
+  }));
 }
 
+/* ---------- home ---------- */
+function renderHero(){
+  $("fundTotal").textContent = eur(total);
+  $("quotaValue").textContent = eurP(quota);
+  const c = $("fundDelta");
+  if(dayChange==null){ c.className = "chip"; c.textContent = "variazione 24h —"; }
+  else { c.className = "chip " + cls(dayChange); c.textContent = (dayChange>=0?"▲ ":"▼ ") + pct(dayChange,2) + " oggi"; }
+}
+
+function renderComposizione(){
+  $("stack").innerHTML = ASSETS.map(a=>`<div style="width:${a.value/total*100}%;background:${a.color}"></div>`).join("");
+  $("assets").innerHTML = ASSETS.map(a=>{
+    const unit = a.value/a.qty;
+    const usd = (typeof a.usd==="number") ? a.usd : unit/FORECASTS.fx;
+    const usdTxt = "$" + usd.toLocaleString("it-IT",{maximumFractionDigits: usd>=1000?0:(usd<1?4:2)});
+    const ch = (typeof a.ch24==="number") ? `<span class="${cls(a.ch24)}">${pct(a.ch24,1)}</span> · ` : "";
+    return `<div class="asset">
+      <div class="coin" style="background:${a.color}">${a.sym}</div>
+      <div><div class="n">${a.name}</div><div class="s">${a.qty.toLocaleString("it-IT")} ${a.sym} · ${usdTxt} · ${eurP(unit)}</div></div>
+      <div class="r"><div class="v pv">${eur(a.value)}</div><div class="p">${ch}<span style="color:var(--muted)">${(a.value/total*100).toFixed(1).replace(".",",")}%</span></div></div>
+    </div>`;
+  }).join("");
+}
+
+/* il mio conto */
+let me = store.get("cif-me");
+function renderMe(){
+  const found = me ? findParticipant(me.name) : {status:"empty"};
+  const ok = found.status==="ok";
+  $("meSetup").hidden = ok;
+  $("meView").hidden = !ok;
+  $("meEdit").hidden = !ok;
+  if(!ok) return;
+  const [nome, q] = found.p;
+  const val = q*quota;
+  $("meLabel").textContent = "Posizione di " + nome;
+  $("meValue").textContent = eur(val);
+  $("meQuote").textContent = q.toLocaleString("it-IT");
+  $("meShare").textContent = (q/totalQuotas*100).toLocaleString("it-IT",{maximumFractionDigits:2}) + "%";
+  const c = $("meDelta");
+  if(dayChange==null){ c.className="chip"; c.textContent="oggi —"; }
+  else { const e = val - val/(1+dayChange/100); c.className = "chip "+cls(e); c.textContent = (e>=0?"+":"−") + eur(Math.abs(e)) + " oggi"; }
+  const pmc = me.pmc;
+  $("mePlBox").hidden = $("meInvBox").hidden = !(pmc>0);
+  if(pmc>0){
+    const inv = q*pmc, pl = val-inv;
+    $("meInv").textContent = eur(inv);
+    $("mePl").innerHTML = `<span class="${cls(pl)}">${(pl>=0?"+":"−")+eur(Math.abs(pl))}</span> <span style="font-size:.75rem" class="${cls(pl)}">${pct((val/inv-1)*100,1)}</span>`;
+  }
+  document.querySelectorAll(".p-row").forEach(r=>r.classList.toggle("me", r.dataset.name===nome.toLowerCase()));
+}
+$("meSave").addEventListener("click", ()=>{
+  const f = findParticipant($("meName").value);
+  const msg = $("meMsg");
+  if(f.status==="empty"){ msg.textContent = "Scrivi il tuo nome."; return; }
+  if(f.status==="none"){ msg.textContent = "Nome non trovato: controlla come è scritto nella lista Soci."; return; }
+  if(f.status==="multi"){ msg.textContent = "Più nomi simili: " + f.names.join(" / ") + " — specifica meglio."; return; }
+  const pmc = numIt($("mePmc").value);
+  me = { name:f.p[0], pmc: pmc>0 ? pmc : null };
+  store.set("cif-me", me);
+  msg.textContent = "";
+  renderMe(); fillMeDefaults();
+});
+$("meChange").addEventListener("click", ()=>{
+  $("meName").value = me ? me.name : "";
+  $("mePmc").value = me && me.pmc ? numItOut(me.pmc,2) : "";
+  store.del("cif-me"); me = null; renderMe();
+});
+
+/* ---------- soci ---------- */
+const maxQ = Math.max(...PARTICIPANTS.map(p=>p[1]));
+$("participants").innerHTML = PARTICIPANTS.map(([name,q],i)=>`
+  <div class="p-row" data-name="${name.toLowerCase()}" data-q="${q}">
+    <span class="rk">${i+1}</span>
+    <div><div class="name">${name}</div><div class="quote pv">${q.toLocaleString("it-IT")} ${q===1?"quota":"quote"}</div></div>
+    <div><div class="euro pv"></div><div class="sh pv">${(q/totalQuotas*100).toLocaleString("it-IT",{maximumFractionDigits:1})}%</div></div>
+    <div class="bar"><b style="width:${Math.max(1.5,q/maxQ*100)}%"></b></div>
+  </div>`).join("");
+function renderSoci(){
+  document.querySelectorAll(".p-row").forEach(r=>{ r.querySelector(".euro").textContent = eur(r.dataset.q*quota); });
+}
+$("search").addEventListener("input", ()=>{
+  const t = $("search").value.trim().toLowerCase();
+  let vis = 0;
+  document.querySelectorAll(".p-row").forEach(r=>{
+    const show = r.dataset.name.includes(t);
+    r.style.display = show ? "" : "none";
+    if(show) vis++;
+  });
+  $("noResult").hidden = vis>0;
+});
+
+/* ---------- futuro: e se compro ora? ---------- */
+segInit("futSeg","f", f=>{ $("futAcq").hidden = f!=="acq"; $("futPrev").hidden = f!=="prev"; });
+let acqMode = "market";
+const MARKET_COLS = [["bear","🐻 Ribasso"],["base","⚖️ Base"],["bull","🚀 Rialzo"]];
+const ENZO_COLS   = [["P","😟 Pess."],["O","🙂 Ottim."],["TTM","🌕 Moon"]];
+const YEARS = Object.keys(FORECASTS.years);
+
+function fundTargetValue(year, mode, key){
+  const yd = FORECASTS.years[year];
+  if(mode==="market") return ASSETS.reduce((s,a)=>s + yd[key][a.sym].t*a.qty, 0);
+  return ASSETS.reduce((s,a)=>s + enzoAssetPrice(a.sym, yd.enzo[key])*a.qty, 0);
+}
+function assetTarget(sym, y, mode, k){
+  return mode==="market" ? FORECASTS.years[y][k][sym].t : enzoAssetPrice(sym, FORECASTS.years[y].enzo[k]);
+}
+const acqEuro = $("acqEuro"), acqQuote = $("acqQuote");
+
+function renderAcq(){
+  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
+  $("acqHead").innerHTML = "<th>Anno</th>" + cols.map(c=>"<th>"+c[1]+"</th>").join("");
+  $("acqQuotaNow").textContent = eurP(quota);
+  const v = numIt(acqEuro.value);
+  $("acqDetail").hidden = true;
+  if(!(v>0)){
+    $("acqTable").hidden = true; $("acqNet").hidden = true;
+    $("acqHint").textContent = "Inserisci un importo per vedere la proiezione.";
+    renderPmc(); return;
+  }
+  $("acqHint").innerHTML = "Con <b>"+eur(v)+"</b> compri circa <b>"+f1(v/quota)+" quote</b>. Valore a fine anno — tocca una cella per il dettaglio:";
+  $("acqBody").innerHTML = YEARS.map(y=>'<tr><td class="yr">'+y+"</td>"+cols.map(([k])=>{
+    const m = fundTargetValue(y, acqMode, k)/total;
+    return '<td data-y="'+y+'" data-k="'+k+'">'+eur0(v*m)+'<div class="mini '+cls(m-1)+'">×'+m.toLocaleString("it-IT",{maximumFractionDigits:1})+"</div></td>";
+  }).join("")+"</tr>").join("");
+  $("acqTable").hidden = false;
+  const net = $("acqNet");
+  if(MOSTRA_NETTO_COMMISSIONE){
+    const anni = YEARS.filter(y=>semestriA(y)>0);
+    net.hidden = !anni.length;
+    net.textContent = "Al netto della commissione di gestione (3% a semestre) moltiplica per: " + anni.map(y=>y+" ×"+numItOut(fattoreNetto(y),2)).join(" · ");
+  } else net.hidden = true;
+  renderPmc();
+}
+function showAcqDetail(y, k){
+  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
+  const v = numIt(acqEuro.value) || 0;
+  const rows = ASSETS.map(a=>{
+    const now = a.value/a.qty, t = assetTarget(a.sym, y, acqMode, k), d = (t/now-1)*100;
+    return '<tr><td><span class="dot" style="display:inline-block;background:'+a.color+';margin-right:6px"></span>'+a.sym+'</td><td>'+eurP(now)+'</td><td>'+eurP(t)+'</td><td class="'+cls(d)+'">'+pct(d)+'</td></tr>';
+  }).join("");
+  const m = fundTargetValue(y, acqMode, k)/total;
+  $("acqDetail").innerHTML = '<div class="label">'+cols.find(c=>c[0]===k)[1]+' · fine '+y+'</div>'+
+    '<table class="t" style="margin-top:6px"><tr><th>Asset</th><th>Oggi</th><th>Fine '+y+'</th><th>Δ</th></tr>'+rows+'</table>'+
+    (v>0 ? '<p class="hint" style="margin-top:8px">Il tuo acquisto di '+eur(v)+' diventerebbe <b>'+eur(v*m)+'</b>.</p>' : '');
+  $("acqDetail").hidden = false;
+  $("acqDetail").scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+$("acqBody").addEventListener("click", e=>{ const td = e.target.closest("td[data-y]"); if(td) showAcqDetail(td.dataset.y, td.dataset.k); });
+acqEuro.addEventListener("input", ()=>{ const v = numIt(acqEuro.value); acqQuote.value = v>0 ? numItOut(v/quota,1) : ""; renderAcq(); });
+acqQuote.addEventListener("input", ()=>{ const q = numIt(acqQuote.value); acqEuro.value = q>0 ? numItOut(q*quota,2) : ""; renderAcq(); });
+segInit("acqMode","mode", m=>{ acqMode = m; renderAcq(); });
+
+/* proiezione PMC */
+const pmcName = $("pmcName"), pmcVal = $("pmcVal");
+function renderPmc(){
+  $("pmcSummary").innerHTML = ""; $("pmcTable").hidden = true; $("pmcFootNet").textContent = "";
+  const st = $("pmcStatus");
+  const found = findParticipant(pmcName.value);
+  if(found.status==="empty"){ st.textContent = "Scrivi il tuo nome come nella lista Soci."; return; }
+  if(found.status==="none"){ st.textContent = "Nome non trovato. Controlla come è scritto (es. \"Mario O.\")."; return; }
+  if(found.status==="multi"){ st.textContent = "Più nomi simili: " + found.names.join(" / ") + " — specifica meglio."; return; }
+  const [nome, qOwned] = found.p;
+  const pmc = numIt(pmcVal.value);
+  if(!(pmc>0)){ st.innerHTML = "<b>"+nome+"</b> — "+qOwned.toLocaleString("it-IT")+" quote. Ora inserisci il PMC."; return; }
+  st.textContent = "";
+  const v = numIt(acqEuro.value) || 0;
+  const qNew = v/quota, qTot = qOwned+qNew, invTot = qOwned*pmc+v, pmcNew = invTot/qTot, valNow = qTot*quota, plNow = valNow/invTot-1;
+  let line = "";
+  if(v>0){
+    const diff = pmcNew-pmc;
+    line = `<br>Comprando oggi ${f1(qNew)} quote per ${eur(v)}, il PMC ${Math.abs(diff)<0.005 ? "resta uguale" : (diff<0 ? '<span class="up">scende</span>' : '<span class="down">sale</span>')+" a <b>"+eur(pmcNew)+"</b>"}.`;
+  }
+  $("pmcSummary").innerHTML = `<div class="result pv" style="margin-top:4px">
+    <div class="label">${nome}</div>
+    <div class="hint" style="color:var(--text);line-height:1.7">Investito: <b>${eur(invTot)}</b> su <b>${f1(qTot)} quote</b>${line}<br>
+    Valore oggi: <b>${eur(valNow)}</b> <span class="${cls(plNow)}">${pct(plNow*100,1)}</span></div></div>`;
+  const cols = acqMode==="market" ? MARKET_COLS : ENZO_COLS;
+  $("pmcHead").innerHTML = "<th>Anno</th>" + cols.map(c=>"<th>"+c[1]+"</th>").join("");
+  $("pmcBody").innerHTML = YEARS.map(y=>'<tr><td class="yr">'+y+"</td>"+cols.map(([k])=>{
+    const valF = valNow*fundTargetValue(y, acqMode, k)/total, pl = valF/invTot-1;
+    return "<td>"+eur0(valF)+'<div class="mini '+cls(pl)+'">'+pct(pl*100)+"</div></td>";
+  }).join("")+"</tr>").join("");
+  $("pmcTable").hidden = false;
+  if(MOSTRA_NETTO_COMMISSIONE) $("pmcFootNet").textContent = "Valori a quote costanti: non includono la commissione di gestione (3% a semestre).";
+}
 pmcName.addEventListener("input", renderPmc);
 pmcVal.addEventListener("input", renderPmc);
-renderAcq();
 
 /* previsioni */
-const YEARS = Object.keys(FORECASTS.years);
-let curYear = YEARS[0];
-let curScen = "base";
-const anniBox = document.getElementById("anni");
-const prevRows = document.getElementById("prevRows");
-const prevFund = document.getElementById("prevFund");
-const prevQuota = document.getElementById("prevQuota");
-const prevLabel = document.getElementById("prevLabel");
-/* v1_04: dichiarazione di funzione (prima era una const più in basso del suo primo uso: TDZ) */
-function pct(n){ return (n>=0?"+":"") + n.toLocaleString("it-IT",{maximumFractionDigits:0}) + "%"; }
-const SCEN_NAMES = { bear:"scenario ribassista", base:"scenario base", bull:"scenario rialzista", enzo:"visione di Enzo" };
-const SUB_NAMES = { P:"Pessimista", O:"Ottimista", TTM:"TO THE MOON!" };
-let curSub = "O";
-
-YEARS.forEach(y=>{
-  const b = document.createElement("button");
-  b.className = "anno-btn" + (y===curYear ? " active" : "");
-  b.textContent = y;
-  b.addEventListener("click", ()=>{
-    curYear = y;
-    document.querySelectorAll(".anno-btn").forEach(x=>x.classList.toggle("active", x.textContent===y));
-    renderPrev();
-  });
-  anniBox.appendChild(b);
-});
-
-document.querySelectorAll("#scenari .scen-btn").forEach(btn=>{
-  btn.addEventListener("click", ()=>{ curScen = btn.dataset.scen; renderPrev(); });
-});
-document.querySelectorAll("#enzoSub .scen-btn").forEach(btn=>{
-  btn.addEventListener("click", ()=>{ curSub = btn.dataset.sub; renderPrev(); });
-});
-
-/* costruisce i target della visione di Enzo: ETH e SOL derivati dalla prestazione di BTC */
-function enzoTargets(usd){
-  const out = {};
-  ASSETS.forEach(a=>{ out[a.sym] = { t: enzoAssetPrice(a.sym, usd) }; });
-  return out;
-}
+let curYear = YEARS[0], curScen = "base", curSub = "O";
+const SCEN_NAMES = { bear:"ribassista", base:"base", bull:"rialzista", enzo:"visione di Enzo" };
+const SUB_NAMES = { P:"Pessimista", O:"Ottimista", TTM:"To the moon" };
+$("anni").innerHTML = YEARS.map(y=>`<button data-y="${y}" class="${y===curYear?"active":""}">${y}</button>`).join("");
+$("anni").querySelectorAll("button").forEach(b=>b.addEventListener("click", ()=>{
+  curYear = b.dataset.y;
+  $("anni").querySelectorAll("button").forEach(x=>x.classList.toggle("active", x===b));
+  renderPrev();
+}));
+segInit("scenari","scen", s=>{ curScen = s; renderPrev(); });
+segInit("enzoSub","sub", s=>{ curSub = s; renderPrev(); });
 
 function renderPrev(){
-  const yearData = FORECASTS.years[curYear];
-  document.querySelectorAll("#scenari .scen-btn").forEach(b=>{
-    b.hidden = !yearData[b.dataset.scen];
-    b.classList.toggle("active", b.dataset.scen===curScen);
-  });
+  const yd = FORECASTS.years[curYear];
   const isEnzo = curScen==="enzo";
-  document.getElementById("enzoSub").hidden = !isEnzo;
-  document.querySelectorAll("#enzoSub .scen-btn").forEach(b=>
-    b.classList.toggle("active", b.dataset.sub===curSub));
-
-  const scen = isEnzo ? enzoTargets(yearData.enzo[curSub]) : yearData[curScen];
-  prevRows.innerHTML = "";
-  let fundTargetVal = 0;
-  ASSETS.forEach(a=>{
-    const f = scen[a.sym];
-    const priceNow = a.value / a.qty;
-    const delta = (f.t/priceNow - 1) * 100;
-    fundTargetVal += f.t * a.qty;
-    prevRows.insertAdjacentHTML("beforeend", `
-      <div class="prev-row">
-        <span class="asset-name"><span class="dot" style="background:${a.color};display:inline-block;margin-right:8px"></span>${a.name}</span>
-        <span class="prev-target">${eurP(f.t)}</span>
-        <span class="prev-delta ${delta>=0?"up":"down"}">${pct(delta)}</span>
-      </div>`);
-  });
-  const quotaTarget = fundTargetVal / totalQuotas;
-  const fundDelta = (fundTargetVal/total - 1) * 100;
-  prevLabel.textContent = "Se si realizza (" + SCEN_NAMES[curScen] + (isEnzo ? " — " + SUB_NAMES[curSub] : "") + ", fine " + curYear + ")";
-  prevFund.textContent = eur(fundTargetVal) + "  (" + pct(fundDelta) + ")";
-  prevQuota.textContent = "valore quota: " + eur(quotaTarget) + " — oggi " + eur(quota);
-
-  /* v1_04 (PROPOSTA): seconda riga con il valore per quota al netto della
-     commissione di gestione. La riga sopra resta invariata. */
-  const net = document.getElementById("prevQuotaNet");
+  $("enzoSub").hidden = !isEnzo;
+  let fundT = 0;
+  $("prevRows").innerHTML = ASSETS.map(a=>{
+    const t = isEnzo ? enzoAssetPrice(a.sym, yd.enzo[curSub]) : yd[curScen][a.sym].t;
+    const d = (t/(a.value/a.qty)-1)*100;
+    fundT += t*a.qty;
+    return `<div class="prev-row"><span class="dot" style="background:${a.color}"></span><span>${a.name}</span><span class="tg">${eurP(t)}</span><span class="dl ${cls(d)}">${pct(d)}</span></div>`;
+  }).join("");
+  const qT = fundT/totalQuotas;
+  $("prevLabel").textContent = "Fondo a fine " + curYear + " · " + SCEN_NAMES[curScen] + (isEnzo ? " (" + SUB_NAMES[curSub] + ")" : "");
+  $("prevFund").innerHTML = eur(fundT) + ' <span class="' + cls(fundT-total) + '" style="font-size:.9rem">' + pct((fundT/total-1)*100) + "</span>";
+  $("prevQuota").textContent = "Valore quota " + eurP(qT) + " (oggi " + eurP(quota) + ")";
+  const net = $("prevQuotaNet");
   if(MOSTRA_NETTO_COMMISSIONE){
     const sem = semestriA(curYear);
     net.hidden = false;
-    net.textContent = sem === 0
-      ? "al netto della commissione di gestione (3% a semestre): nessun semestre chiuso entro fine " + curYear + ", valore invariato"
-      : "al netto della commissione di gestione (3% a semestre, " + sem + " semestri): " +
-        eur(quotaTarget*fattoreNetto(curYear)) + " per quota (" + pct((fattoreNetto(curYear)-1)*100) + ")";
-  } else { net.hidden = true; }
+    net.textContent = sem===0 ? "Al netto della commissione: invariato (nessun semestre chiuso)"
+      : "Al netto della commissione (" + sem + " semestri): " + eurP(qT*fattoreNetto(curYear)) + " per quota";
+  } else net.hidden = true;
 }
-renderPrev();
 
-/* salva in home (PWA) */
-(function(){
-  const btn = document.getElementById("a2hsBtn");
-  const info = document.getElementById("a2hsInfo");
-  const standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone;
-  if(standalone){ btn.style.display = "none"; return; }   // già installata
+/* ---------- grafico storico ---------- */
+let hist = null, histLoading = false, chartDays = 30, chartMode = "quota";
+segInit("chartMode","m", m=>{ chartMode = m; drawChart(); });
+segInit("chartRange","d", d=>{ chartDays = +d; drawChart(); });
 
-  /* v1_04: ora esiste manifest.json vero (i browser ignorano i manifest blob:,
-     quindi l'installazione con un tocco non partiva mai). Il blob resta solo per
-     la pagina aperta da file:// dove il manifest relativo non è raggiungibile. */
+async function loadChart(){
+  if(hist){ drawChart(); return; }
+  if(histLoading) return;
+  histLoading = true;
+  const cached = store.get("cif-hist");
+  if(cached && Date.now()-cached.at < 3600000 && cached.v===ASSETS.map(a=>a.cg).join()){ hist = cached; histLoading = false; drawChart(); return; }
+  $("chartMsg").textContent = "Caricamento dati da CoinGecko…";
   try{
-   if(location.protocol === "file:"){
-    const manifest = {
-      name: "Crypto Index Fund",
-      short_name: "Crypto Index Fund",
-      start_url: location.href.split("#")[0],
-      display: "standalone",
-      background_color: "#151d1a",
-      theme_color: "#151d1a",
-      icons: [
-        { src: new URL("icon-180.png", location.href).href, sizes: "180x180", type: "image/png" },
-        { src: new URL("icon-512.png", location.href).href, sizes: "512x512", type: "image/png" },
-      ],
-    };
-    const link = document.createElement("link");
-    link.rel = "manifest";
-    link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type:"application/json"}));
-    document.head.appendChild(link);
-   }
-  }catch(e){}
+    const series = {};
+    for(const a of ASSETS){
+      const r = await fetch("https://api.coingecko.com/api/v3/coins/"+a.cg+"/market_chart?vs_currency=eur&days=365&interval=daily");
+      if(!r.ok) throw new Error("http "+r.status);
+      const j = await r.json();
+      series[a.sym] = j.prices;
+    }
+    /* allinea tutto sulle date di BTC */
+    const base = series.BTC;
+    const idx = {}; ASSETS.forEach(a=>idx[a.sym]=0);
+    const pts = base.map(([ts, btc])=>{
+      let v = 0;
+      ASSETS.forEach(a=>{
+        const s = series[a.sym]; let i = idx[a.sym];
+        while(i < s.length-1 && Math.abs(s[i+1][0]-ts) <= Math.abs(s[i][0]-ts)) i++;
+        idx[a.sym] = i;
+        v += s[i][1]*a.qty;
+      });
+      return { t:ts, fund:v, btc:btc };
+    });
+    hist = { at:Date.now(), v:ASSETS.map(a=>a.cg).join(), pts };
+    store.set("cif-hist", hist);
+    drawChart();
+  }catch(e){
+    $("chartMsg").textContent = "Dati storici non disponibili ora (CoinGecko limita le richieste): riprova tra un minuto.";
+  }
+  histLoading = false;
+}
 
+let chartGeom = null;
+function sliceHist(){
+  if(!hist) return [];
+  const pts = hist.pts.slice(-(chartDays+1)).map(p=>({...p}));
+  /* ultimo punto = prezzo live di adesso */
+  if(pts.length){ pts[pts.length-1].fund = total; const b = ASSETS[0]; pts[pts.length-1].btc = b.value/b.qty; }
+  return pts;
+}
+function drawChart(){
+  if(!hist || !$("pgChart").classList.contains("open")) return;
+  const pts = sliceHist();
+  if(pts.length < 2) return;
+  const f0 = pts[0].fund, b0 = pts[0].btc;
+  const series = chartMode==="quota"
+    ? [{ name:"Valore quota", color:"#2f8fe0", vals: pts.map(p=>p.fund/totalQuotas), fmt: eurP }]
+    : [{ name:"Fondo", color:"#2f8fe0", vals: pts.map(p=>(p.fund/f0-1)*100), fmt: v=>pct(v,1) },
+       { name:"Solo BTC", color:"#d0760c", vals: pts.map(p=>(p.btc/b0-1)*100), fmt: v=>pct(v,1) }];
+
+  const cv = $("chart"), wrap = $("chartWrap");
+  const dpr = window.devicePixelRatio || 1, W = wrap.clientWidth, H = wrap.clientHeight;
+  cv.width = W*dpr; cv.height = H*dpr;
+  const ctx = cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+  const padL = 6, padR = 6, padT = 10, padB = 22;
+  let mn = Infinity, mx = -Infinity;
+  series.forEach(s=>s.vals.forEach(v=>{ mn = Math.min(mn,v); mx = Math.max(mx,v); }));
+  if(chartMode==="bench"){ mn = Math.min(mn,0); mx = Math.max(mx,0); }
+  const span = (mx-mn) || 1; mn -= span*.08; mx += span*.08;
+  const X = i => padL + i/(pts.length-1)*(W-padL-padR);
+  const Y = v => padT + (1-(v-mn)/(mx-mn))*(H-padT-padB);
+
+  /* griglia recessiva */
+  ctx.strokeStyle = "#1c222d"; ctx.lineWidth = 1;
+  for(let g=0; g<=3; g++){ const y = padT + g/3*(H-padT-padB); ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke(); }
+  if(chartMode==="bench"){ ctx.strokeStyle = "#3a4252"; ctx.setLineDash([3,4]); ctx.beginPath(); ctx.moveTo(padL,Y(0)); ctx.lineTo(W-padR,Y(0)); ctx.stroke(); ctx.setLineDash([]); }
+  /* date agli estremi */
+  const dfmt = t => new Date(t).toLocaleDateString("it-IT",{day:"numeric",month:"short"});
+  ctx.fillStyle = "#5d6678"; ctx.font = "11px Inter, sans-serif";
+  ctx.textAlign = "left"; ctx.fillText(dfmt(pts[0].t), padL, H-6);
+  ctx.textAlign = "right"; ctx.fillText("oggi", W-padR, H-6);
+
+  series.forEach((s,si)=>{
+    if(si===0 && series.length===1){
+      const g = ctx.createLinearGradient(0,padT,0,H-padB);
+      g.addColorStop(0,"rgba(47,143,224,.28)"); g.addColorStop(1,"rgba(47,143,224,0)");
+      ctx.beginPath(); s.vals.forEach((v,i)=>i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)));
+      ctx.lineTo(X(s.vals.length-1),H-padB); ctx.lineTo(X(0),H-padB); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+    }
+    ctx.beginPath(); s.vals.forEach((v,i)=>i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)));
+    ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.stroke();
+    const li = s.vals.length-1;
+    ctx.beginPath(); ctx.arc(X(li),Y(s.vals[li]),4,0,Math.PI*2); ctx.fillStyle = s.color; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = "#11151d"; ctx.stroke();
+  });
+  chartGeom = { pts, series, X, Y, W, H, padT, padB };
+
+  /* intestazione, legenda, benchmark */
+  const first = series[0].vals[0], last = series[0].vals.at(-1);
+  if(chartMode==="quota"){
+    $("chartTitle").textContent = "Valore quota";
+    const d = (last/first-1)*100;
+    $("chartHead").innerHTML = eurP(last) + ' <span class="chip '+cls(d)+'">'+pct(d,1)+'</span>';
+    $("legend").innerHTML = "";
+  }else{
+    $("chartTitle").textContent = "Rendimento nel periodo";
+    $("chartHead").innerHTML = '<span class="'+cls(last)+'">'+pct(last,1)+'</span> <span class="hint">fondo</span>';
+    $("legend").innerHTML = series.map(s=>`<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
+  }
+  const fr = (pts.at(-1).fund/f0-1)*100, br = (pts.at(-1).btc/b0-1)*100;
+  const lbl = {7:"7 giorni",30:"1 mese",90:"3 mesi",365:"1 anno"}[chartDays];
+  $("benchRange").textContent = lbl;
+  $("bFund").innerHTML = '<span class="'+cls(fr)+'">'+pct(fr,1)+'</span>';
+  $("bBtc").innerHTML = '<span class="'+cls(br)+'">'+pct(br,1)+'</span>';
+  const diff = fr-br;
+  $("bText").textContent = Math.abs(diff)<0.5 ? "In questo periodo il fondo si è mosso quasi come Bitcoin."
+    : "In " + lbl + " il fondo ha fatto " + Math.abs(diff).toLocaleString("it-IT",{maximumFractionDigits:1}) + " punti " + (diff>0?"meglio":"peggio") + " che tenere solo Bitcoin.";
+  $("chartMsg").textContent = "Tocca o trascina sul grafico per i valori giorno per giorno.";
+}
+function chartHover(ev){
+  if(!chartGeom) return;
+  const r = $("chart").getBoundingClientRect();
+  const x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+  const { pts, series, X, Y, H, padT, padB } = chartGeom;
+  let i = Math.round((x - X(0)) / (X(1)-X(0)));
+  i = Math.max(0, Math.min(pts.length-1, i));
+  drawChart();
+  const ctx = $("chart").getContext("2d");
+  ctx.strokeStyle = "#5d6678"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(X(i),padT); ctx.lineTo(X(i),H-padB); ctx.stroke();
+  series.forEach(s=>{ ctx.beginPath(); ctx.arc(X(i),Y(s.vals[i]),4.5,0,Math.PI*2); ctx.fillStyle = s.color; ctx.fill(); ctx.strokeStyle = "#11151d"; ctx.lineWidth = 2; ctx.stroke(); });
+  const tip = $("tip");
+  const d = i===pts.length-1 ? "oggi" : new Date(pts[i].t).toLocaleDateString("it-IT",{day:"numeric",month:"short",year:"numeric"});
+  tip.innerHTML = d + "<br>" + series.map(s=>`<span style="color:var(--muted)">${s.name}</span> <b>${s.fmt(s.vals[i])}</b>`).join("<br>");
+  tip.hidden = false;
+  tip.style.left = Math.max(70, Math.min(chartGeom.W-70, X(i))) + "px";
+}
+function chartLeave(){ $("tip").hidden = true; drawChart(); }
+["mousemove","touchstart","touchmove"].forEach(e=>$("chartWrap").addEventListener(e, chartHover, {passive:true}));
+["mouseleave","touchend"].forEach(e=>$("chartWrap").addEventListener(e, chartLeave));
+window.addEventListener("resize", ()=>drawChart());
+
+/* ---------- storico movimenti ---------- */
+$("timeline").innerHTML = MOVIMENTI.map(m=>`<div class="tl-item"><div class="d">${m.data}</div><ul>${m.righe.map(r=>"<li>"+r+"</li>").join("")}</ul></div>`).join("");
+
+/* ---------- richiesta WhatsApp ---------- */
+let reqType = "compra";
+segInit("reqType","t", t=>{ reqType = t; reqUpdate(); });
+function reqUpdate(src){
+  const e = $("reqEuro"), q = $("reqQuote");
+  if(src==="e"){ const v = numIt(e.value); q.value = v>0 ? numItOut(v/quota,1) : ""; }
+  if(src==="q"){ const v = numIt(q.value); e.value = v>0 ? numItOut(v*quota,2) : ""; }
+  const v = numIt(e.value);
+  let h = "Valore quota attuale: " + eurP(quota) + ".";
+  if(reqType==="vendi"){
+    const f = findParticipant($("reqName").value);
+    if(f.status==="ok") h += " " + f.p[0] + " ha " + f.p[1].toLocaleString("it-IT") + " quote (" + eur(f.p[1]*quota) + ").";
+  }
+  if(v>0) h += " Richiesta: " + f1(v/quota) + " quote ≈ " + eur(v) + ".";
+  $("reqHint").textContent = h;
+}
+$("reqEuro").addEventListener("input", ()=>reqUpdate("e"));
+$("reqQuote").addEventListener("input", ()=>reqUpdate("q"));
+$("reqName").addEventListener("input", ()=>reqUpdate());
+$("reqSend").addEventListener("click", ()=>{
+  const name = $("reqName").value.trim();
+  const v = numIt($("reqEuro").value);
+  if(!name || !(v>0)){ $("reqHint").textContent = "Inserisci il tuo nome e un importo (in € o in quote)."; return; }
+  const txt = "Ciao Enzo, sono " + name + ". Vorrei " + (reqType==="compra" ? "COMPRARE" : "VENDERE") +
+    " circa " + f1(v/quota) + " quote del Crypto Index Fund (≈ " + eur(v) + " al valore quota di " + eurP(quota) + "). Fammi sapere, grazie!";
+  window.open("https://wa.me/" + ENZO_WA + "?text=" + encodeURIComponent(txt), "_blank");
+});
+
+/* ---------- card da condividere ---------- */
+function drawCard(){
+  const c = $("shareCanvas"), x = c.getContext("2d"), W = 1080, H = 1350;
+  x.fillStyle = "#0b0e14"; x.fillRect(0,0,W,H);
+  const g = x.createRadialGradient(W/2,-100,50,W/2,-100,900);
+  g.addColorStop(0,"rgba(61,220,151,.22)"); g.addColorStop(1,"rgba(61,220,151,0)");
+  x.fillStyle = g; x.fillRect(0,0,W,H);
+  const rr = (X,Y,w,h,r)=>{ x.beginPath(); x.roundRect ? x.roundRect(X,Y,w,h,r) : x.rect(X,Y,w,h); };
+  /* logo */
+  const lg = x.createLinearGradient(80,80,176,176); lg.addColorStop(0,"#3ddc97"); lg.addColorStop(1,"#2f8fe0");
+  rr(80,80,96,96,28); x.fillStyle = lg; x.fill();
+  x.fillStyle = "#06110c"; x.font = "800 34px Inter, sans-serif"; x.textAlign = "center"; x.fillText("CIF",128,140);
+  x.textAlign = "left"; x.fillStyle = "#e8ecf3"; x.font = "700 44px Inter, sans-serif"; x.fillText("Crypto Index Fund",204,128);
+  const oggi = new Date().toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"});
+  x.fillStyle = "#8a93a6"; x.font = "400 30px Inter, sans-serif"; x.fillText(oggi,204,170);
+  /* valore */
+  x.fillStyle = "#8a93a6"; x.font = "600 28px Inter, sans-serif"; x.fillText("VALORE DEL FONDO",80,300);
+  x.fillStyle = "#e8ecf3"; x.font = "700 118px 'JetBrains Mono', monospace"; x.fillText(eur(total),72,420);
+  if(dayChange!=null){
+    const up = dayChange>=0, t = (up?"▲ ":"▼ ") + pct(dayChange,2) + " oggi";
+    x.font = "600 36px 'JetBrains Mono', monospace"; const w = x.measureText(t).width + 48;
+    rr(80,460,w,64,32); x.fillStyle = up ? "rgba(61,220,151,.15)" : "rgba(255,92,122,.15)"; x.fill();
+    x.fillStyle = up ? "#3ddc97" : "#ff5c7a"; x.fillText(t,104,504);
+  }
+  /* kpi */
+  const kpi = (X,label,val)=>{ rr(X,580,440,170,28); x.fillStyle = "#11151d"; x.fill();
+    x.fillStyle = "#8a93a6"; x.font = "600 26px Inter, sans-serif"; x.fillText(label,X+36,640);
+    x.fillStyle = "#e8ecf3"; x.font = "700 58px 'JetBrains Mono', monospace"; x.fillText(val,X+36,715); };
+  kpi(80,"VALORE QUOTA",eurP(quota));
+  kpi(560,"SOCI",String(PARTICIPANTS.length));
+  /* composizione */
+  x.fillStyle = "#8a93a6"; x.font = "600 28px Inter, sans-serif"; x.fillText("COMPOSIZIONE",80,840);
+  let bx = 80; const bw = 920;
+  ASSETS.forEach(a=>{ const w = a.value/total*bw; rr(bx,870,Math.max(w-6,4),30,8); x.fillStyle = a.color; x.fill(); bx += w; });
+  ASSETS.forEach((a,i)=>{
+    const col = i%2, row = Math.floor(i/2), X = 80 + col*470, Y = 980 + row*110;
+    x.beginPath(); x.arc(X+22,Y-12,22,0,Math.PI*2); x.fillStyle = a.color; x.fill();
+    x.fillStyle = "#e8ecf3"; x.font = "600 38px Inter, sans-serif"; x.fillText(a.sym,X+60,Y);
+    x.fillStyle = "#8a93a6"; x.font = "500 34px 'JetBrains Mono', monospace";
+    x.textAlign = "right"; x.fillText((a.value/total*100).toFixed(1).replace(".",",")+"%",X+400,Y); x.textAlign = "left";
+    if(typeof a.ch24==="number"){ x.fillStyle = a.ch24>=0 ? "#3ddc97" : "#ff5c7a"; x.font = "500 28px 'JetBrains Mono', monospace"; x.fillText(pct(a.ch24,1),X+60,Y+40); }
+  });
+  x.fillStyle = "#5d6678"; x.font = "400 26px Inter, sans-serif";
+  x.fillText("sefirot8989.github.io/crypto-index-fund",80,1290);
+}
+function cardBlob(){ return new Promise(res=>$("shareCanvas").toBlob(res,"image/png")); }
+$("cardSave").addEventListener("click", async ()=>{
+  drawCard();
+  const b = await cardBlob(), u = URL.createObjectURL(b), a = document.createElement("a");
+  a.href = u; a.download = "crypto-index-fund.png"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u), 4000);
+});
+$("cardShare").addEventListener("click", async ()=>{
+  drawCard();
+  const b = await cardBlob();
+  const file = new File([b], "crypto-index-fund.png", {type:"image/png"});
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file], title:"Crypto Index Fund"}); }catch(e){}
+  } else $("cardSave").click();
+});
+
+/* ---------- PWA: salva in home ---------- */
+(function(){
+  const btn = $("a2hsBtn"), info = $("a2hsInfo");
+  const standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
+  if(standalone){ btn.style.display = "none"; return; }
   let deferred = null;
-  window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); deferred = e; });
-  window.addEventListener("appinstalled", ()=>{ btn.style.display = "none"; info.hidden = true; });
-
+  addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); deferred = e; });
+  addEventListener("appinstalled", ()=>{ btn.style.display = "none"; info.hidden = true; });
   btn.addEventListener("click", async ()=>{
-    if(deferred){                                   // installazione con un tocco (Android/Chrome, pagina online)
-      deferred.prompt();
-      const r = await deferred.userChoice;
-      if(r.outcome === "accepted") btn.style.display = "none";
-      deferred = null;
-      return;
-    }
+    if(deferred){ deferred.prompt(); const r = await deferred.userChoice; if(r.outcome==="accepted") btn.style.display = "none"; deferred = null; return; }
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const isFile = location.protocol === "file:";
-    let t;
-    if(isFile){
-      t = "Da file scaricato il telefono non permette l'installazione: serve la versione online. Quando avremo il link fisso (GitHub), aprendolo questo pulsante installerà l'app con un solo tocco.";
-    }else if(isIOS){
-      t = "Su iPhone/iPad: tocca il pulsante Condividi (quadrato con freccia ⬆️ in basso) e poi \"Aggiungi alla schermata Home\". Troverai l'icona dell'app e si aprirà a tutto schermo.";
-    }else{
-      t = "Apri il menu del browser (⋮ in alto a destra) e scegli \"Aggiungi a schermata Home\" oppure \"Installa app\".";
-    }
-    info.textContent = t;
+    info.textContent = location.protocol==="file:"
+      ? "Da file scaricato non si può installare: apri il link online sefirot8989.github.io/crypto-index-fund."
+      : isIOS ? "Su iPhone: tocca Condividi (quadrato con freccia ⬆️) e poi \"Aggiungi alla schermata Home\"."
+      : "Apri il menu del browser (⋮) e scegli \"Aggiungi a schermata Home\" o \"Installa app\".";
     info.hidden = !info.hidden;
   });
 })();
 
-/* ---- countdown halving ---- */
+/* ---------- countdown halving ---------- */
 (function(){
   const T = new Date("2028-04-15T00:00:00").getTime();
-  const el = {d:document.getElementById("cdD"), h:document.getElementById("cdH"), m:document.getElementById("cdM"), s:document.getElementById("cdS")};
   const pad = n => String(n).padStart(2,"0");
   function tick(){
-    if(document.hidden) return;                                          // v1_04: risparmio batteria
-    let ms = Math.max(0, T - Date.now());
+    if(document.hidden) return;
+    let ms = Math.max(0, T-Date.now());
     const d = Math.floor(ms/86400000); ms -= d*86400000;
     const h = Math.floor(ms/3600000);  ms -= h*3600000;
     const m = Math.floor(ms/60000);    ms -= m*60000;
-    const s = Math.floor(ms/1000);
-    el.d.textContent = d.toLocaleString("it-IT");
-    el.h.textContent = pad(h);
-    el.m.textContent = pad(m);
-    el.s.textContent = pad(s);
+    $("cdD").textContent = d.toLocaleString("it-IT"); $("cdH").textContent = pad(h);
+    $("cdM").textContent = pad(m); $("cdS").textContent = pad(Math.floor(ms/1000));
   }
-  tick();
-  setInterval(tick, 1000);
-  document.addEventListener("visibilitychange", tick);                   // v1_04
+  tick(); setInterval(tick,1000); document.addEventListener("visibilitychange", tick);
 })();
 
-/* ---- modalità privacy ---- */
+/* ---------- privacy ---------- */
 (function(){
-  const btn = document.getElementById("privacyBtn");
-  const initials = n => n.split(/\s+/).filter(Boolean).map(w=>w[0].toUpperCase()+".").join("");   // v1_04
+  const btn = $("privacyBtn");
+  const initials = n => n.split(/\s+/).filter(Boolean).map(w=>w[0].toUpperCase()+".").join("");
   function apply(on){
     document.body.classList.toggle("privacy", on);
     btn.classList.toggle("on", on);
     btn.textContent = on ? "👁" : "🙈";
     btn.title = on ? "Mostra nomi e cifre" : "Nascondi nomi e cifre";
-    btn.setAttribute("aria-label", btn.title);                  // v1_04
+    btn.setAttribute("aria-label", btn.title);
     btn.setAttribute("aria-pressed", on ? "true" : "false");
-    document.querySelectorAll(".p-row").forEach(r=>{
-      const el = r.querySelector(".name");
-      if(!el) return;
+    document.querySelectorAll(".p-row .name").forEach(el=>{
       if(!el.dataset.full) el.dataset.full = el.textContent;
       el.textContent = on ? initials(el.dataset.full) : el.dataset.full;
     });
-    try{ localStorage.setItem("cif-privacy", on ? "1" : "0"); }catch(e){}
+    store.set("cif-privacy", on);
   }
-  let saved = false;
-  try{ saved = localStorage.getItem("cif-privacy")==="1"; }catch(e){}
-  if(saved) apply(true);
-  btn.addEventListener("click", ()=> apply(!document.body.classList.contains("privacy")));
+  if(store.get("cif-privacy")===true) apply(true);
+  btn.addEventListener("click", ()=>apply(!document.body.classList.contains("privacy")));
 })();
 
-/* ---- prezzi live + fear&greed ---- */
+/* ---------- render iniziale ---------- */
+function fillMeDefaults(){
+  if(!me) return;
+  if(!pmcName.value) pmcName.value = me.name;
+  if(!pmcVal.value && me.pmc) pmcVal.value = numItOut(me.pmc,2);
+  if(!$("reqName").value) $("reqName").value = me.name;
+}
+function renderAll(){ renderHero(); renderComposizione(); renderMe(); renderSoci(); renderAcq(); renderPrev(); reqUpdate(); }
+fillMeDefaults();
+renderAll();
+
+/* ---------- prezzi live + fear&greed ---------- */
 (async function(){
   const sig = ms => (typeof AbortSignal!=="undefined" && AbortSignal.timeout) ? AbortSignal.timeout(ms) : undefined;
+  fetch("https://api.alternative.me/fng/", {signal:sig(6000)}).then(r=>r.json()).then(j=>{
+    const d = j && j.data && j.data[0]; if(!d) return;
+    const v = Math.min(100, Math.max(0, parseInt(d.value,10)));
+    const IT = {"Extreme Fear":"Paura estrema","Fear":"Paura","Neutral":"Neutrale","Greed":"Avidità","Extreme Greed":"Avidità estrema"};
+    $("fngDot").style.left = "calc("+v+"% - 2px)";
+    $("fngVal").textContent = v + "/100 — " + (IT[d.value_classification] || d.value_classification);
+  }).catch(()=>{ $("fngVal").textContent = "Non disponibile ora"; });
 
-  /* fear & greed */
-  fetch("https://api.alternative.me/fng/", {signal:sig(6000)})
-    .then(r=>r.json())
-    .then(j=>{
-      const d = j && j.data && j.data[0];
-      if(!d) return;
-      const v = Math.min(100, Math.max(0, parseInt(d.value,10)));
-      const IT = {"Extreme Fear":"Paura estrema","Fear":"Paura","Neutral":"Neutrale","Greed":"Avidità","Extreme Greed":"Avidità estrema"};
-      document.getElementById("fngDot").style.left = "calc("+v+"% - 2px)";
-      document.getElementById("fngVal").textContent = v + "/100 — " + (IT[d.value_classification] || d.value_classification);
-    }).catch(()=>{ document.getElementById("fngVal").textContent = "Non disponibile ora — apri dal link online per i dati live"; });
-
-  /* prezzi live CoinGecko */
   try{
     const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids="+ASSETS.map(a=>a.cg).join(",")+"&vs_currencies=eur,usd&include_24hr_change=true", {signal:sig(6000)});
     if(!r.ok) return;
     const j = await r.json();
-    const map = {}; ASSETS.forEach(a=>{ map[a.sym] = j[a.cg]; });
-    if(!map.BTC || !map.BTC.eur) return;
-    let yest = 0;
-    const stale = [];                                  // v1_04: asset per cui CoinGecko non ha dato il prezzo
+    if(!j.bitcoin || !j.bitcoin.eur) return;
+    let yest = 0; const stale = [];
     ASSETS.forEach(a=>{
-      const m = map[a.sym];
-      if(m && typeof m.eur === "number" && m.eur > 0){
-        a.value = m.eur * a.qty;
+      const m = j[a.cg];
+      if(m && typeof m.eur==="number" && m.eur>0){
+        a.value = m.eur*a.qty;
         if(typeof m.usd==="number") a.usd = m.usd;
-        if(typeof m.eur_24h_change==="number"){
-          a.ch24 = m.eur_24h_change;
-          yest += a.value/(1+m.eur_24h_change/100);
-        } else { yest += a.value; }
+        if(typeof m.eur_24h_change==="number"){ a.ch24 = m.eur_24h_change; yest += a.value/(1+m.eur_24h_change/100); }
+        else yest += a.value;
       } else { stale.push(a.sym); yest += a.value; }
     });
     total = ASSETS.reduce((s,a)=>s+a.value,0);
-    quota = total / totalQuotas;
-
-    renderHero();
-    renderComposizione();
-    document.querySelectorAll(".p-row").forEach(row=>{
-      const q = parseFloat((row.dataset.q||"0"));
-      const el = row.querySelector(".euro");
-      if(el && q) el.textContent = eur(q*quota);
-    });
-    document.getElementById("acqQuotaNow").textContent = eur(quota);
-    if(yest>0 && stale.length===0){                    // v1_04: niente % 24h su dati misti
-      const d = (total/yest - 1)*100;
-      const el = document.getElementById("fundDelta");
-      el.textContent = "· oggi " + (d>=0?"+":"") + d.toLocaleString("it-IT",{maximumFractionDigits:1}) + "%";
-      el.style.color = d>=0 ? "var(--chalk-green)" : "var(--chalk-red)";
-    }
+    quota = total/totalQuotas;
+    if(yest>0 && !stale.length) dayChange = (total/yest-1)*100;
     const hh = new Date().toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
-    /* v1_04: non dichiarare "live" se CoinGecko ha risposto solo per una parte degli asset:
-       prima il totale mescolava prezzi live e prezzi fermi a LAST_UPDATE senza dirlo. */
-    document.getElementById("updated").textContent = stale.length === 0
-      ? "🟢 Prezzi live (CoinGecko) · ore " + hh
-      : "🟡 Prezzi live parziali (CoinGecko) · ore " + hh + " — " + stale.join(", ") + " al " + LAST_UPDATE;
-    renderAcq();
-    renderPrev();
-  }catch(e){ /* offline o API giù: restano i valori manuali */ }
+    $("live").className = "live " + (stale.length ? "part" : "on");
+    $("updated").textContent = stale.length ? "Live parziale · " + hh + " (" + stale.join(", ") + " al " + LAST_UPDATE + ")" : "Live · " + hh;
+    renderAll();
+    drawChart();
+  }catch(e){ /* offline: restano i valori manuali */ }
 })();
-
 </script>
 </body>
 </html>
