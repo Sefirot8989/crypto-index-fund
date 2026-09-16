@@ -145,6 +145,39 @@
   .result{background:var(--card-2);border-radius:14px;padding:14px;margin-top:12px}
   .result .big{font-family:var(--mono);font-weight:700;font-size:1.35rem;margin:4px 0}
 
+
+  /* monete candidate */
+  .bigbtn{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;padding:14px 16px;margin-bottom:14px;border-radius:var(--r);border:1px solid rgba(61,220,151,.45);background:linear-gradient(135deg,rgba(61,220,151,.16),rgba(47,143,224,.12));cursor:pointer;text-align:left}
+  .bigbtn .ic{font-size:1.7rem;flex:none}
+  .bigbtn .tx{flex:1}
+  .bigbtn b{display:block;font-size:1rem;font-weight:700}
+  .bigbtn small{display:block;font-size:.76rem;color:var(--muted);margin-top:3px;line-height:1.4}
+  .bigbtn .ar{color:var(--accent);font-size:1.4rem}
+  .bigbtn:active{transform:scale(.99)}
+  .range{width:100%;accent-color:var(--accent);margin:6px 0 2px;height:28px}
+  .wline{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .wline b{font-family:var(--mono);font-size:1.25rem}
+  .c-row{border-top:1px solid var(--line);padding:11px 0;cursor:pointer}
+  .c-row:first-child{border-top:none}
+  .c-top{display:grid;grid-template-columns:22px 34px 1fr auto;gap:10px;align-items:center}
+  .c-top .rk{font-family:var(--mono);font-size:.7rem;color:var(--dim)}
+  .c-top .coin{background:var(--card-2);border:1px solid var(--line);color:var(--text);font-size:.56rem}
+  .c-top .n{font-weight:600;font-size:.9rem}
+  .c-top .s{font-size:.7rem;color:var(--muted);font-family:var(--mono);margin-top:2px}
+  .c-top .r{text-align:right}
+  .c-top .dr{font-family:var(--mono);font-weight:700;font-size:1rem}
+  .c-top .dk{font-family:var(--mono);font-size:.68rem;margin-top:2px}
+  .dbar{position:relative;height:6px;background:var(--card-2);border-radius:3px;margin:8px 0 0 66px}
+  .dbar:before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--dim)}
+  .dbar b{position:absolute;top:0;height:100%;border-radius:3px}
+  .verd{display:inline-block;font-size:.66rem;font-weight:600;padding:2px 8px;border-radius:999px;margin:7px 0 0 66px}
+  .verd.g{background:rgba(61,220,151,.14);color:var(--up)}
+  .verd.y{background:rgba(232,197,71,.14);color:#e8c547}
+  .verd.r{background:rgba(255,92,122,.14);color:var(--down)}
+  .c-det{margin:10px 0 2px;background:var(--card-2);border-radius:12px;padding:12px;cursor:default}
+  .c-det .t td,.c-det .t th{padding:6px 3px}
+  .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+
   /* grafico */
   .chart-wrap{position:relative;height:220px;margin:4px -4px 0;touch-action:pan-y}
   .chart-wrap canvas{width:100%;height:100%;display:block}
@@ -362,8 +395,48 @@
           <div class="hint" id="prevQuotaNet" hidden style="margin-top:6px"></div>
         </div>
       </div>
+      <button class="bigbtn" id="candOpen"><span class="ic">🔭</span><span class="tx"><b>Quali monete aggiungere al fondo?</b><small>Top 20 di CoinMarketCap che non abbiamo: quanto rendimento e quanto rischio porterebbero</small></span><span class="ar">›</span></button>
     </div>
-    <p class="hint">Le previsioni sono opinioni, non promesse né consigli d'investimento.</p>
+
+    <div id="futCand" hidden>
+      <button class="back" id="candBack">‹ Previsioni</button>
+      <div class="card">
+        <div class="years" id="cAnni"></div>
+        <div class="seg" id="cScen">
+          <button data-s="bear">🐻 Ribasso</button>
+          <button class="active" data-s="base">⚖️ Base</button>
+          <button data-s="bull">🚀 Rialzo</button>
+          <button data-s="enzo">✍️ Enzo</button>
+        </div>
+        <div class="seg" id="cEnzoSub" hidden>
+          <button data-sub="P">😟 Pessimista</button>
+          <button class="active" data-sub="O">🙂 Ottimista</button>
+          <button data-sub="TTM">🌕 Moon</button>
+        </div>
+        <div class="seg" id="cFund">
+          <button class="active" data-m="reb">🔄 Ribilanciamento</button>
+          <button data-m="new">💶 Soldi nuovi</button>
+        </div>
+        <div class="wline"><span class="label" id="cWLabel"></span><b id="cWVal"></b></div>
+        <input type="range" class="range" id="cSlider" aria-label="Quanto mettere nella nuova moneta">
+        <div class="hint" id="cWHint"></div>
+        <div class="sum-grid">
+          <div class="kpi"><div class="label">Fondo oggi · rendimento</div><div class="v" id="cBaseRet">—</div></div>
+          <div class="kpi"><div class="label">Fondo oggi · rischio</div><div class="v" id="cBaseVol">—</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2><span id="cTitle">Candidate</span><small id="cSrc"></small></h2>
+        <div class="seg" id="cSort">
+          <button class="active" data-o="ret">↕ Rendimento</button>
+          <button data-o="ratio">↕ Rendimento/rischio</button>
+        </div>
+        <div class="hint" style="margin-bottom:6px">Numero grande = punti % di rendimento in più (verde) o in meno (rosso) per il fondo · sotto = variazione del rischio. Tocca una moneta per il dettaglio.</div>
+        <div id="cList"><div class="none">Caricamento classifica…</div></div>
+      </div>
+      <p class="hint">Classifica per capitalizzazione (esclusi stablecoin, oro tokenizzato e monete già nel fondo). Le previsioni delle candidate sono stime del modello: ogni moneta segue Bitcoin con un moltiplicatore in salita e in discesa, più una correzione annua per diluizione (sblocchi di token) o riacquisti. Rischio = volatilità annua stimata del fondo; il verdetto confronta il guadagno atteso (25% ribasso · 50% base · 25% rialzo) con la perdita nello scenario di ribasso. Non è un consiglio d'investimento.</p>
+    </div>
+    <p class="hint" id="prevDisc">Le previsioni sono opinioni, non promesse né consigli d'investimento.</p>
   </section>
 
   <!-- ================= ALTRO ================= -->
@@ -441,7 +514,7 @@
   <footer>
     Prezzi live da CoinGecko · dati del fondo aggiornati da Enzo<br>
     Fondo condiviso tra amici — non è consulenza finanziaria<br>
-    <span style="opacity:.7">versione 2.0 · 16 settembre 2026</span>
+    <span style="opacity:.7">versione 2.1 · 16 settembre 2026</span>
   </footer>
 </div>
 
@@ -896,6 +969,246 @@ function renderPrev(){
   } else net.hidden = true;
 }
 
+
+/* ---------- monete candidate (top 20 CoinMarketCap fuori dal fondo) ---------- */
+/* Modello: la moneta segue il Δ% di BTC nello scenario × moltiplicatore (su/giù),
+   più una correzione annua (drift: − diluizione da sblocchi, + riacquisti/burn).
+   vol = volatilità annua stimata; rho = correlazione con il fondo. Stime al 16/9/2026. */
+const CAND_PROFILI = {
+  BNB:  { up:1.1, dn:0.9, drift: 0.03, vol:50,  rho:0.75, note:"Token di Binance: meno volatile, legato alla salute dell'exchange; riacquisti e burn trimestrali." },
+  XRP:  { up:2.0, dn:1.6, drift: 0.00, vol:80,  rho:0.70, note:"Pagamenti internazionali e ETF USA: salite rapide a ondate, molto sentiment." },
+  TRX:  { up:0.8, dn:0.7, drift: 0.03, vol:45,  rho:0.50, note:"Rete molto usata per le stablecoin (USDT): stabile ma poca spinta nei rialzi." },
+  ZEC:  { up:2.5, dn:2.2, drift: 0.00, vol:110, rho:0.55, note:"Privacy: rally enorme nell'ultimo anno, volatilità estrema e rischio regolamentare (delisting)." },
+  HYPE: { up:2.2, dn:1.8, drift: 0.05, vol:95,  rho:0.65, note:"Exchange decentralizzato di derivati: ricavi usati per riacquisti, ma sblocchi del team in corso." },
+  XMR:  { up:1.0, dn:1.0, drift: 0.00, vol:60,  rho:0.55, note:"Privacy pura: pochi exchange la quotano, rischio delisting." },
+  LEO:  { up:0.3, dn:0.3, drift: 0.02, vol:25,  rho:0.30, note:"Token di Bitfinex: quasi fermo, riduce il rischio ma anche il rendimento." },
+  LINK: { up:2.0, dn:1.7, drift:-0.02, vol:80,  rho:0.80, note:"Oracoli e tokenizzazione (RWA): fondamentali solidi, emissione ancora in corso." },
+  ADA:  { up:2.0, dn:1.9, drift:-0.05, vol:85,  rho:0.80, note:"Cardano: community forte ma poco uso reale, ha perso terreno ciclo dopo ciclo." },
+  XLM:  { up:1.8, dn:1.7, drift:-0.05, vol:85,  rho:0.75, note:"Stellar: si muove spesso insieme a XRP, uso reale limitato." },
+  BCH:  { up:1.3, dn:1.3, drift:-0.03, vol:70,  rho:0.75, note:"Fork di Bitcoin: segue BTC senza vantaggi evidenti." },
+  UNI:  { up:2.0, dn:1.9, drift:-0.02, vol:90,  rho:0.80, note:"Uniswap: DeFi di riferimento, possibile attivazione delle commissioni ai possessori." },
+  LTC:  { up:1.2, dn:1.4, drift:-0.05, vol:70,  rho:0.80, note:"Litecoin: storicamente sottoperforma BTC nei rialzi." },
+  GRAM: { up:1.6, dn:1.8, drift:-0.03, vol:80,  rho:0.60, note:"Ex Toncoin, legato a Telegram: dipende dall'adozione dentro l'app." },
+  TON:  { up:1.6, dn:1.8, drift:-0.03, vol:80,  rho:0.60, note:"Legato a Telegram: dipende dall'adozione dentro l'app." },
+  CC:   { up:2.0, dn:2.0, drift:-0.06, vol:100, rho:0.55, note:"Canton: blockchain per banche e istituzioni, token giovane con forte emissione." },
+  HBAR: { up:2.2, dn:2.0, drift:-0.03, vol:95,  rho:0.75, note:"Hedera: aziende nel consiglio, prezzo molto speculativo." },
+  NEAR: { up:2.3, dn:2.0, drift:-0.04, vol:95,  rho:0.80, note:"NEAR: narrativa AI, inflazione del token ~5% l'anno." },
+  AVAX: { up:2.4, dn:2.1, drift:-0.04, vol:95,  rho:0.85, note:"Avalanche: concorrente di Solana, sottoperforma da due anni." },
+  SHIB: { up:2.6, dn:2.4, drift:-0.08, vol:105, rho:0.75, note:"Meme coin: rischio simile a DOGE, che è già nel fondo." },
+  SUI:  { up:3.0, dn:2.4, drift:-0.05, vol:105, rho:0.80, note:"Sui: la più simile a Solana come potenziale, ma forti sblocchi di token fino al 2030." },
+  DOT:  { up:2.0, dn:2.0, drift:-0.05, vol:90,  rho:0.80, note:"Polkadot: in calo di rilevanza." },
+  TAO:  { up:2.8, dn:2.4, drift: 0.00, vol:110, rho:0.70, note:"Bittensor: AI decentralizzata, molto speculativa." },
+  AAVE: { up:1.9, dn:1.7, drift: 0.02, vol:85,  rho:0.80, note:"Aave: prestiti DeFi, ricavi reali e riacquisti." },
+  CRO:  { up:1.6, dn:1.6, drift:-0.02, vol:85,  rho:0.70, note:"Token di Crypto.com." },
+  OKB:  { up:1.2, dn:1.0, drift: 0.03, vol:60,  rho:0.60, note:"Token dell'exchange OKX." },
+};
+const CAND_DEFAULT = { up:2.0, dn:2.0, drift:-0.03, vol:95, rho:0.70, note:"Moneta senza profilo dedicato: stime prudenziali di default." };
+/* rischio degli asset già nel fondo */
+const FUND_VOL = { BTC:45, ETH:65, SOL:80, DOGE:90 };
+const FUND_RHO = 0.75;   /* correlazione media tra gli asset del fondo */
+/* esclusi: stablecoin, oro tokenizzato, token "copia" (wrapped/staked) */
+const CAND_ESCLUSI = new Set(["usdt","usdc","usde","dai","usd1","usdg","pyusd","rlusd","fdusd","tusd","usds","usdd","usdtb","busd","susds","susde","bsc-usd","buidl","usdf","usd0","gho","frax","xaut","paxg",
+  "wbtc","weth","steth","wsteth","weeth","cbbtc","wbeth","reth","ezeth","lbtc","solvbtc","jitosol","msol","bnsol","rseth","meth","cbeth","tbtc","wtrx","clbtc","btcb"]);
+/* elenco di riserva (CoinMarketCap, 16/9/2026) se CoinGecko non risponde — prezzi in $ */
+const CAND_RISERVA = [
+  ["BNB","BNB",713.67],["XRP","XRP",1.29],["TRX","TRON",0.3347],["ZEC","Zcash",1229.01],["HYPE","Hyperliquid",79.12],
+  ["XMR","Monero",505.27],["LEO","UNUS SED LEO",8.87],["LINK","Chainlink",10.85],["ADA","Cardano",0.19],["XLM","Stellar",0.18],
+  ["BCH","Bitcoin Cash",219.01],["UNI","Uniswap",6.37],["LTC","Litecoin",50.81],["GRAM","Gram (ex Toncoin)",1.31],["CC","Canton",0.09],
+  ["HBAR","Hedera",0.07],["NEAR","NEAR Protocol",2.48],["AVAX","Avalanche",7.31],["SHIB","Shiba Inu",0.0000062],["SUI","Sui",0.69],
+].map(([sym,name,usd])=>({ sym, name, price: usd*FORECASTS.fx, ch24:null, rank:null }));
+
+let cands = null, candSrc = "", candLoading = false;
+let cYear = YEARS[0], cScenK = "base", cSubK = "O", cMode = "reb", cSort = "ret", cOpenSym = null;
+let cW = 5, cEuro = 500;
+
+async function loadCands(){
+  if(cands || candLoading) return;
+  candLoading = true;
+  const cached = store.get("cif-cands");
+  if(cached && Date.now()-cached.at < 1800000){ cands = cached.list; candSrc = cached.src; candLoading = false; renderCand(); return; }
+  try{
+    const r = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=80&page=1&price_change_percentage=24h");
+    if(!r.ok) throw new Error("http "+r.status);
+    const j = await r.json();
+    const held = new Set(ASSETS.map(a=>a.sym.toLowerCase()));
+    const list = j.filter(c=>{
+      const s = (c.symbol||"").toLowerCase();
+      return c.current_price>0 && !held.has(s) && !CAND_ESCLUSI.has(s) && !/wrapped|staked|bridged|usd|dollar|gold/i.test(c.name||"");
+    }).slice(0,20).map(c=>({ sym:c.symbol.toUpperCase(), name:c.name, price:c.current_price, ch24:c.price_change_percentage_24h, rank:c.market_cap_rank }));
+    if(list.length < 10) throw new Error("lista corta");
+    cands = list;
+    candSrc = "live · " + new Date().toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
+    store.set("cif-cands", { at:Date.now(), list, src:candSrc });
+  }catch(e){
+    cands = CAND_RISERVA;
+    candSrc = "classifica del 16/9/2026";
+  }
+  candLoading = false;
+  renderCand();
+}
+
+function btcDelta(y, k){
+  const now = priceNowOf("BTC");
+  const t = k==="enzo" ? FORECASTS.years[y].enzo[cSubK]*FORECASTS.fx : FORECASTS.years[y][k].BTC.t;
+  return t/now - 1;
+}
+function anniDaOggi(y){ return Math.max(0.3, (new Date(Number(y),11,31) - new Date())/31557600000); }
+function candRet(c, y, k){
+  const p = CAND_PROFILI[c.sym] || CAND_DEFAULT;
+  const d = btcDelta(y, k);
+  const m = 1 + Math.max(FORECASTS.floor, d*(d>=0 ? p.up : p.dn));
+  return Math.max(FORECASTS.floor, m*Math.pow(1+p.drift, anniDaOggi(y)) - 1);
+}
+function fundRet(y, k){
+  if(k==="enzo") return ASSETS.reduce((s,a)=>s + enzoAssetPrice(a.sym, FORECASTS.years[y].enzo[cSubK])*a.qty, 0)/total - 1;
+  return fundTargetValue(y, "market", k)/total - 1;
+}
+function fundVol(){
+  const ws = ASSETS.map(a=>({ w:a.value/total, v:(FUND_VOL[a.sym]||90)/100 }));
+  let s = 0;
+  ws.forEach((a,i)=>ws.forEach((b,j)=>{ s += a.w*b.w*a.v*b.v*(i===j?1:FUND_RHO); }));
+  return Math.sqrt(s);
+}
+function volWith(c, w){
+  const p = CAND_PROFILI[c.sym] || CAND_DEFAULT, sf = fundVol(), sc = p.vol/100;
+  return Math.sqrt((1-w)*(1-w)*sf*sf + w*w*sc*sc + 2*w*(1-w)*sf*sc*p.rho);
+}
+function candWeight(){ return cMode==="reb" ? cW/100 : cEuro/(total+cEuro); }
+const pt = n => (n>=0?"+":"−") + Math.abs(n).toLocaleString("it-IT",{minimumFractionDigits:1,maximumFractionDigits:1}) + " pt";
+const k2name = k => ({bear:"ribasso",base:"base",bull:"rialzo",enzo:"visione di Enzo"})[k];
+
+function renderCandControls(){
+  const s = $("cSlider");
+  if(cMode==="reb"){
+    s.min = 1; s.max = 25; s.step = 1; s.value = cW;
+    $("cWLabel").textContent = "Peso della nuova moneta";
+    $("cWVal").textContent = cW + "%";
+    const sell = total*cW/100;
+    $("cWHint").innerHTML = "Si vende <b class=\"pv\">" + eur0(sell) + "</b> del fondo in proporzione (" +
+      ASSETS.map(a=>a.sym+" "+eur0(sell*a.value/total)).join(" · ") + ") e si compra la moneta. Le quote non cambiano.";
+  }else{
+    s.min = 50; s.max = 5000; s.step = 50; s.value = cEuro;
+    const w = candWeight();
+    $("cWLabel").textContent = "Soldi nuovi investiti";
+    $("cWVal").textContent = eur0(cEuro);
+    $("cWHint").innerHTML = "Entrano " + eur0(cEuro) + " (≈ " + f1(cEuro/quota) + " nuove quote) e vanno tutti nella moneta: pesa il <b>" +
+      (w*100).toLocaleString("it-IT",{maximumFractionDigits:1}) + "%</b> del fondo. BTC, ETH, SOL e DOGE restano uguali.";
+  }
+}
+
+function renderCand(){
+  renderCandControls();
+  $("cEnzoSub").hidden = cScenK!=="enzo";
+  const w = candWeight();
+  const rf = fundRet(cYear, cScenK), sf = fundVol();
+  const rfAll = { bear:fundRet(cYear,"bear"), base:fundRet(cYear,"base"), bull:fundRet(cYear,"bull") };
+  const expF = .25*rfAll.bear + .5*rfAll.base + .25*rfAll.bull;
+  $("cBaseRet").innerHTML = '<span class="'+cls(rf)+'">'+pct(rf*100,1)+'</span> <span class="hint">'+cYear+'</span>';
+  $("cBaseVol").textContent = (sf*100).toLocaleString("it-IT",{maximumFractionDigits:0}) + "% annuo";
+  $("cTitle").textContent = "Fine " + cYear + " · " + k2name(cScenK) + (cScenK==="enzo" ? " ("+SUB_NAMES[cSubK]+")" : "");
+  $("cSrc").textContent = candSrc;
+  if(!cands){ $("cList").innerHTML = '<div class="none">Caricamento classifica…</div>'; return; }
+
+  const rows = cands.map((c,i)=>{
+    const rc = candRet(c, cYear, cScenK);
+    const dRet = w*(rc - rf)*100;
+    const sNew = volWith(c, w), dVol = (sNew - sf)*100;
+    const rcAll = { bear:candRet(c,cYear,"bear"), base:candRet(c,cYear,"base"), bull:candRet(c,cYear,"bull") };
+    const expC = .25*rcAll.bear + .5*rcAll.base + .25*rcAll.bull;
+    const expNew = (1-w)*expF + w*expC;
+    /* rapporto rendimento atteso / perdita nello scenario di ribasso */
+    const bearNew = (1-w)*rfAll.bear + w*rcAll.bear;
+    const ratioOld = expF/Math.max(0.05, -rfAll.bear), ratioNew = expNew/Math.max(0.05, -bearNew);
+    const dRatio = ratioNew - ratioOld;
+    return { c, pos:i+1, rc, dRet, dVol, sNew, rcAll, dRatio };
+  });
+  /* verdetto: le 5 con il miglior rapporto guadagno/perdita = forti candidate */
+  const byRatio = rows.slice().sort((a,b)=>b.dRatio-a.dRatio);
+  byRatio.forEach((r,i)=>{
+    if(r.dRet<=0.05 && r.dVol<-0.05) r.verd = ["y","🛡️ Rende meno ma abbassa il rischio"];
+    else if(r.dRet<=0.05 || r.dRatio<0) r.verd = ["r","❌ Peggiora il fondo"];
+    else if(i<5) r.verd = ["g","✅ Forte candidata: miglior rapporto guadagno/rischio"];
+    else r.verd = ["y","➖ Migliora poco rispetto al rischio che aggiunge"];
+  });
+  rows.sort(cSort==="ret" ? (a,b)=>b.dRet-a.dRet : (a,b)=>b.dRatio-a.dRatio);
+  const maxAbs = Math.max(0.5, ...rows.map(r=>Math.abs(r.dRet)));
+
+  $("cList").innerHTML = rows.map(r=>{
+    const c = r.c, p = CAND_PROFILI[c.sym] || CAND_DEFAULT;
+    const wd = Math.abs(r.dRet)/maxAbs*50;
+    const bar = r.dRet>=0 ? `left:50%;width:${wd}%;background:var(--up)` : `right:50%;width:${wd}%;background:var(--down)`;
+    const usd = c.price/FORECASTS.fx;
+    const ch = typeof c.ch24==="number" ? ` · <span class="${cls(c.ch24)}">${pct(c.ch24,1)}</span>` : "";
+    let det = "";
+    if(cOpenSym===c.sym){
+      const tr = ["bear","base","bull"].map(k=>{
+        const t = c.price*(1+r.rcAll[k]), f0 = fundRet(cYear,k), f1v = (1-w)*f0 + w*r.rcAll[k];
+        return `<tr><td>${{bear:"🐻",base:"⚖️",bull:"🚀"}[k]}</td><td>${eurP(t)}</td><td class="${cls(r.rcAll[k])}">${pct(r.rcAll[k]*100)}</td><td class="${cls(f0)}">${pct(f0*100)}</td><td class="${cls(f1v)}">${pct(f1v*100)}</td></tr>`;
+      }).join("");
+      const gain = (cMode==="reb" ? total*w : cEuro)*(r.rc);
+      det = `<div class="c-det">
+        <table class="t"><tr><th></th><th>Prezzo ${cYear}</th><th>Moneta</th><th>Fondo</th><th>Con lei</th></tr>${tr}</table>
+        <p class="hint" style="margin-top:8px">Scenario scelto: i ${eur0(cMode==="reb"?total*w:cEuro)} messi in ${c.sym} diventerebbero <b class="pv">${eur0((cMode==="reb"?total*w:cEuro)+gain)}</b>.
+        Rischio del fondo: ${(fundVol()*100).toFixed(0)}% → <b>${(r.sNew*100).toFixed(0)}%</b> (volatilità di ${c.sym} ≈ ${p.vol}%).
+        Moltiplicatore su BTC: ×${String(p.up).replace(".",",")} in salita, ×${String(p.dn).replace(".",",")} in discesa${p.drift? ", "+pct(p.drift*100)+" l'anno di correzione":""}.</p>
+        <p class="hint" style="margin-top:6px;color:var(--text)">${p.note}</p>
+      </div>`;
+    }
+    return `<div class="c-row" data-sym="${c.sym}">
+      <div class="c-top">
+        <span class="rk">${c.rank||r.pos}</span>
+        <div class="coin">${c.sym.slice(0,5)}</div>
+        <div><div class="n">${c.name}</div><div class="s">$${usd.toLocaleString("it-IT",{maximumFractionDigits: usd>=100?0:(usd>=1?2:(usd>=0.01?4:8))})}${ch} · <span class="${cls(r.rc)}">${pct(r.rc*100)}</span></div></div>
+        <div class="r"><div class="dr ${cls(r.dRet)}">${pt(r.dRet)}</div><div class="dk ${r.dVol>0.05?"down":(r.dVol<-0.05?"up":"")}" style="${Math.abs(r.dVol)<=0.05?"color:var(--muted)":""}">rischio ${pt(r.dVol)}</div></div>
+      </div>
+      <div class="dbar"><b style="${bar}"></b></div>
+      <span class="verd ${r.verd[0]}">${r.verd[1]}</span>
+      ${det}
+    </div>`;
+  }).join("");
+}
+
+(function(){
+  $("cAnni").innerHTML = YEARS.map(y=>`<button data-y="${y}" class="${y===cYear?"active":""}">${y}</button>`).join("");
+  $("cAnni").querySelectorAll("button").forEach(b=>b.addEventListener("click", ()=>{
+    cYear = b.dataset.y;
+    $("cAnni").querySelectorAll("button").forEach(x=>x.classList.toggle("active", x===b));
+    renderCand();
+  }));
+  segInit("cScen","s", k=>{ cScenK = k; renderCand(); });
+  segInit("cEnzoSub","sub", k=>{ cSubK = k; renderCand(); });
+  segInit("cFund","m", m=>{ cMode = m; renderCand(); });
+  segInit("cSort","o", o=>{ cSort = o; renderCand(); });
+  $("cSlider").addEventListener("input", e=>{
+    if(cMode==="reb") cW = +e.target.value; else cEuro = +e.target.value;
+    renderCand();
+  });
+  $("cList").addEventListener("click", e=>{
+    if(e.target.closest(".c-det")) return;
+    const row = e.target.closest(".c-row"); if(!row) return;
+    cOpenSym = cOpenSym===row.dataset.sym ? null : row.dataset.sym;
+    renderCand();
+  });
+  function openCand(on){
+    $("futCand").hidden = !on;
+    $("futPrev").hidden = on;
+    $("futSeg").hidden = on;
+    $("prevDisc").hidden = on;
+    if(on){
+      /* parte dallo stesso anno/scenario scelto in Previsioni */
+      cYear = curYear; cScenK = curScen; cSubK = curSub;
+      $("cAnni").querySelectorAll("button").forEach(x=>x.classList.toggle("active", x.dataset.y===cYear));
+      $("cScen").querySelectorAll("button").forEach(x=>x.classList.toggle("active", x.dataset.s===cScenK));
+      $("cEnzoSub").querySelectorAll("button").forEach(x=>x.classList.toggle("active", x.dataset.sub===cSubK));
+      renderCand(); loadCands();
+    }
+    window.scrollTo({top:0});
+  }
+  $("candOpen").addEventListener("click", ()=>openCand(true));
+  $("candBack").addEventListener("click", ()=>openCand(false));
+  navBtns.forEach(b=>b.addEventListener("click", ()=>{ if(!$("futCand").hidden) openCand(false); }));
+})();
+
 /* ---------- grafico storico ---------- */
 let hist = null, histLoading = false, chartDays = 30, chartMode = "quota";
 segInit("chartMode","m", m=>{ chartMode = m; drawChart(); });
@@ -1205,7 +1518,7 @@ function fillMeDefaults(){
   if(!pmcVal.value && me.pmc) pmcVal.value = numItOut(me.pmc,2);
   if(!$("reqName").value) $("reqName").value = me.name;
 }
-function renderAll(){ renderHero(); renderComposizione(); renderMe(); renderSoci(); renderAcq(); renderPrev(); reqUpdate(); }
+function renderAll(){ renderHero(); renderComposizione(); renderMe(); renderSoci(); renderAcq(); renderPrev(); reqUpdate(); if(!$("futCand").hidden) renderCand(); }
 fillMeDefaults();
 renderAll();
 
