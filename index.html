@@ -463,9 +463,9 @@ const ENZO_WA = "";   // numero WhatsApp di Enzo con prefisso, es. "393331234567
 
 const ASSETS = [
   { sym:"BTC",  name:"Bitcoin",  qty:0.1,   value:6776.00, color:"#d0760c", cg:"bitcoin"  },   // BTC ≈ €67.760
-  { sym:"ETH",  name:"Ethereum", qty:1.89,  value:3987.00, color:"#7078ea", cg:"ethereum" },   // ETH ≈ €2.110
+  { sym:"ETH",  name:"Ethereum", qty:2.00,  value:4220.00, color:"#7078ea", cg:"ethereum" },   // ETH ≈ €2.110
   { sym:"SOL",  name:"Solana",   qty:50,    value:4276.00, color:"#12a191", cg:"solana"   },   // SOL ≈ €85,5
-  { sym:"DOGE", name:"Dogecoin", qty:10000, value:703.00,  color:"#b08f1c", cg:"dogecoin" },   // DOGE ≈ €0,0703
+  { sym:"DOGE", name:"Dogecoin", qty:5000,  value:351.50,  color:"#b08f1c", cg:"dogecoin" },   // DOGE ≈ €0,0703
 ];
 
 const PARTICIPANTS = [
@@ -498,6 +498,10 @@ const PARTICIPANTS = [
 
 /* storico movimenti: il più recente in alto */
 const MOVIMENTI = [
+  { data:"16 settembre 2026 · ribilanciamento", righe:[
+    "Il fondo riduce Dogecoin: <b>−5.000 DOGE</b> (10.000 → 5.000)",
+    "e aumenta Ethereum: <b>+0,11 ETH</b> (1,89 → 2)",
+    "Quote invariate: <b>5.725</b>" ]},
   { data:"16 settembre 2026", righe:[
     "Vincenzo M. compra <b>560 quote</b> (440 → 1.000)",
     "Christian F. compra <b>359 quote</b> (1.513 → 1.872)",
