@@ -10,8 +10,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Crypto Index Fund">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=2">
+<link rel="icon" type="image/png" sizes="180x180" href="icon-180.png?v=2">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -51,7 +52,7 @@
   /* header */
   header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
   .brand{display:flex;align-items:center;gap:10px}
-  .logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:800;font-size:.8rem;color:#06110c;letter-spacing:.02em}
+  .logo{width:42px;height:42px;border-radius:12px;object-fit:cover;display:block;flex:none;border:1px solid var(--line);box-shadow:0 0 18px rgba(247,147,26,.25)}
   .brand h1{font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
   .live{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px}
   .live i{width:7px;height:7px;border-radius:50%;background:var(--dim);display:inline-block}
@@ -211,7 +212,7 @@
 
   <header>
     <div class="brand">
-      <div class="logo">CIF</div>
+      <img class="logo" src="icon-180.png?v=2" alt="Logo Crypto Index Fund" width="42" height="42">
       <div>
         <h1>Crypto Index Fund</h1>
         <div class="live" id="live"><i></i><span id="updated"></span></div>
@@ -1066,6 +1067,10 @@ $("reqSend").addEventListener("click", ()=>{
 });
 
 /* ---------- card da condividere ---------- */
+const logoImg = new Image();
+logoImg.src = "icon-512.png?v=2";
+logoImg.onload = ()=>{ if(!$("subCard").hidden) drawCard(); };
+let cardNoLogo = false;   // true se il logo "sporca" il canvas (pagina aperta da file)
 function drawCard(){
   const c = $("shareCanvas"), x = c.getContext("2d"), W = 1080, H = 1350;
   x.fillStyle = "#0b0e14"; x.fillRect(0,0,W,H);
@@ -1074,9 +1079,12 @@ function drawCard(){
   x.fillStyle = g; x.fillRect(0,0,W,H);
   const rr = (X,Y,w,h,r)=>{ x.beginPath(); x.roundRect ? x.roundRect(X,Y,w,h,r) : x.rect(X,Y,w,h); };
   /* logo */
-  const lg = x.createLinearGradient(80,80,176,176); lg.addColorStop(0,"#3ddc97"); lg.addColorStop(1,"#2f8fe0");
-  rr(80,80,96,96,28); x.fillStyle = lg; x.fill();
-  x.fillStyle = "#06110c"; x.font = "800 34px Inter, sans-serif"; x.textAlign = "center"; x.fillText("CIF",128,140);
+  if(!cardNoLogo && logoImg.complete && logoImg.naturalWidth){
+    x.save(); rr(80,80,96,96,24); x.clip(); x.drawImage(logoImg,80,80,96,96); x.restore();
+  }else{
+    rr(80,80,96,96,24); x.fillStyle = "#f7931a"; x.fill();
+    x.fillStyle = "#0b0e14"; x.font = "800 34px Inter, sans-serif"; x.textAlign = "center"; x.fillText("CIF",128,140);
+  }
   x.textAlign = "left"; x.fillStyle = "#e8ecf3"; x.font = "700 44px Inter, sans-serif"; x.fillText("Crypto Index Fund",204,128);
   const oggi = new Date().toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"});
   x.fillStyle = "#8a93a6"; x.font = "400 30px Inter, sans-serif"; x.fillText(oggi,204,170);
@@ -1110,7 +1118,12 @@ function drawCard(){
   x.fillStyle = "#5d6678"; x.font = "400 26px Inter, sans-serif";
   x.fillText("sefirot8989.github.io/crypto-index-fund",80,1290);
 }
-function cardBlob(){ return new Promise(res=>$("shareCanvas").toBlob(res,"image/png")); }
+function cardBlob(){
+  return new Promise(res=>{
+    try{ $("shareCanvas").toBlob(res,"image/png"); }
+    catch(e){ cardNoLogo = true; drawCard(); $("shareCanvas").toBlob(res,"image/png"); }
+  });
+}
 $("cardSave").addEventListener("click", async ()=>{
   drawCard();
   const b = await cardBlob(), u = URL.createObjectURL(b), a = document.createElement("a");
