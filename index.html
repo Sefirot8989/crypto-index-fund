@@ -28,6 +28,7 @@
     --btc:#f7931a;
     --eth:#a9b4e0;
     --sol:#5dd6c0;
+    --doge:#e3c567;
     --radius:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -187,7 +188,6 @@
   .prev-delta{font-family:'IBM Plex Mono',monospace;font-size:.78rem;width:64px;text-align:right}
   .prev-delta.up{color:var(--chalk-green)}
   .prev-delta.down{color:var(--chalk-red)}
-  .prev-src{grid-column:1 / -1;color:var(--chalk-dim);font-size:.72rem;line-height:1.5}
   .prev-quota{
     margin-top:14px;padding:14px 16px;
     border:1px dashed var(--line);border-radius:var(--radius);
@@ -195,20 +195,6 @@
   }
   .prev-quota .big{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.35rem;font-variant-numeric:tabular-nums}
   .prev-note{margin-top:8px;font-size:.75rem;color:var(--chalk-dim)}
-  .nota{
-    margin-top:16px;padding:14px 16px;
-    border-left:3px solid var(--chalk-blue);
-    background:rgba(141,183,240,.05);
-    border-radius:0 10px 10px 0;
-    font-size:.85rem;line-height:1.65;color:var(--chalk);
-  }
-  .nota .nota-label{
-    font-family:'Caveat',cursive;font-weight:700;font-size:1.25rem;
-    display:block;margin-bottom:4px;color:var(--chalk-blue);
-  }
-  .nota.enzo{border-left-color:#f0d48d;background:rgba(240,212,141,.05)}
-  .nota.enzo p{margin:8px 0}
-  .nota.enzo p:first-of-type{margin-top:2px}
   .enzo-table{width:100%;border-collapse:collapse;margin:10px 0 4px;font-family:'IBM Plex Mono',monospace;font-size:.78rem}
   .enzo-table th{font-family:'Inter',sans-serif;font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;color:var(--chalk-dim);text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
   .enzo-table th:first-child{text-align:left}
@@ -216,20 +202,6 @@
   .enzo-table td.yr{text-align:left;color:var(--chalk-blue);font-weight:500}
   .enzo-table tr:last-child td{border-bottom:none}
   .enzo-foot{font-size:.72rem;color:var(--chalk-dim)}
-  .nota.enzo .nota-label{color:#f0d48d}
-  details.nota summary{
-    cursor:pointer;list-style:none;min-height:44px;   /* v1_04: tocco >= 44px */
-    display:flex;justify-content:space-between;align-items:center;gap:10px;
-    margin-bottom:0;
-  }
-  details.nota summary::-webkit-details-marker{display:none}
-  details.nota .freccia{
-    font-family:'Inter',sans-serif;font-size:1rem;color:var(--chalk-dim);
-    transition:transform .2s;flex:none;
-  }
-  details.nota[open] .freccia{transform:rotate(90deg)}
-  details.nota[open] summary{margin-bottom:6px}
-  details.nota summary:hover .freccia{color:var(--chalk)}
   .acq-intro{font-size:.88rem;line-height:1.7;margin-bottom:16px;color:var(--chalk)}
   .acq-table{margin-top:4px}
   .acq-table[hidden]{display:none}
@@ -360,8 +332,7 @@
   </div>
 
   <div class="section" id="secAcquisto">
-    <div class="h-row"><h2>E se compro ora?</h2><button class="i-btn" data-info="infoAcq" aria-label="Come funziona questa sezione">i</button></div>
-    <div class="i-balloon" id="infoAcq" hidden>Secondo la visione di Enzo siamo nella fase di accumulo del ciclo: è il momento in cui, se le previsioni si avverano, entrare fa la differenza. Inserisci quanto vorresti investire (in euro o in quote) e guarda quanto <b>potrebbe</b> valere il tuo acquisto anno per anno — nello scenario buono, in quello spaziale, ma anche in quello negativo, perché le crypto possono scendere e nessuno scenario è garantito. Il calcolo è a composizione del fondo e quote costanti: il tuo acquisto cresce (o scende) come il fondo intero. Investi solo ciò che puoi lasciare fermo a lungo.</div>
+    <div class="h-row"><h2>E se compro ora?</h2></div>
     <p class="hint" style="margin:0 0 14px">La quota oggi costa <b id="acqQuotaNow"></b>.</p>
     <div class="hero" style="margin-bottom:14px">
       <div class="box" style="flex:1;min-width:140px">
@@ -386,13 +357,11 @@
     <div class="prev-quota" id="acqDetail" hidden style="margin-top:12px"></div>
     <!-- v1_04: riga aggiuntiva, non sostituisce nulla -->
     <div class="disclaimer" id="acqNet" hidden></div>
-    <div class="disclaimer">Le previsioni sono opinioni, non promesse.</div>
 
     <button class="tog" id="pmcToggle" style="width:100%;margin-top:18px">🎯 Proiezione personale col tuo PMC
       <span class="tog-hint">nome + prezzo medio di carico</span></button>
     <div id="acqPmc" hidden>
-      <div class="h-row" style="margin:14px 0 10px"><span class="label" style="margin:0">Inserisci nome e PMC attuale</span><button class="i-btn" data-info="infoPmc" aria-label="Cos'è il PMC">i</button></div>
-      <div class="i-balloon" id="infoPmc" hidden>Il <b>PMC</b> (prezzo medio di carico) è quanto hai pagato <b>in media ogni tua quota</b> finora. Inserendolo insieme al tuo nome, il calcolo diventa personale: vedi quanto hai investito davvero, come cambia il tuo PMC comprando oggi a <b id="pmcQuotaNow"></b>, e quanto guadagneresti (o perderesti) anno per anno rispetto ai soldi che hai messo. Come acquisto di oggi si usa l'importo inserito sopra nella sezione — lascialo vuoto per proiettare solo la posizione che hai già. Se non ricordi il tuo PMC, chiedilo a Enzo che tiene il registro. Niente viene salvato: i dati restano solo sul tuo schermo.</div>
+      <div class="h-row" style="margin:14px 0 10px"><span class="label" style="margin:0">Inserisci nome e PMC attuale</span></div>
       <div class="hero" style="margin-bottom:10px">
         <div class="box" style="flex:1;min-width:140px">
           <div class="label">Il tuo nome</div>
@@ -410,13 +379,12 @@
         <thead><tr id="pmcHead"></tr></thead>
         <tbody id="pmcBody"></tbody>
       </table>
-      <div class="disclaimer" id="pmcFoot" hidden>Guadagno/perdita calcolati sul totale investito (quote al tuo PMC + acquisto di oggi). <span id="pmcFootNet"></span></div>
+      <div class="disclaimer" id="pmcFoot" hidden><span id="pmcFootNet"></span></div>
     </div>
   </div>
 
   <div class="section" id="secPrevisioni">
-    <div class="h-row"><h2>Previsioni future</h2><button class="i-btn" data-info="infoPrev" aria-label="Fonti e metodo di calcolo">i</button></div>
-    <div class="i-balloon" id="infoPrev" hidden></div>
+    <div class="h-row"><h2>Previsioni future</h2></div>
     <div class="anni" id="anni"></div>
     <div class="scenari" id="scenari">
       <button class="scen-btn" data-scen="bear">🐻 Ribassista</button>
@@ -437,15 +405,7 @@
       <!-- v1_04: riga aggiuntiva, non sostituisce nulla -->
       <div class="hint" id="prevQuotaNet" hidden style="margin-top:6px"></div>
     </div>
-    <details class="nota">
-      <summary class="nota-label">Dove siamo nel ciclo di Bitcoin <span class="freccia">▸</span></summary>
-      <span id="cicloText"></span>
-    </details>
-    <details class="nota enzo">
-      <summary class="nota-label">La visione di Enzo <span class="freccia">▸</span></summary>
-      <div id="enzoText"></div>
-    </details>
-    <div class="disclaimer" id="prevDisclaimer"></div>
+
   </div>
 
   <div class="section" id="secIndicatori">
@@ -466,36 +426,12 @@
       </div>
       <div class="foot">L'halving dimezza le nuove emissioni di Bitcoin: storicamente ha segnato l'inizio della fase di accumulo del ciclo.</div>
     </div>
-    <div class="disclaimer">Altri indicatori in arrivo — questa sezione crescerà.</div>
   </div>
-
-  <details class="nota" style="margin-top:26px">
-    <summary class="nota-label">🆕 Novità <span class="freccia">▸</span></summary>
-    <b>12 settembre 2026</b><br>
-    · Corretto un errore nei campi con la <b>virgola</b>: scrivendo un PMC come «2,30» veniva letto 230 — ora il numero è quello giusto<br>
-    · Se i prezzi live arrivano solo per una parte degli asset ora la pagina lo dice, invece di scrivere «Prezzi live»<br>
-    · Modalità privacy 🙈: ora nasconde anche il numero di quote · pulsanti più grandi da toccare<br><br>
-    <b>4 settembre 2026</b><br>
-    · Nuovo partecipante: <b>Francesco P.</b> con 150 quote (trasferite da Ivan S.)<br>
-    · Commissioni di gestione: +140 quote a Vincenzo M., pari al 3% per il semestre marzo-agosto 2026 — totale quote in circolazione: 4.806<br><br>
-    <b>29 luglio 2026</b><br>
-    · Nuove quote: +413 (Christian F.) e acquistati <b>+8 SOL</b> e <b>+0,08 ETH</b> — ora il fondo ha 0,1 BTC · 1,69 ETH · 40 SOL<br><br>
-    <b>18 luglio 2026</b><br>
-    · Registrato nuovo ingresso: +202 quote (Domenico G.) e acquistati <b>+2 SOL</b> e <b>+0,07 ETH</b> — ora il fondo ha 0,1 BTC · 1,61 ETH · 32 SOL e 4.253 quote<br>
-    · In "E se compro ora?" ora puoi <b>toccare una previsione</b> per vedere i prezzi previsti dei singoli asset, confrontati coi prezzi del giorno dell'acquisto<br>
-    · La sezione Simulatore è confluita in "E se compro ora?" (stesso calcolo € ↔ quote, più le proiezioni)<br><br>
-    <b>17 luglio 2026</b><br>
-    · La dashboard è online con link fisso e si può installare in Home come una vera app 📱<br>
-    · Prezzi ora <b>live</b>: si aggiornano da soli a ogni apertura, con la variazione delle ultime 24 ore<br>
-    · Nuovo indicatore dell'umore del mercato (Paura/Avidità)<br>
-    · Conto alla rovescia per l'halving di Bitcoin (aprile 2028)<br>
-    · Modalità privacy 🙈: nasconde nomi e cifre per screenshot sicuri
-  </details>
 
   <footer>
     Prezzi live da CoinGecko · dati del fondo aggiornati da Enzo<br>
     Fondo condiviso tra amici — non è consulenza finanziaria<br>
-    <span style="opacity:.6">versione 1.0.4 · 12 settembre 2026</span>
+    <span style="opacity:.6">versione 1.0.5 · 16 settembre 2026</span>
   </footer>
 </div>
 
@@ -503,19 +439,20 @@
 /* ============================================================
    DATI DEL FONDO — aggiorna solo questa sezione
    ============================================================ */
-const LAST_UPDATE = "4 settembre 2026";
+const LAST_UPDATE = "16 settembre 2026";
 
 const ASSETS = [
-  { sym:"BTC", name:"Bitcoin",  qty:0.1,  value:5540.00, color:"var(--btc)" },   // BTC ≈ €55.400
-  { sym:"ETH", name:"Ethereum", qty:1.69, value:2729.35, color:"var(--eth)" },   // ETH ≈ €1.615
-  { sym:"SOL", name:"Solana",   qty:40,   value:2630.00, color:"var(--sol)" },   // SOL ≈ €65,75
+  { sym:"BTC",  name:"Bitcoin",  qty:0.1,   value:6776.00, color:"var(--btc)",  cg:"bitcoin"  },   // BTC ≈ €67.760
+  { sym:"ETH",  name:"Ethereum", qty:1.89,  value:3987.00, color:"var(--eth)",  cg:"ethereum" },   // ETH ≈ €2.110
+  { sym:"SOL",  name:"Solana",   qty:50,    value:4276.00, color:"var(--sol)",  cg:"solana"   },   // SOL ≈ €85,5
+  { sym:"DOGE", name:"Dogecoin", qty:10000, value:703.00,  color:"var(--doge)", cg:"dogecoin" },   // DOGE ≈ €0,0703
 ];
 
 const PARTICIPANTS = [
-  ["Christian F.", 1513],
+  ["Christian F.", 1872],
   ["Ivan S.", 1204],
   ["Arturo M.", 1000],
-  ["Vincenzo M.", 440],
+  ["Vincenzo M.", 1000],
   ["Domenico G.", 305],
   ["Francesco P.", 150],
   ["Luigi P.", 70],
@@ -550,16 +487,19 @@ const FORECASTS = {
         BTC:{ t:44000,  src:"≈$50k — S. Chartered (rischio capitolazione), Farrell/Fundstrat base $60-65k" },
         ETH:{ t:1300,   src:"≈$1.500 — fascia bassa dei modelli tecnici (Changelly/CoinCodex)" },
         SOL:{ t:44,     src:"≈$50 — proiezioni ribassiste, alta correlazione con BTC (beta ~2x vs ETH)" },
+        DOGE:{ t:0.053, src:"≈$0,06" },
       },
       base: {
         BTC:{ t:88000,  src:"≈$100k — target S. Chartered fine 2026; Hayes $125k" },
         ETH:{ t:2100,   src:"≈$2.000-2.400 — CoinCodex ~$2.023, Changelly media dic. ~$2.395" },
         SOL:{ t:92,     src:"≈$105-123 — DigitalCoinPrice ~$105, CoinCodex ~$123" },
+        DOGE:{ t:0.075, src:"≈$0,085 — media Changelly 2026" },
       },
       bull: {
         BTC:{ t:131000, src:"≈$150-170k — Bernstein $150k, JPMorgan $170k, Fundstrat fino a $200-250k" },
         ETH:{ t:3500,   src:"≈$4.000 — forte ripresa H2 con ritorno dei flussi ETF" },
         SOL:{ t:265,    src:"≈$300+ — media analisti pre-correzione ~$445, PricePrediction ~$375" },
+        DOGE:{ t:0.13, src:"≈$0,15" },
       },
       enzo: { P:48000,  O:80000,  TTM:100000 },
     },
@@ -568,16 +508,19 @@ const FORECASTS = {
         BTC:{ t:40000,  src:"≈$45k — coda della correzione pluriennale se il picco di ott. 2025 era il top" },
         ETH:{ t:1550,   src:"≈$1.750 — minimo Changelly 2027" },
         SOL:{ t:62,     src:"≈$70 — pressione prolungata sulle alt" },
+        DOGE:{ t:0.057, src:"≈$0,065" },
       },
       base: {
         BTC:{ t:105000, src:"≈$120k — ripresa graduale post-minimo" },
         ETH:{ t:2230,   src:"≈$2.535 — media Changelly 2027" },
         SOL:{ t:150,    src:"≈$156-185 — PricePrediction 2027" },
+        DOGE:{ t:0.092, src:"≈$0,105 — media Changelly 2027" },
       },
       bull: {
         BTC:{ t:176000, src:"≈$200k — target Bernstein 2027" },
         ETH:{ t:4400,   src:"≈$5k — nuovo ciclo espansivo con rotazione sulle alt" },
         SOL:{ t:350,    src:"≈$400 — scenario di rally del comparto" },
+        DOGE:{ t:0.22, src:"≈$0,25" },
       },
       enzo: { P:77000,  O:120000, TTM:150000 },
     },
@@ -586,16 +529,19 @@ const FORECASTS = {
         BTC:{ t:62000,  src:"≈$70k — ciclo debole anche dopo l'halving di aprile 2028" },
         ETH:{ t:1900,   src:"≈$2.150 — stagnazione, domanda istituzionale assente" },
         SOL:{ t:80,     src:"≈$90 — laterale" },
+        DOGE:{ t:0.062, src:"≈$0,07" },
       },
       base: {
         BTC:{ t:110000, src:"≈$125k — anno dell'halving, storicamente accumulazione pre-rally" },
         ETH:{ t:2900,   src:"≈$2.400-3.300 — range Changelly 2028" },
         SOL:{ t:140,    src:"≈$160 — crescita moderata dell'ecosistema" },
+        DOGE:{ t:0.114, src:"≈$0,13 — media Changelly 2028" },
       },
       bull: {
         BTC:{ t:440000, src:"≈$500k — milestone Standard Chartered per il 2028" },
         ETH:{ t:6100,   src:"≈$7k — tokenizzazione e DeFi istituzionale a regime" },
         SOL:{ t:440,    src:"≈$500 — target S. Chartered (indicato per fine 2029, anticipato nel caso bull)" },
+        DOGE:{ t:0.35, src:"≈$0,40" },
       },
       enzo: { P:144000, O:180000, TTM:350000 },
     },
@@ -604,16 +550,19 @@ const FORECASTS = {
         BTC:{ t:80000,  src:"≈$90k — ripresa lenta post-halving" },
         ETH:{ t:2200,   src:"≈$2.500" },
         SOL:{ t:90,     src:"≈$100" },
+        DOGE:{ t:0.070, src:"≈$0,08" },
       },
       base: {
         BTC:{ t:155000, src:"≈$175k — crescita post-halving in linea con i cicli storici (attenuati)" },
         ETH:{ t:3500,   src:"≈$4k — adozione graduale" },
         SOL:{ t:260,    src:"≈$300 — verso il target S. Chartered di $500 per fine 2029" },
+        DOGE:{ t:0.14, src:"≈$0,16 — media Changelly 2029" },
       },
       bull: {
         BTC:{ t:650000, src:"≈$740k — target Pantera Capital (Dan Morehead) per il 2029" },
         ETH:{ t:7900,   src:"≈$9k — ciclo espansivo pieno" },
         SOL:{ t:440,    src:"$500 — target Standard Chartered fine 2029" },
+        DOGE:{ t:0.62, src:"≈$0,70 — vicino al massimo storico 2021" },
       },
       enzo: { P:147000, O:280000, TTM:650000 },
     },
@@ -622,26 +571,48 @@ const FORECASTS = {
         BTC:{ t:90000,  src:"≈$100k — adozione più lenta del previsto" },
         ETH:{ t:2000,   src:"≈$2.300" },
         SOL:{ t:110,    src:"≈$125" },
+        DOGE:{ t:0.062, src:"≈$0,07" },
       },
       base: {
         BTC:{ t:195000, src:"≈$220k — media modelli di lungo periodo (Changelly ~$221k al 2031)" },
         ETH:{ t:2650,   src:"≈$3.020 — modello CoinCodex 2030" },
         SOL:{ t:285,    src:"≈$325 — modello CoinCodex 2030" },
+        DOGE:{ t:0.108, src:"≈$0,123 — media Changelly 2030" },
       },
       bull: {
         BTC:{ t:1100000, src:"≈$1,25M — bull case ARK Invest (Cathie Wood) per il 2030" },
         ETH:{ t:10500,   src:"≈$12k — scenario di adozione massima" },
         SOL:{ t:785,     src:"≈$892 — media panel Finder per fine 2030" },
+        DOGE:{ t:0.88, src:"≈$1" },
       },
       enzo: { P:90000,  O:180000, TTM:450000 },
     },
   },
-  ciclo: "Picco del ciclo a ~$126.000 (ottobre 2025), poi correzione oltre il -50%. Il mercato è diviso: se il ciclo quadriennale vale ancora, il picco è alle spalle e le correzioni storiche post-picco sono durate 12-15 mesi (-77/85% nei casi peggiori). La tesi opposta (Cathie Wood, S. Chartered): fase di bottoming in corso, con ripresa nel secondo semestre spinta da tagli dei tassi e ritorno dei flussi ETF. I funding rate negativi da inizio 2026 — la striscia più lunga dal minimo del 2022 — storicamente hanno preceduto i rimbalzi. Prossimo halving: aprile 2028.",
   fx: 0.88,            // € per $ usato per convertire i target di Enzo
   ethMult: 1.5,        // ETH: ×1,5 la prestazione di BTC (su e giù)
   solMultUp: 3.5,      // SOL: ×3,5 la prestazione di BTC in salita
   solMultDown: 2.5,    //      ×2,5 in discesa
+  dogeMultUp: 4,       // DOGE: ×4 la prestazione di BTC in salita
+  dogeMultDown: 3,     //       ×3 in discesa
+  floor: -0.95,        // nessun asset derivato scende oltre il -95%
 };
+/* moltiplicatore rispetto a BTC per la visione di Enzo */
+function betaEnzo(sym, d){
+  const F = FORECASTS;
+  if(sym==="BTC") return 1;
+  if(sym==="ETH") return F.ethMult;
+  if(sym==="SOL") return d>=0 ? F.solMultUp : F.solMultDown;
+  if(sym==="DOGE") return d>=0 ? F.dogeMultUp : F.dogeMultDown;
+  return 1;
+}
+function priceNowOf(sym){ const a = ASSETS.find(x=>x.sym===sym); return a.value/a.qty; }
+/* prezzo target (€) di un asset nella visione di Enzo, dato il target BTC in $ */
+function enzoAssetPrice(sym, usd){
+  const btcT = usd*FORECASTS.fx;
+  if(sym==="BTC") return btcT;
+  const d = btcT/priceNowOf("BTC") - 1;
+  return priceNowOf(sym)*(1 + Math.max(FORECASTS.floor, d*betaEnzo(sym,d)));
+}
 
 /* --- COMMISSIONE DI GESTIONE (v1_04 — PROPOSTA, da approvare) -----------
    Ogni semestre vengono emesse nuove quote pari al 3% del circolante a favore
@@ -666,6 +637,8 @@ function fattoreNetto(anno, oggi){
 /* ============================================================ */
 
 const eur = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR"});
+/* prezzo unitario: più decimali per gli asset sotto 1 € (es. DOGE) */
+const eurP = n => n.toLocaleString("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits: n<1?4:2, maximumFractionDigits: n<1?4:2});
 
 /* v1_04: lettura di un numero scritto all'italiana (virgola decimale).
    Con <input type="number"> la virgola veniva scartata tasto per tasto:
@@ -713,13 +686,13 @@ function renderComposizione(){
       : "";
     const unit = a.qty ? a.value / a.qty : 0;                            // v1_04: qty 0 → niente Infinity
     const usd = (typeof a.usd==="number") ? a.usd : unit/FORECASTS.fx;   // v1_04: un solo cambio €/$
-    const fmt$ = n => "$" + n.toLocaleString("it-IT",{maximumFractionDigits: n>=1000?0:2});
+    const fmt$ = n => "$" + n.toLocaleString("it-IT",{maximumFractionDigits: n>=1000?0:(n<1?4:2)});
     assetsBox.insertAdjacentHTML("beforeend", `
       <div class="asset-row">
         <span class="dot" style="background:${a.color}"></span>
         <span class="asset-name">${a.name}
-          <span class="asset-qty">· ${a.qty} ${a.sym}${ch}</span>
-          <div class="asset-price">1 ${a.sym} = <span class="cur">${fmt$(usd)}</span> · ${eur(unit)}</div>
+          <span class="asset-qty">· ${a.qty.toLocaleString("it-IT")} ${a.sym}${ch}</span>
+          <div class="asset-price">1 ${a.sym} = <span class="cur">${fmt$(usd)}</span> · ${eurP(unit)}</div>
         </span>
         <span class="asset-val">${eur(a.value)}</span>
         <span class="asset-pct">${pct.toFixed(1)}%</span>
@@ -805,14 +778,7 @@ function fundTargetValue(year, mode, key){
     return ASSETS.reduce((sum,a)=>sum + s[a.sym].t*a.qty, 0);
   }
   const usd = yd.enzo[key];
-  const btcNow = ASSETS[0].value/ASSETS[0].qty;
-  const ethNow = ASSETS[1].value/ASSETS[1].qty;
-  const solNow = ASSETS[2].value/ASSETS[2].qty;
-  const btcT = usd*FORECASTS.fx;
-  const d = btcT/btcNow - 1;
-  const dE = d*FORECASTS.ethMult;
-  const dS = d*(d>=0 ? FORECASTS.solMultUp : FORECASTS.solMultDown);
-  return btcT*ASSETS[0].qty + ethNow*(1+dE)*ASSETS[1].qty + solNow*(1+dS)*ASSETS[2].qty;
+  return ASSETS.reduce((sum,a)=>sum + enzoAssetPrice(a.sym, usd)*a.qty, 0);
 }
 
 function renderAcq(){
@@ -859,15 +825,8 @@ function renderAcq(){
 const acqDetail = document.getElementById("acqDetail");
 
 function assetTarget(sym, y, mode, k){
-  const i = ASSETS.findIndex(a=>a.sym===sym);
-  const now = ASSETS[i].value/ASSETS[i].qty;
   if(mode==="market") return FORECASTS.years[y][k][sym].t;
-  const usd = FORECASTS.years[y].enzo[k];
-  const btcNow = ASSETS[0].value/ASSETS[0].qty;
-  const d = usd*FORECASTS.fx/btcNow - 1;
-  if(sym==="BTC") return usd*FORECASTS.fx;
-  if(sym==="ETH") return now*(1 + d*FORECASTS.ethMult);
-  return now*(1 + d*(d>=0 ? FORECASTS.solMultUp : FORECASTS.solMultDown));
+  return enzoAssetPrice(sym, FORECASTS.years[y].enzo[k]);
 }
 
 function showAcqDetail(y, k){
@@ -878,7 +837,7 @@ function showAcqDetail(y, k){
     const now = a.value/a.qty;
     const t = assetTarget(a.sym, y, acqMode, k);
     const d = (t/now - 1)*100;
-    return '<tr><td class="yr">'+a.name+'</td><td>'+eur(now)+'</td><td>'+eur(t)+'</td>'+
+    return '<tr><td class="yr">'+a.name+'</td><td>'+eurP(now)+'</td><td>'+eurP(t)+'</td>'+
       '<td><span class="'+(d>=0?"prev-delta up":"prev-delta down")+'" style="width:auto">'+pct(d)+'</span></td></tr>';
   }).join("");
   const multEnd = fundTargetValue(y, acqMode, k)/total;
@@ -922,7 +881,6 @@ const pmcFoot = document.getElementById("pmcFoot");
 const acqPmc = document.getElementById("acqPmc");
 const pmcToggle = document.getElementById("pmcToggle");
 
-document.getElementById("pmcQuotaNow").textContent = eur(quota) + "/quota";
 
 pmcToggle.addEventListener("click", ()=>{
   const opening = acqPmc.hidden;
@@ -1053,19 +1011,9 @@ document.querySelectorAll("#enzoSub .scen-btn").forEach(btn=>{
 
 /* costruisce i target della visione di Enzo: ETH e SOL derivati dalla prestazione di BTC */
 function enzoTargets(usd){
-  const btcNow = ASSETS[0].value/ASSETS[0].qty;
-  const ethNow = ASSETS[1].value/ASSETS[1].qty;
-  const solNow = ASSETS[2].value/ASSETS[2].qty;
-  const btcT = usd*FORECASTS.fx;
-  const d = btcT/btcNow - 1;
-  const dEth = d*FORECASTS.ethMult;
-  const dSol = d*(d>=0 ? FORECASTS.solMultUp : FORECASTS.solMultDown);
-  const lbl = "$" + usd.toLocaleString("it-IT");
-  return {
-    BTC:{ t:btcT,            src:lbl+" — target di Enzo ("+SUB_NAMES[curSub]+")" },
-    ETH:{ t:ethNow*(1+dEth), src:"derivato: ×1,5 la prestazione di BTC → "+pct(dEth*100) },
-    SOL:{ t:solNow*(1+dSol), src:"derivato: ×"+(d>=0?"3,5 in salita":"2,5 in discesa")+" rispetto a BTC → "+pct(dSol*100) },
-  };
+  const out = {};
+  ASSETS.forEach(a=>{ out[a.sym] = { t: enzoAssetPrice(a.sym, usd) }; });
+  return out;
 }
 
 function renderPrev(){
@@ -1090,9 +1038,8 @@ function renderPrev(){
     prevRows.insertAdjacentHTML("beforeend", `
       <div class="prev-row">
         <span class="asset-name"><span class="dot" style="background:${a.color};display:inline-block;margin-right:8px"></span>${a.name}</span>
-        <span class="prev-target">${eur(f.t)}</span>
+        <span class="prev-target">${eurP(f.t)}</span>
         <span class="prev-delta ${delta>=0?"up":"down"}">${pct(delta)}</span>
-        <span class="prev-src">${f.src}</span>
       </div>`);
   });
   const quotaTarget = fundTargetVal / totalQuotas;
@@ -1238,10 +1185,10 @@ renderPrev();
 
   /* prezzi live CoinGecko */
   try{
-    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=eur,usd&include_24hr_change=true", {signal:sig(6000)});
+    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids="+ASSETS.map(a=>a.cg).join(",")+"&vs_currencies=eur,usd&include_24hr_change=true", {signal:sig(6000)});
     if(!r.ok) return;
     const j = await r.json();
-    const map = { BTC:j.bitcoin, ETH:j.ethereum, SOL:j.solana };
+    const map = {}; ASSETS.forEach(a=>{ map[a.sym] = j[a.cg]; });
     if(!map.BTC || !map.BTC.eur) return;
     let yest = 0;
     const stale = [];                                  // v1_04: asset per cui CoinGecko non ha dato il prezzo
@@ -1267,7 +1214,6 @@ renderPrev();
       if(el && q) el.textContent = eur(q*quota);
     });
     document.getElementById("acqQuotaNow").textContent = eur(quota);
-    document.getElementById("pmcQuotaNow").textContent = eur(quota) + "/quota";
     if(yest>0 && stale.length===0){                    // v1_04: niente % 24h su dati misti
       const d = (total/yest - 1)*100;
       const el = document.getElementById("fundDelta");
@@ -1285,32 +1231,6 @@ renderPrev();
   }catch(e){ /* offline o API giù: restano i valori manuali */ }
 })();
 
-document.getElementById("cicloText").textContent = FORECASTS.ciclo;
-function buildEnzoBox(){
-  const f = n => n.toLocaleString("it-IT");
-  const rows = Object.keys(FORECASTS.years).map(y=>{
-    const e = FORECASTS.years[y].enzo;
-    return `<tr><td class="yr">${y}${y==="2030" ? " *" : ""}</td><td>${f(e.P)}</td><td>${f(e.O)}</td><td>${f(e.TTM)}</td></tr>`;
-  }).join("");
-  return `
-    <p>Mi aspetto che Bitcoin continui a seguire il suo ciclo storico: salita graduale nei prossimi anni fino al <b>massimo nel 2029</b>, poi il <b>2030 come anno ribassista</b> — con prezzi che a quel punto potrebbero andare dai 90.000 $ del caso peggiore ai 450.000 $ se il ciclo finisce in euforia.</p>
-    <p>Per ogni anno indico tre possibili prezzi di <b>Bitcoin a fine anno, in dollari</b>:</p>
-    <table class="enzo-table">
-      <tr><th>Anno</th><th>😟 Pessimista</th><th>🙂 Ottimista</th><th>🌕 To the moon</th></tr>
-      ${rows}
-    </table>
-    <p class="enzo-foot">* il 2030 è l'anno ribassista del ciclo. Prezzi in dollari.</p>
-    <p><b>😟 Pessimista</b> è lo scenario prudente, <b>🙂 Ottimista</b> quello favorevole, <b>🌕 To the moon</b> quello di euforia del mercato.</p>
-    <p><b>E per Ethereum e Solana?</b> Non hanno prezzi fissati: si muovono insieme a Bitcoin, ma con oscillazioni più ampie.</p>
-    <p><b>Ethereum</b> si muove 1,5 volte più di Bitcoin, in entrambe le direzioni. Esempio: se Bitcoin guadagna il 20%, Ethereum guadagna il 30%; se Bitcoin perde il 10%, Ethereum perde il 15%.</p>
-    <p><b>Solana</b> è più estrema: 3,5 volte in salita e 2,5 volte in discesa. Esempio: con Bitcoin a +20% Solana fa +70%; con Bitcoin a −10% Solana fa −25%.</p>
-    <p class="enzo-foot">I prezzi di Ethereum e Solana che compaiono negli scenari qui sopra sono calcolati automaticamente con questa regola. (Visione aggiornata il 16/7/2026)</p>`;
-}
-document.getElementById("enzoText").innerHTML = buildEnzoBox();
-document.getElementById("infoPrev").textContent =
-  "Previsioni raccolte il " + FORECASTS.updated + " da fonti pubbliche (Standard Chartered, Bernstein, JPMorgan, Fundstrat, Pantera, ARK, CoinCodex e altri) più la visione personale di Enzo. Sono opinioni, spesso in disaccordo tra loro e storicamente poco affidabili — più l'orizzonte è lontano, più sono da prendere con le pinze. Il calcolo di fondo e quota è a composizione invariata (0,1 BTC · 1,69 ETH · 40 SOL) e quote costanti.";
-document.getElementById("prevDisclaimer").textContent =
-  "Le previsioni sono opinioni, non consigli d'investimento.";
 </script>
 </body>
 </html>
