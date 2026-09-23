@@ -514,7 +514,7 @@
   <footer>
     Prezzi live da CoinGecko · dati del fondo aggiornati da Enzo<br>
     Fondo condiviso tra amici — non è consulenza finanziaria<br>
-    <span style="opacity:.7">versione 2.2 · 20 settembre 2026</span>
+    <span style="opacity:.7">versione 2.3 · 23 settembre 2026</span>
   </footer>
 </div>
 
@@ -532,12 +532,12 @@
 /* ============================================================
    DATI DEL FONDO — aggiorna solo questa sezione
    ============================================================ */
-const LAST_UPDATE = "20 settembre 2026";
+const LAST_UPDATE = "23 settembre 2026";
 const ENZO_WA = "";   // numero WhatsApp di Enzo con prefisso, es. "393331234567" — vuoto = si sceglie il contatto
 
 const ASSETS = [
   { sym:"BTC",  name:"Bitcoin",  qty:0.1,    value:6776.00, color:"#d0760c", cg:"bitcoin"  },   // BTC ≈ €67.760
-  { sym:"ETH",  name:"Ethereum", qty:2.31,   value:4874.10, color:"#7078ea", cg:"ethereum" },   // ETH ≈ €2.110
+  { sym:"ETH",  name:"Ethereum", qty:3.01,   value:6351.10, color:"#7078ea", cg:"ethereum" },   // ETH ≈ €2.110
   { sym:"SOL",  name:"Solana",   qty:50,     value:4276.00, color:"#12a191", cg:"solana"   },   // SOL ≈ €85,5
   { sym:"DOGE", name:"Dogecoin", qty:10688,  value:751.37,  color:"#b08f1c", cg:"dogecoin" },   // DOGE ≈ €0,0703
 ];
@@ -547,7 +547,7 @@ const PARTICIPANTS = [
   ["Vincenzo M.", 1500],
   ["Ivan S.", 1204],
   ["Arturo M.", 1000],
-  ["Domenico G.", 305],
+  ["Domenico G.", 971],
   ["Francesco P.", 150],
   ["Luigi P.", 70],
   ["Mario O.", 21],
@@ -572,6 +572,10 @@ const PARTICIPANTS = [
 
 /* storico movimenti: il più recente in alto */
 const MOVIMENTI = [
+  { data:"23 settembre 2026", righe:[
+    "Domenico G. compra <b>666 quote</b> (305 → 971)",
+    "Il fondo acquista <b>+0,7 ETH</b> (2,31 → 3,01)",
+    "Quote totali: 6.225 → <b>6.891</b>" ]},
   { data:"20 settembre 2026", righe:[
     "Vincenzo M. compra <b>500 quote</b> (1.000 → 1.500)",
     "Il fondo acquista <b>+0,31 ETH</b> (2 → 2,31) e <b>+5.000 DOGE</b> (5.688 → 10.688)",
